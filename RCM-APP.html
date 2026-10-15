@@ -642,8 +642,8 @@ if (!localStorage.getItem('rcm_aceite')) {
   var p = '';
   try { p = decodeURIComponent(window.location.pathname).toLowerCase(); } catch(e) { p = window.location.pathname.toLowerCase(); }
 
-  var ok = p.indexOf('rcm-app') !== -1 &&
-           (p.indexOf('/rcm/') !== -1 || p.indexOf('github') !== -1);
+  var ok = p.indexOf('RCM-APP') !== -1 &&
+           (p.indexOf('/rcm-app/') !== -1 || p.indexOf('github') !== -1);
 
   if (!ok) {
     document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1a2e;">' +
