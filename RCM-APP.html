@@ -642,8 +642,9 @@ if (!localStorage.getItem('rcm_aceite')) {
   var p = '';
   try { p = decodeURIComponent(window.location.pathname).toLowerCase(); } catch(e) { p = window.location.pathname.toLowerCase(); }
 
-  var ok = p.indexOf('RCM-APP') !== -1 &&
-           (p.indexOf('/rcm-app/') !== -1 || p.indexOf('github') !== -1);
+  // Valida se o caminho contém a pasta ou arquivo autorizado (tudo em minúsculo pois usamos .toLowerCase())
+  var ok = p.indexOf('rcm-app') !== -1 && 
+           (window.location.hostname.indexOf('github.io') !== -1 || window.location.hostname.indexOf('mrwbr.github.io') !== -1);
 
   if (!ok) {
     document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1a2e;">' +
@@ -652,6 +653,8 @@ if (!localStorage.getItem('rcm_aceite')) {
       '<p style="color:#9ba3bc;font-size:14px;">Este arquivo deve ser executado a partir da pasta autorizada.</p>' +
       '<p style="color:#555;font-size:10px;margin-top:20px;">Contate o administrador.</p>' +
       '</div></div>';
+      
+    // Interrompe a execução sem disparar erro fatal no console se preferir
     throw new Error('RCM-APP: Localizacao nao autorizada.');
   }
 })();
