@@ -627,7 +627,7 @@ if (!localStorage.getItem('rcm_aceite')) {
  * ═══════════════════════════════════════════════════════════
  * RCM-APP — Sistema de Análise de Confiabilidade (RCM)
  * Autor: Lucas W. Branco
- * Propriedade intelectual de Lucas W. Branco / MDLZ
+ * Propriedade intelectual de Lucas W. Branco
  * Criado em: 2026
  * Todos os direitos reservados.
  * A reprodução, cópia ou distribuição não autorizada
@@ -643,7 +643,7 @@ if (!localStorage.getItem('rcm_aceite')) {
   try { p = decodeURIComponent(window.location.pathname).toLowerCase(); } catch(e) { p = window.location.pathname.toLowerCase(); }
 
   var ok = p.indexOf('rcm-app') !== -1 &&
-           (p.indexOf('/rcm/') !== -1 || p.indexOf('onedrive') !== -1);
+           (p.indexOf('/rcm/') !== -1 || p.indexOf('github') !== -1);
 
   if (!ok) {
     document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1a2e;">' +
