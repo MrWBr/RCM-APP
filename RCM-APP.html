@@ -157,6 +157,8 @@ tr:hover td { background: rgba(255,255,255,.02); }
 .form-group { display: flex; flex-direction: column; gap: 5px; }
 .form-group label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .6px; font-weight: 600; }
 .form-group input, .form-group select, .form-group textarea { background: var(--bg3); border: 1px solid var(--border); color: var(--text); padding: 8px 10px; border-radius: 6px; font-size: 13px; outline: none; font-family: var(--font); }
+textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
+#pg-confiab input[type=number], #pg-confiab select { background: var(--bg3); color: var(--text); border: 1px solid var(--border2); border-radius: 5px; padding: 5px 7px; }
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); }
 .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: var(--bg4); color: var(--text2); transition: all .15s; }
 .btn:hover { background: var(--bg3); color: var(--text); border-color: var(--border2); }
@@ -332,10 +334,10 @@ tr:hover td { background: rgba(255,255,255,.02); }
         <div class="form-grid">
           <div class="form-group"><label>Linha / Processo</label><input id="ctx-linha" oninput="salvarContextoGeral()"></div>
           <div class="form-group"><label>Data Inicio</label><input id="ctx-dt" type="date" oninput="salvarContextoGeral()"></div>
-          <div class="form-group"><label>Processo</label><input id="ctx-processo" oninput="salvarContextoGeral()"></div>
+          <div class="form-group"><label>Processo</label><textarea id="ctx-processo" rows="1" class="autogrow" oninput="salvarContextoGeral()"></textarea></div>
           <div class="form-group"><label>Turnos</label><input id="ctx-turnos" oninput="salvarContextoGeral()"></div>
           <div class="form-group"><label>Capacidade</label><input id="ctx-cap" oninput="salvarContextoGeral()"></div>
-          <div class="form-group"><label>Limites</label><input id="ctx-limites" oninput="salvarContextoGeral()"></div>
+          <div class="form-group"><label>Limites</label><textarea id="ctx-limites" rows="1" class="autogrow" oninput="salvarContextoGeral()"></textarea></div>
           <div class="form-group" style="grid-column:1/-1"><label>Padroes</label><textarea id="ctx-padroes" rows="2" oninput="salvarContextoGeral()"></textarea></div>
         </div>
       </div>
@@ -563,7 +565,7 @@ tr:hover td { background: rgba(255,255,255,.02); }
     <!-- ========== CONFIABILIDADE ========== -->
     <div class="page" id="pg-confiab">
       <div class="page-title">Analise de Confiabilidade</div>
-      <div class="page-sub">Curvas R(t), F(t) e Custo - Atual vs Simulado</div>
+      <div class="page-sub">Curvas R(t), F(t) e custo — atual (histórico) vs simulado (diretrizes do FMEA / Diagrama Decisional)</div>
       <div class="card">
         <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px;">
           <div style="display:flex;flex-direction:column;gap:4px;">
@@ -574,6 +576,13 @@ tr:hover td { background: rgba(255,255,255,.02); }
             <label style="font-size:11px;color:var(--text3);">Janela (h)</label>
             <input id="conf-tmax" type="number" value="8760" style="width:80px;" onchange="renderConfiab()">
           </div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <label style="font-size:11px;color:var(--text3);">Modelo</label>
+            <select id="conf-modelo" onchange="confOnSimCfg()" title="Weibull é ajustado quando o ativo tem 3 ou mais intervalos entre falhas">
+              <option value="auto">Weibull (automático)</option>
+              <option value="exp">Exponencial (β = 1)</option>
+            </select>
+          </div>
           <div style="display:flex;align-items:center;gap:6px;margin-top:16px;">
             <input type="checkbox" id="conf-show-custo" onchange="renderConfiab()">
             <label for="conf-show-custo" style="font-size:12px;cursor:pointer;">Mostrar Curva de Custo</label>
@@ -581,16 +590,33 @@ tr:hover td { background: rgba(255,255,255,.02); }
           <button class="btn btn-sm" style="margin-top:16px;" onclick="toggleCalculos()">? Formulas</button>
         </div>
         <div id="conf-kpi" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:10px;margin-bottom:10px;"></div>
+        <div id="conf-notas"></div>
       </div>
       <div class="card">
-        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
+        <div class="card-title" style="margin-bottom:6px;">Hipóteses da simulação</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:10px;">Valores que dependem da sua planta. Ajuste para refletir a realidade — eles alteram o cenário simulado e o intervalo ótimo de preventiva.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;">
           <div style="display:flex;flex-direction:column;gap:4px;">
-            <label style="font-size:11px;color:var(--text3);">Confiabilidade minima (%)</label>
-            <input id="conf-threshold" type="number" value="70" min="10" max="99" style="width:80px;" onchange="renderConfiab()">
+            <label style="font-size:11px;color:var(--text3);">Custo de uma preventiva (% da corretiva)</label>
+            <input id="conf-cp" type="number" min="1" max="100" step="1" style="width:90px;" onchange="confOnSimCfg()">
           </div>
-          <div style="font-size:11px;color:var(--text3);margin-top:16px;">Define o ponto ideal: tempo maximo para manter R(t) acima deste valor</div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <label style="font-size:11px;color:var(--text3);">Eficácia de detecção CBM/Preditiva (%)</label>
+            <input id="conf-ef" type="number" min="0" max="95" step="5" style="width:90px;" onchange="confOnSimCfg()">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <label style="font-size:11px;color:var(--text3);">Ganho do redesenho (% em η)</label>
+            <input id="conf-red" type="number" min="0" max="300" step="5" style="width:90px;" onchange="confOnSimCfg()">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <label style="font-size:11px;color:var(--text3);">R(t) mínima de referência (%)</label>
+            <input id="conf-threshold" type="number" value="70" min="10" max="99" style="width:90px;" onchange="renderConfiab()">
+          </div>
         </div>
-        <div id="conf-ponto-ideal" style="margin-top:16px;"></div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:12px;">Estratégia por ativo</div>
+        <div id="conf-ponto-ideal"></div>
       </div>
       <div class="card">
         <div class="card-title" style="margin-bottom:12px;">Confiabilidade Atual</div>
@@ -598,14 +624,14 @@ tr:hover td { background: rgba(255,255,255,.02); }
       </div>
       <div class="card">
         <div class="card-title" style="margin-bottom:4px;">Confiabilidade Simulada (pos-DD)</div>
-        <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">Ganho estimado com base nas diretrizes do Diagrama Decisional aplicadas</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">Probabilidade de não ocorrer quebra não planejada aplicando as diretrizes do FMEA/DD. O "dente de serra" são as preventivas por idade.</div>
         <div style="height:280px;position:relative;"><canvas id="chart-conf-simulado"></canvas></div>
       </div>
       <div class="card">
         <div class="card-title" style="margin-bottom:12px;">Tabela de Valores</div>
         <div style="overflow-x:auto;">
           <table>
-            <thead><tr><th>t (h)</th><th>R(t) Atual</th><th>R(t) Simulado</th><th>F(t)</th><th>Lambda</th></tr></thead>
+            <thead><tr><th>t (h)</th><th>R(t) Atual</th><th>R(t) Simulado</th><th>F(t)</th><th>Taxa de falha h(t) /h</th></tr></thead>
             <tbody id="tbody-conf"></tbody>
           </table>
         </div>
@@ -613,14 +639,17 @@ tr:hover td { background: rgba(255,255,255,.02); }
       <div class="card" id="calc-explanation-box" style="display:none;">
         <div class="card-title">Formulas Utilizadas</div>
         <div style="font-size:12px;color:var(--text2);line-height:1.8;">
-          <strong>Lambda:</strong> l = 1 / MTBF<br>
-          <strong>R(t):</strong> e^(-l x t)<br>
-          <strong>F(t):</strong> 1 - R(t)<br>
+          <strong>Dados:</strong> tempos entre falhas do Histórico; o tempo desde a última falha até hoje entra como observação censurada (opção na aba RBD). Hipótese: reparo deixa o ativo como novo.<br>
+          <strong>Weibull (≥ 3 intervalos):</strong> R(t) = e^(−(t/η)^β), β e η por máxima verossimilhança com censura. MTBF = η·Γ(1 + 1/β)<br>
+          <strong>Exponencial (poucos dados):</strong> β = 1, R(t) = e^(−t/MTBF), MTBF = tempo observado / nº de intervalos<br>
+          <strong>Taxa de falha:</strong> h(t) = (β/η)(t/η)^(β−1) — cresce com a idade se β &gt; 1 (desgaste), constante se β = 1, cai se β &lt; 1<br>
           <strong>Disponibilidade:</strong> MTBF / (MTBF + MTTR)<br>
-          <strong>RBD Serie:</strong> R1 x R2 x ... x Rn<br>
-          <strong>RBD Paralelo:</strong> 1 - (1-R1)(1-R2)...(1-Rn)<br>
-          <strong>Ganho DD:</strong> CBM +25%, Preditiva +30%, TBM +20%, Revisao +15%, FF +10%, Redesenho +40%<br>
-          <strong>Custo Acumulado:</strong> (t / MTBF) x Custo medio por falha
+          <strong>RBD:</strong> série R1×R2×…; paralelo 1 − (1−R1)(1−R2)…; k-de-n por enumeração<br>
+          <strong>Preventiva por tempo:</strong> substituição por idade no T* que minimiza C(T) = (Cp·R(T) + Cf·F(T)) / ∫₀ᵀR(t)dt. Só existe ótimo se β &gt; 1. R simulado = R(T)^k · R(t − kT)<br>
+          <strong>CBM / Preditiva:</strong> fração q das falhas detectada antes da quebra (hipótese): R simulado = R(t)^(1−q); a falha detectada custa como preventiva<br>
+          <strong>Redesenho:</strong> η × (1 + ganho informado)<br>
+          <strong>Busca de falha / Corretiva / RTF:</strong> não alteram R do ativo<br>
+          <strong>Custo:</strong> Cf = custo médio das falhas do ativo (Histórico); Cp = % de Cf. Custo/ano = taxa de custo × 8760 h
         </div>
       </div>
     </div>
@@ -739,14 +768,33 @@ let confChart = null, rpnChart = null, stratChart = null;
 let fileHandle = null; // File System Access API — referência ao arquivo aberto
 
 
+// Caixas de texto acompanham o tamanho do conteúdo
+function autoGrow(el) {
+  if (!el || el.tagName !== 'TEXTAREA' || !el.offsetParent) return;
+  el.style.height = 'auto';
+  el.style.height = (el.scrollHeight + 2) + 'px';
+}
+function autoGrowAll(root) { (root || document).querySelectorAll('textarea').forEach(autoGrow); }
+document.addEventListener('input', function(e) { autoGrow(e.target); }, true);
+window.addEventListener('load', function() {
+  new MutationObserver(function(ms) {
+    var alvo = false;
+    ms.forEach(function(m) { if (m.addedNodes.length || m.type === 'attributes') alvo = true; });
+    if (alvo) requestAnimationFrame(function() { autoGrowAll(); });
+  }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+  autoGrowAll();
+});
+// Texto dentro de string JS num atributo onclick: escapa para JS e depois para HTML
+function jsAttr(t) { return esc(String(t == null ? '' : t).replace(/\\/g, '\\\\').replace(/'/g, "\\'")); }
+function acaoConcluida(a) { return /^conclu/i.test(String((a && a.status) || '').trim()); }
 function uid() { return Math.random().toString(36).substring(2,9).toUpperCase(); }
-function esc(t) { return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function esc(t) { return String(t || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 
 function mostrarNotificacaoAtrasos() {
   if (!S.acoes || !S.acoes.length) return;
   function calcA(a) {
-    if (a.status === 'Concluído') return { s: 'ok', d: 0 };
+    if (acaoConcluida(a)) return { s: 'ok', d: 0 };
     if (!a.dt || !a.dias) return { s: 'nd', d: 0 };
     var ini = new Date(a.dt);
     var dl = new Date(ini.getTime() + (parseInt(a.dias) * 86400000));
@@ -792,7 +840,7 @@ function mostrarNotificacaoAtrasos() {
 function renderAcoes() {
   // --- Funções auxiliares embutidas ---
   function calcAtraso(a) {
-    if (a.status === 'Concluído') return { s: 'ok', d: 0, dl: null };
+    if (acaoConcluida(a)) return { s: 'ok', d: 0, dl: null };
     if (!a.dt || !a.dias) return { s: 'nd', d: 0, dl: null };
     var ini = new Date(a.dt);
     var dl = new Date(ini.getTime() + (parseInt(a.dias) * 86400000));
@@ -839,21 +887,108 @@ function renderAcoes() {
 // ============================================================
 // MTBF REAL — Calcula a partir do histórico de falhas
 // ============================================================
-function calcularMTBFreal(nomeAtivo) {
-  if (!nomeAtivo) return 0;
-  var datas = (S.historico || []).filter(function(h) { return h && h.item === nomeAtivo; })
+// ============================================================
+// MODELO DE CONFIABILIDADE POR ATIVO — Weibull com censura
+// ------------------------------------------------------------
+// Tempos entre falhas (TBF) vêm do histórico; o tempo desde a última falha
+// até hoje entra como observação censurada (se S.cfg.censura).
+// Com >= 3 intervalos ajusta Weibull (beta, eta) por máxima verossimilhança;
+// com menos dados (ou modelo 'exp' escolhido) usa exponencial (beta = 1).
+// Hipótese: reparo deixa o ativo "como novo" (processo de renovação).
+// ============================================================
+var MODELO_MIN_INTERVALOS = 3;
+
+function gammaFn(z) {
+  if (z < 0.5) return Math.PI / (Math.sin(Math.PI * z) * gammaFn(1 - z));
+  z -= 1;
+  var c = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313,
+           -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+  var x = c[0];
+  for (var i = 1; i < 9; i++) x += c[i] / (z + i);
+  var t = z + 7.5;
+  return Math.sqrt(2 * Math.PI) * Math.pow(t, z + 0.5) * Math.exp(-t) * x;
+}
+
+// MLE Weibull com censura à direita. fal = tempos até falha, cens = tempos censurados
+function weibullMLE(fal, cens) {
+  var all = fal.concat(cens), r = fal.length;
+  var esc0 = all.reduce(function(a, b) { return a + b; }, 0) / all.length; // escala p/ evitar overflow
+  var f = fal.map(function(t) { return t / esc0; }), a = all.map(function(t) { return t / esc0; });
+  var mlf = f.reduce(function(s, t) { return s + Math.log(t); }, 0) / r;
+  function g(b) {
+    var s = 0, sl = 0;
+    a.forEach(function(t) { var tb = Math.pow(t, b); s += tb; sl += tb * Math.log(t); });
+    return sl / s - 1 / b - mlf;
+  }
+  var lo = 0.05, hi = 20;
+  if (g(hi) < 0) lo = hi; // dados sem dispersão: beta vai ao limite
+  for (var k = 0; k < 100 && hi - lo > 1e-9; k++) { var m = (lo + hi) / 2; if (g(m) > 0) hi = m; else lo = m; }
+  var beta = (lo + hi) / 2;
+  return { beta: beta, eta: weibullEta(all, r, beta) };
+}
+function weibullEta(all, r, beta) {
+  var s = all.reduce(function(acc, t) { return acc + Math.pow(t, beta); }, 0);
+  return Math.pow(s / r, 1 / beta);
+}
+
+function modeloAtivo(nome) {
+  var cfg = getCfg();
+  var datas = (S.historico || []).filter(function(h) { return h && h.item === nome; })
     .map(function(h) { return new Date(h.dt).getTime(); })
     .filter(function(t) { return !isNaN(t); })
     .sort(function(a, b) { return a - b; });
-  if (datas.length < 2) return 0;
-  var ini = datas[0], fim = datas[datas.length - 1];
-  // Censura à direita: o tempo desde a última falha até hoje também é tempo
-  // de operação sem falha. Sem isso o MTBF fica enviesado para baixo.
-  if (getCfg().censura) fim = Math.max(fim, Date.now());
-  // Datas têm resolução de dia: falhas no mesmo dia contam como < 24 h
-  var horas = Math.max(fim - ini, 86400000) / 3600000;
-  return horas / (datas.length - 1);
+  var n = datas.length;
+  if (!nome || n < 2) return { ok: false, n: n, nInt: 0 };
+  var fal = [];
+  for (var i = 1; i < n; i++) fal.push(Math.max((datas[i] - datas[i - 1]) / 3600000, 12)); // datas têm resolução de dia
+  var cens = [];
+  if (cfg.censura) { var c = (Date.now() - datas[n - 1]) / 3600000; if (c > 1) cens.push(c); }
+  var beta = 1, eta, tipo = 'exp';
+  if (cfg.modelo !== 'exp' && fal.length >= MODELO_MIN_INTERVALOS) {
+    var w = weibullMLE(fal, cens);
+    beta = Math.max(0.3, Math.min(8, w.beta));
+    eta = weibullEta(fal.concat(cens), fal.length, beta);
+    tipo = 'weibull';
+  } else {
+    eta = (fal.reduce(function(a, b) { return a + b; }, 0) + cens.reduce(function(a, b) { return a + b; }, 0)) / fal.length;
+  }
+  var res = { ok: true, n: n, nInt: fal.length, tipo: tipo, beta: beta, eta: eta, mtbf: eta * gammaFn(1 + 1 / beta) };
+  if (tipo === 'weibull') {
+    // IC 90% aproximado de beta (Var(ln beta) ~ 0,608/r). Com poucos dados o MLE superestima beta,
+    // então só se afirma desgaste/mortalidade infantil quando o intervalo inteiro exclui 1.
+    var se = 0.78 / Math.sqrt(fal.length);
+    res.betaLo = beta * Math.exp(-1.645 * se);
+    res.betaHi = beta * Math.exp(1.645 * se);
+  }
+  return res;
 }
+
+// MTBF do ativo (0 = histórico insuficiente). Mantém a API antiga.
+function calcularMTBFreal(nomeAtivo) {
+  var m = modeloAtivo(nomeAtivo);
+  return m.ok ? m.mtbf : 0;
+}
+
+// Parâmetros completos do ativo, com fallback explícito (manual > histórico > padrão)
+function paramsAtivo(nome, mtbfManual) {
+  var m = modeloAtivo(nome);
+  var hs = (S.historico || []).filter(function(h) { return h && h.item === nome; });
+  var ttrs = hs.map(function(h) { return +h.ttr; }).filter(function(v) { return v > 0; });
+  var custos = hs.map(function(h) { return +h.custo; }).filter(function(v) { return v > 0; });
+  var p;
+  if (mtbfManual > 0) p = { src: 'manual', tipo: 'exp', beta: 1, eta: +mtbfManual };
+  else if (m.ok) p = { src: 'historico', tipo: m.tipo, beta: m.beta, eta: m.eta, betaLo: m.betaLo, betaHi: m.betaHi };
+  else p = { src: 'padrao', tipo: 'exp', beta: 1, eta: getCfg().mtbfPadrao };
+  p.nome = nome;
+  p.n = m.n; p.nInt = m.nInt || 0;
+  p.mtbf = p.eta * gammaFn(1 + 1 / p.beta);
+  p.mttr = ttrs.length ? ttrs.reduce(function(a, b) { return a + b; }, 0) / ttrs.length : 0;
+  p.custo = custos.length ? custos.reduce(function(a, b) { return a + b; }, 0) / custos.length : 0;
+  p.A = p.mtbf / (p.mtbf + p.mttr);
+  return p;
+}
+
+function weibR(p, t) { return t <= 0 ? 1 : Math.exp(-Math.pow(t / p.eta, p.beta)); }
 
 
 function calcularMTBFdoAtivo(n) {
@@ -1226,6 +1361,7 @@ function navigate(page) {
   if(page === 'dash') renderDash();
   if(page === 'confiab') renderConfiab();
   if(page === 'rbd') renderRbd();
+  requestAnimationFrame(function() { autoGrowAll(targetPage); });
 }
 
 // DASHBOARD LOGIC (MERGE COM GRÁFICOS E FLUXOS COMPLETOS)
@@ -1233,7 +1369,7 @@ function renderDash() {
   var totalAtivos = S.sistemas.length;
   var totalModos = S.fmea.length;
   var criticos = S.fmea.filter(function(f) { return f.rpn >= 150; }).length;
-  var acoesAbertas = S.acoes.filter(function(a) { return a.status !== 'Concluido'; }).length;
+  var acoesAbertas = S.acoes.filter(function(a) { return !acaoConcluida(a); }).length;
   var totalSpare = S.spare.length;
   var custoSpare = 0;
   S.spare.forEach(function(sp) { custoSpare += (sp.qtd || 0) * (sp.valor || 0); });
@@ -1358,9 +1494,9 @@ function openAcaoModal(idx) {
     '<select id="a-status">' +
     '<option ' + (a.status === 'Não iniciado' ? 'selected' : '') + '>Não iniciado</option>' +
     '<option ' + (a.status === 'Em andamento' ? 'selected' : '') + '>Em andamento</option>' +
-    '<option ' + (a.status === 'Concluído' ? 'selected' : '') + '>Concluído</option>' +
+    '<option ' + (acaoConcluida(a) ? 'selected' : '') + '>Concluído</option>' +
     '</select></div>' +
-    '<div class="form-group" style="grid-column:1/-1"><label>Acao Descritiva</label><input id="a-acao" value="' + esc(a.acao || '') + '"></div>' +
+    '<div class="form-group" style="grid-column:1/-1"><label>Acao Descritiva</label><textarea id="a-acao" rows="1" class="autogrow">' + esc(a.acao || '') + '</textarea></div>' +
     '<div class="form-group"><label>Data Inicio</label><input id="a-dt" type="date" value="' + (a.dt || '') + '"></div>' +
     '<div class="form-group"><label>Prazo (Dias)</label><input id="a-dias" type="number" value="' + (a.dias || 5) + '"></div>' +
     '</div>' +
@@ -1401,7 +1537,7 @@ function delAcao(idx) {
 // ===== CÁLCULO DE ATRASOS =====
 function calcularAtrasoAcao(acao) {
     // Retorna: { status: 'concluida'|'atrasada'|'proxima'|'no_prazo', dias: number, dataLimite: Date }
-    if (acao.status === 'Concluída' || acao.status === 'concluida') {
+    if (acaoConcluida(acao)) {
         return { status: 'concluida', dias: 0, dataLimite: null };
     }
     if (!acao.dataInicio || !acao.prazo) {
@@ -1458,17 +1594,6 @@ function getAcoesProximas() {
 }
 
 // CONTEXTO OPERACIONAL
-function loadContexto() {
-  document.getElementById('ctx-linha').value = S.contexto.linha || '';
-  document.getElementById('ctx-dt').value = S.contexto.dt || '';
-  document.getElementById('ctx-processo').value = S.contexto.processo || '';
-  document.getElementById('ctx-turnos').value = S.contexto.turnos || '';
-  document.getElementById('ctx-cap').value = S.contexto.cap || '';
-  document.getElementById('ctx-limites').value = S.contexto.limites || '';
-  document.getElementById('ctx-padroes').value = S.contexto.padroes || '';
-  document.getElementById('ctx-docs').value = S.contexto.docs || '';
-  renderTeamChips();
-}
 
 function collectContexto() {
   S.contexto.linha = document.getElementById('ctx-linha').value;
@@ -1635,9 +1760,9 @@ function openNovoItemModal(codSisPreset, codSubPreset) {
     '<div class="form-grid">' +
     '<div class="form-group" style="grid-column:1/-1"><label>Subsistema (pai)</label><select id="ni-sub">' + opts + '</select></div>' +
     '<div class="form-group" style="grid-column:1/-1"><label>Nome do Ativo</label><input id="ni-item" placeholder="Ex: Motor Eletrico 75kW"></div>' +
-    '<div class="form-group" style="grid-column:1/-1"><label>Funcao Primaria</label><input id="ni-funcao" placeholder="Ex: Converter energia eletrica em mecanica"></div>' +
+    '<div class="form-group" style="grid-column:1/-1"><label>Funcao Primaria</label><textarea id="ni-funcao" rows="1" class="autogrow" placeholder="Ex: Converter energia eletrica em mecanica"></textarea></div>' +
     '</div>' +
-    '<div class="form-group" style="grid-column:1/-1"><label>Funcoes Secundarias (opcional)</label><input id="ni-funcao2" placeholder="Ex: Dissipar calor; Sinalizar status"></div>' +
+    '<div class="form-group" style="grid-column:1/-1"><label>Funcoes Secundarias (opcional)</label><textarea id="ni-funcao2" rows="1" class="autogrow" placeholder="Ex: Dissipar calor; Sinalizar status"></textarea></div>' +
     '<div class="modal-btns">' +
     '<button class="btn" onclick="closeModal(\'modal-item\')">Cancelar</button>' +
     '<button class="btn btn-primary" onclick="salvarNovoItem()">Cadastrar</button>' +
@@ -1702,61 +1827,15 @@ function carregarContextoGeral() {
   renderEquipe();
 }
 
-function addEquipe() {
-  var nome = document.getElementById('eq-nome').value.trim();
-  var funcao = document.getElementById('eq-funcao').value.trim();
-  if (!nome || !funcao) { alert('Preencha nome e funcao.'); return; }
-  if (!S.contexto) S.contexto = {};
-  if (!S.contexto.equipe) S.contexto.equipe = [];
-  S.contexto.equipe.push({ nome: nome, funcao: funcao });
-  document.getElementById('eq-nome').value = '';
-  document.getElementById('eq-funcao').value = '';
-  renderEquipe();
-  autoSave();
-}
 
-function delEquipe(idx) {
-  S.contexto.equipe.splice(idx, 1);
-  renderEquipe();
-  autoSave();
-}
 
-function renderEquipe() {
-  var tb = document.getElementById('tbody-equipe');
-  if (!tb) return;
-  if (!S.contexto || !S.contexto.equipe || !S.contexto.equipe.length) {
-    tb.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text3);padding:12px;">Nenhum membro cadastrado.</td></tr>';
-    return;
-  }
-  var html = '';
-  S.contexto.equipe.forEach(function(m, i) {
-    html += '<tr><td>' + esc(m.nome) + '</td><td>' + esc(m.funcao) + '</td><td><button class="btn btn-sm btn-danger" onclick="delEquipe(' + i + ')">X</button></td></tr>';
-  });
-  tb.innerHTML = html;
-}
 
 // ============================================================
 // CONTEXTO OPERACIONAL — Salvar/Carregar perguntas
 // ============================================================
 var CTX_KEYS = ['ctx-q1','ctx-q2','ctx-q3','ctx-q4','ctx-q5','ctx-q6','ctx-q7','ctx-q8','ctx-q9','ctx-q10','ctx-q11','ctx-q12','ctx-q13','ctx-q14'];
 
-function salvarContextoAuto() {
-  if (!S.contexto) S.contexto = {};
-  if (!S.contexto.perguntas) S.contexto.perguntas = {};
-  CTX_KEYS.forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) S.contexto.perguntas[id] = el.value;
-  });
-  autoSave();
-}
 
-function carregarContexto() {
-  if (!S.contexto || !S.contexto.perguntas) return;
-  CTX_KEYS.forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el && S.contexto.perguntas[id]) el.value = S.contexto.perguntas[id];
-  });
-}
 
 // Gera texto consolidado para o relatório
 function gerarTextoContexto() {
@@ -1790,82 +1869,18 @@ function gerarTextoContexto() {
 // ============================================================
 // EDITAR SISTEMA (por nome — versao unica)
 // ============================================================
-function editSistema(nomeSistema) {
-  var novoNome = prompt('Novo nome do sistema:', nomeSistema);
-  if (!novoNome || !novoNome.trim() || novoNome.trim() === nomeSistema) return;
-  novoNome = novoNome.trim();
-  S.sistemas.forEach(function(s) {
-    if (s.sistema === nomeSistema) s.sistema = novoNome;
-  });
-  (S._sistemas_ref || []).forEach(function(r) {
-    if (r.sistema === nomeSistema) r.sistema = novoNome;
-  });
-  (S._sub_ref || []).forEach(function(r) {
-    if (r.sistema === nomeSistema) r.sistema = novoNome;
-  });
-  renderSistemas();
-  autoSave();
-}
 
 // ============================================================
 // EDITAR SUBSISTEMA (por nome — versao unica)
 // ============================================================
-function editSubsistema(nomeSistema, nomeSub) {
-  var novoNome = prompt('Novo nome do subsistema:', nomeSub);
-  if (!novoNome || !novoNome.trim() || novoNome.trim() === nomeSub) return;
-  novoNome = novoNome.trim();
-  S.sistemas.forEach(function(s) {
-    if (s.sistema === nomeSistema && s.sub === nomeSub) s.sub = novoNome;
-  });
-  (S._sub_ref || []).forEach(function(r) {
-    if (r.sistema === nomeSistema && r.sub === nomeSub) r.sub = novoNome;
-  });
-  renderSistemas();
-  autoSave();
-}
 
 // ============================================================
 // APAGAR SISTEMA (versao unica — so aqui recalcula)
 // ============================================================
-function delSistema(nomeSistema) {
-  var itens = S.sistemas.filter(function(s) { return s.sistema === nomeSistema; });
-  if (!confirm('Apagar sistema "' + nomeSistema + '" e todos os ' + itens.length + ' ativo(s)? Remove do FMEA, DD, Historico e Spare.')) return;
-
-  var nomesAtivos = itens.map(function(s) { return s.item; });
-  S.fmea = S.fmea.filter(function(f) { return nomesAtivos.indexOf(f.item) === -1; });
-  S.dd_results = S.dd_results.filter(function(d) { return nomesAtivos.indexOf(d.item) === -1; });
-  S.historico = S.historico.filter(function(h) { return nomesAtivos.indexOf(h.item) === -1; });
-  S.spare = S.spare.filter(function(sp) { return nomesAtivos.indexOf(sp.item) === -1; });
-
-  S.sistemas = S.sistemas.filter(function(s) { return s.sistema !== nomeSistema; });
-  S._sistemas_ref = (S._sistemas_ref || []).filter(function(r) { return r.sistema !== nomeSistema; });
-  S._sub_ref = (S._sub_ref || []).filter(function(r) { return r.sistema !== nomeSistema; });
-
-  recalcularCodigos();
-  renderSistemas();
-  autoSave();
-}
 
 // ============================================================
 // APAGAR SUBSISTEMA (NAO recalcula sistemas)
 // ============================================================
-function delSubsistema(nomeSistema, nomeSub) {
-  var itens = S.sistemas.filter(function(s) { return s.sistema === nomeSistema && s.sub === nomeSub; });
-  if (!itens.length) return;
-  if (!confirm('Apagar subsistema "' + nomeSub + '" e todos os ' + itens.length + ' ativo(s)?')) return;
-
-  var nomesAtivos = itens.map(function(s) { return s.item; });
-  S.fmea = S.fmea.filter(function(f) { return nomesAtivos.indexOf(f.item) === -1; });
-  S.dd_results = S.dd_results.filter(function(d) { return nomesAtivos.indexOf(d.item) === -1; });
-  S.historico = S.historico.filter(function(h) { return nomesAtivos.indexOf(h.item) === -1; });
-  S.spare = S.spare.filter(function(sp) { return nomesAtivos.indexOf(sp.item) === -1; });
-
-  S.sistemas = S.sistemas.filter(function(s) { return !(s.sistema === nomeSistema && s.sub === nomeSub); });
-  S._sub_ref = (S._sub_ref || []).filter(function(r) { return !(r.sistema === nomeSistema && r.sub === nomeSub); });
-
-  renderSistemas();
-  autoSave();
-}
 
 // ============================================================
 // APAGAR ATIVO INDIVIDUAL (NAO recalcula)
@@ -1874,12 +1889,15 @@ function delAtivo(idx) {
   var ativo = S.sistemas[idx];
   if (!confirm('Apagar ativo "' + ativo.item + '"?')) return;
 
-  S.fmea = S.fmea.filter(function(f) { return f.item !== ativo.item; });
-  S.dd_results = S.dd_results.filter(function(d) { return d.item !== ativo.item; });
-  S.historico = S.historico.filter(function(h) { return h.item !== ativo.item; });
-  S.spare = S.spare.filter(function(sp) { return sp.item !== ativo.item; });
-
   S.sistemas.splice(idx, 1);
+  var aindaExiste = S.sistemas.some(function(s) { return s.item === ativo.item; });
+  if (!aindaExiste) {
+    S.fmea = S.fmea.filter(function(f) { return f.item !== ativo.item; });
+    S.dd_results = S.dd_results.filter(function(d) { return d.item !== ativo.item; });
+    S.historico = S.historico.filter(function(h) { return h.item !== ativo.item; });
+    S.spare = S.spare.filter(function(sp) { return sp.item !== ativo.item; });
+  }
+  rbdRemoverAtivos([ativo.item]);
   renderSistemas();
   autoSave();
 }
@@ -1970,69 +1988,8 @@ function executarMoverAtivo(idx) {
 // ============================================================
 // EDITAR / EXCLUIR ITEM
 // ============================================================
-function openEditItemModal(idx) {
-  var s = S.sistemas[idx];
-  var allSubs = getAllSubsistemas();
-  var opts = '';
-  allSubs.forEach(function(sub) {
-    opts += '<option value="' + sub.codSub + '"' + (sub.codSub === s.codSub ? ' selected' : '') + '>' + sub.codSub + ' - ' + esc(sub.sub) + '</option>';
-  });
-  var html = '<div class="modal-title">Editar Ativo</div>' +
-    '<div class="form-grid">' +
-    '<div class="form-group" style="grid-column:1/-1"><label>Subsistema</label><select id="ei-sub">' + opts + '</select></div>' +
-    '<div class="form-group" style="grid-column:1/-1"><label>Ativo</label><input id="ei-item" value="' + esc(s.item) + '"></div>' +
-    '<div class="form-group" style="grid-column:1/-1"><label>Funcao</label><input id="ei-funcao" value="' + esc(s.funcao) + '"></div>' +
-    '</div>' +
-    '<div class="form-group" style="grid-column:1/-1"><label>Funcoes Secundarias</label><input id="ei-funcao2" value="' + esc(s.funcao2 || '') + '"></div>' +
-    '<div class="modal-btns">' +
-    '<button class="btn" onclick="closeModal(\'modal-item\')">Cancelar</button>' +
-    '<button class="btn btn-primary" onclick="updateItem(' + idx + ')">Salvar</button>' +
-    '</div>';
-  document.getElementById('modal-item-content').innerHTML = html;
-  document.getElementById('modal-item').classList.add('open');
-}
 
-function updateItem(idx) {
-  var codSub = document.getElementById('ei-sub').value;
-  var item = document.getElementById('ei-item').value.trim();
-  var funcao = document.getElementById('ei-funcao').value.trim();
-  if (!item || !funcao) { alert('Preencha todos os campos.'); return; }
-  var subRef = getAllSubsistemas().find(function(s) { return s.codSub === codSub; });
-  if (!subRef) return;
-  S.sistemas[idx].codSis = subRef.codSis;
-  S.sistemas[idx].codSub = subRef.codSub;
-  S.sistemas[idx].sistema = subRef.sistema;
-  S.sistemas[idx].sub = subRef.sub;
-  S.sistemas[idx].item = item;
-  S.sistemas[idx].funcao = funcao;
-  S.sistemas[idx].funcao2 = document.getElementById('ei-funcao2').value.trim();
-  closeModal('modal-item');
-  renderSistemas();
-  autoSave();
-}
 
-function delSistema(nomeSistema) {
-  var itens = S.sistemas.filter(function(s) { return s.sistema === nomeSistema; });
-  if (!confirm('Apagar sistema "' + nomeSistema + '" e todos os ' + itens.length + ' ativo(s)? Remove do FMEA, DD, Historico e Spare.')) return;
-
-  // Remove ativos relacionados de todos os módulos
-  var nomesAtivos = itens.map(function(s) { return s.item; });
-  S.fmea = S.fmea.filter(function(f) { return nomesAtivos.indexOf(f.item) === -1; });
-  S.dd_results = S.dd_results.filter(function(d) { return nomesAtivos.indexOf(d.item) === -1; });
-  S.historico = S.historico.filter(function(h) { return nomesAtivos.indexOf(h.item) === -1; });
-  S.spare = S.spare.filter(function(sp) { return nomesAtivos.indexOf(sp.item) === -1; });
-
-  // Remove do array principal
-  S.sistemas = S.sistemas.filter(function(s) { return s.sistema !== nomeSistema; });
-
-  // Remove dos refs (sistema fantasma)
-  S._sistemas_ref = (S._sistemas_ref || []).filter(function(r) { return r.sistema !== nomeSistema; });
-  S._sub_ref = (S._sub_ref || []).filter(function(r) { return r.sistema !== nomeSistema; });
-
-  recalcularCodigos();
-  renderSistemas();
-  autoSave();
-}
 // ============================================================
 // CONTEXTO OPERACIONAL — Salvar/Carregar 14 perguntas
 // ============================================================
@@ -2091,7 +2048,10 @@ function renderSistemas() {
 function delSistema(nomeSistema) {
   if (!confirm('Apagar sistema "' + nomeSistema + '" e todos seus subsistemas e ativos?')) return;
   // Remove todos os ativos desse sistema
+  var itensSis = S.sistemas.filter(function(s) { return s.sistema === nomeSistema; }).map(function(s) { return s.item; });
   S.sistemas = S.sistemas.filter(function(s) { return s.sistema !== nomeSistema; });
+  var restantes = {}; S.sistemas.forEach(function(s) { restantes[s.item] = true; });
+  var semAtivo = function(x) { return itensSis.indexOf(x.item) >= 0 && !restantes[x.item]; };
   // Remove FMEA, DD, Histórico e Spare vinculados
   S.fmea = S.fmea.filter(function(f) { return f.sistema !== nomeSistema; });
   S.dd_results = S.dd_results.filter(function(d) {
@@ -2101,18 +2061,26 @@ function delSistema(nomeSistema) {
   S.dd_results = S.dd_results.filter(function(r) {
     return S.fmea.some(function(f) { return f.id === r.fmea_id; });
   });
-  S.historico = S.historico.filter(function(h) { return h.sistema !== nomeSistema; });
-  S.spare = S.spare.filter(function(sp) { return sp.sistema !== nomeSistema; });
+  S.fmea = S.fmea.filter(function(f) { return !semAtivo(f); });
+  S.dd_results = S.dd_results.filter(function(r) { return S.fmea.some(function(f) { return f.id === r.fmea_id; }); });
+  S.historico = S.historico.filter(function(h) { return h.sistema !== nomeSistema && !semAtivo(h); });
+  S.spare = S.spare.filter(function(sp) { return sp.sistema !== nomeSistema && !semAtivo(sp); });
+  rbdRemoverAtivos(itensSis);
   renderSistemas();
   autoSave();
 }
 
-function delSubsistema(nomeSub) {
+// Chamada pela árvore como (sistema, subsistema). Aceita (subsistema) por compatibilidade.
+function delSubsistema(nomeSis, nomeSub) {
+  if (nomeSub === undefined) { nomeSub = nomeSis; nomeSis = null; }
+  function doSub(s) { return s.sub === nomeSub && (nomeSis === null || s.sistema === nomeSis); }
   if (!confirm('Apagar subsistema "' + nomeSub + '" e todos seus ativos?')) return;
   // Remove ativos desse subsistema
-  var itensRemovidos = S.sistemas.filter(function(s) { return s.sub === nomeSub; }).map(function(s) { return s.item; });
-  S.sistemas = S.sistemas.filter(function(s) { return s.sub !== nomeSub; });
-  // Limpa referências
+  var itensRemovidos = S.sistemas.filter(doSub).map(function(s) { return s.item; });
+  S.sistemas = S.sistemas.filter(function(s) { return !doSub(s); });
+  // Limpa referências (só de ativos que não existem mais em outro subsistema)
+  itensRemovidos = itensRemovidos.filter(function(item) { return !S.sistemas.some(function(s) { return s.item === item; }); });
+  rbdRemoverAtivos(itensRemovidos);
   itensRemovidos.forEach(function(item) {
     S.fmea = S.fmea.filter(function(f) { return f.item !== item; });
     S.historico = S.historico.filter(function(h) { return h.item !== item; });
@@ -2141,18 +2109,21 @@ function editSistema(nomeAntigo) {
   autoSave();
 }
 
-function editSubsistema(nomeAntigo) {
+// Chamada pela árvore como (sistema, subsistema). Aceita (subsistema) por compatibilidade.
+function editSubsistema(nomeSis, nomeAntigo) {
+  if (nomeAntigo === undefined) { nomeAntigo = nomeSis; nomeSis = null; }
+  function doSub(x) { return x.sub === nomeAntigo && (nomeSis === null || !x.sistema || x.sistema === nomeSis); }
   var novoNome = prompt('Novo nome para o subsistema:', nomeAntigo);
   if (!novoNome || novoNome.trim() === '' || novoNome === nomeAntigo) return;
   novoNome = novoNome.trim();
   // Atualiza em todos os ativos
   S.sistemas.forEach(function(s) {
-    if (s.sub === nomeAntigo) s.sub = novoNome;
+    if (doSub(s)) s.sub = novoNome;
   });
   // Atualiza referências
-  S.fmea.forEach(function(f) { if (f.sub === nomeAntigo) f.sub = novoNome; });
-  S.historico.forEach(function(h) { if (h.sub === nomeAntigo) h.sub = novoNome; });
-  S.spare.forEach(function(sp) { if (sp.sub === nomeAntigo) sp.sub = novoNome; });
+  S.fmea.forEach(function(f) { if (doSub(f)) f.sub = novoNome; });
+  S.historico.forEach(function(h) { if (doSub(h)) h.sub = novoNome; });
+  S.spare.forEach(function(sp) { if (doSub(sp)) sp.sub = novoNome; });
   renderSistemas();
   autoSave();
 }
@@ -2226,7 +2197,7 @@ function renderTreeView() {
   var html = '';
   Object.keys(tree).forEach(function(nomeSis) {
     var sys = tree[nomeSis];
-    var sisEsc = esc(nomeSis).replace(/'/g, "\\'");
+    var sisEsc = jsAttr(nomeSis);
     html += '<div class="tree-branch">';
     html += '<div class="tree-header" style="display:flex;align-items:center;justify-content:space-between;">';
     html += '<span>🔹 <code>' + esc(sys.codSis) + '</code> ' + esc(nomeSis) + '</span>';
@@ -2240,7 +2211,7 @@ function renderTreeView() {
     if (subKeys.length) {
       subKeys.forEach(function(nomeSub) {
         var sub = sys.subs[nomeSub];
-        var subEsc = esc(nomeSub).replace(/'/g, "\\'");
+        var subEsc = jsAttr(nomeSub);
         html += '<div class="tree-sub-card">';
         html += '<div class="tree-sub-title" style="display:flex;align-items:center;justify-content:space-between;">';
         html += '<span>🔸 <code>' + esc(sub.codSub) + '</code> ' + esc(nomeSub) + '</span>';
@@ -2271,7 +2242,7 @@ function openEditItemModal(idx) {
     '<div class="form-group"><label>Sistema</label><input id="ed-sis" value="' + esc(s.sistema) + '"></div>' +
     '<div class="form-group"><label>Subsistema</label><input id="ed-sub" value="' + esc(s.sub) + '"></div>' +
     '<div class="form-group"><label>Ativo</label><input id="ed-item" value="' + esc(s.item) + '"></div>' +
-    '<div class="form-group"><label>Funcao</label><input id="ed-funcao" value="' + esc(s.funcao) + '"></div>' +
+    '<div class="form-group"><label>Funcao</label><textarea id="ed-funcao" rows="1" class="autogrow">' + esc(s.funcao) + '</textarea></div>' +
     '</div>' +
     '<div class="modal-btns">' +
     '<button class="btn" onclick="closeModal(\'modal-item\')">Cancelar</button>' +
@@ -2296,6 +2267,7 @@ function saveEditItem(idx) {
     S.dd_results.forEach(function(d) { if (d.item === oldItem) d.item = newItem; });
     S.historico.forEach(function(h) { if (h.item === oldItem) h.item = newItem; });
     S.spare.forEach(function(sp) { if (sp.item === oldItem) sp.item = newItem; });
+    rbdRenomearAtivo(oldItem, newItem);
   }
 
   S.sistemas[idx].sistema = newSis;
@@ -2389,13 +2361,13 @@ function openFmeaModal(idx) {
     '<div class="form-group"><label>Ativo</label>' +
     '<select id="f-item" onchange="fmeaOnItemChange()">' + optsItem + '</select></div>' +
     '<div class="form-group"><label>Funcao (auto)</label>' +
-    '<input id="f-funcao" value="' + esc(f.funcao || '') + '" readonly style="opacity:0.7;"></div>' +
+    '<textarea id="f-funcao" rows="1" class="autogrow" readonly style="opacity:0.7;">' + esc(f.funcao || '') + '</textarea></div>' +
     '<div class="form-group" style="grid-column:1/-1"><label>Falha Funcional</label>' +
-    '<input id="f-falha" value="' + esc(f.falha || '') + '"></div>' +
+    '<textarea id="f-falha" rows="1" class="autogrow">' + esc(f.falha || '') + '</textarea></div>' +
     '<div class="form-group" style="grid-column:1/-1"><label>Modo de Falha</label>' +
-    '<input id="f-modo" value="' + esc(f.modo || '') + '"></div>' +
+    '<textarea id="f-modo" rows="1" class="autogrow">' + esc(f.modo || '') + '</textarea></div>' +
     '<div class="form-group" style="grid-column:1/-1"><label>Efeito</label>' +
-    '<input id="f-efeito" value="' + esc(f.efeito || '') + '"></div>' +
+    '<textarea id="f-efeito" rows="1" class="autogrow">' + esc(f.efeito || '') + '</textarea></div>' +
     '<div class="form-group"><label>Severidade (S)</label>' +
     '<input id="f-s" type="number" min="1" max="10" value="' + (f.s || 5) + '" oninput="calcRPN()"></div>' +
     '<div class="form-group"><label>Ocorrencia (O)</label>' +
@@ -3067,6 +3039,27 @@ function rbdTree() {
   return root;
 }
 
+// Mantém o RBD coerente quando ativos são renomeados ou excluídos na estrutura
+function rbdRenomearAtivo(antigo, novo) {
+  if (!antigo || antigo === novo) return;
+  rbdLeaves(rbdTree()).forEach(function(L) { if (L.ref === antigo) L.ref = novo; });
+}
+function rbdRemoverAtivos(nomes) {
+  var existe = {};
+  (S.sistemas || []).forEach(function(s) { if (s && s.item) existe[s.item] = true; });
+  var fora = (nomes || []).filter(function(n) { return n && !existe[n]; });
+  if (!fora.length) return;
+  (function poda(n) {
+    if (n.t === 'item') return;
+    n.c = n.c.filter(function(ch) { return !(ch.t === 'item' && fora.indexOf(ch.ref) >= 0); });
+    n.c.forEach(poda);
+  })(rbdTree());
+  var res = rbdNormalize(S.rbd_tree);
+  S.rbd_tree = rbdTreeOk = !res ? { id: uid(), t: 'serie', c: [] } : res.t === 'serie' ? res : { id: uid(), t: 'serie', c: [res] };
+  if (rbdSel && !rbdFind(rbdSel)) rbdSel = null;
+  if (rbdSel2 && !rbdFind(rbdSel2)) rbdSel2 = null;
+}
+
 function rbdLeaves(n, out) {
   out = out || [];
   if (n.t === 'item') out.push(n); else n.c.forEach(function(ch) { rbdLeaves(ch, out); });
@@ -3115,23 +3108,11 @@ function rbdCommit() {
 }
 
 // ---------- Dados de cada bloco ----------
-function rbdAtivoStats(name) {
-  var hs = (S.historico || []).filter(function(h) { return h && h.item === name; });
-  var n = hs.filter(function(h) { return !isNaN(new Date(h.dt).getTime()); }).length;
-  var ttrs = hs.map(function(h) { return +h.ttr; }).filter(function(v) { return v > 0; });
-  var mttr = ttrs.length ? ttrs.reduce(function(a, b) { return a + b; }, 0) / ttrs.length : 0;
-  return { n: n, mtbf: calcularMTBFreal(name), mttr: mttr };
-}
-
 function rbdParamsMap() {
   var pm = {}, cache = {};
   rbdLeaves(rbdTree()).forEach(function(L) {
-    var st = cache[L.ref] || (cache[L.ref] = rbdAtivoStats(L.ref));
-    var src, mtbf;
-    if (L.mtbf > 0) { src = 'manual'; mtbf = +L.mtbf; }
-    else if (st.mtbf > 0) { src = 'historico'; mtbf = st.mtbf; }
-    else { src = 'padrao'; mtbf = getCfg().mtbfPadrao; }
-    pm[L.id] = { mtbf: mtbf, mttr: st.mttr, n: st.n, src: src, A: mtbf / (mtbf + st.mttr) };
+    var key = L.ref + '|' + (L.mtbf || '');
+    pm[L.id] = cache[key] || (cache[key] = paramsAtivo(L.ref, L.mtbf));
   });
   return pm;
 }
@@ -3158,7 +3139,7 @@ function rbdEval(n, f) {
   return rbdKdeN(ps, n.k || 1);
 }
 
-function rbdRfn(t, pm) { return function(n) { return Math.exp(-t / pm[n.id].mtbf); }; }
+function rbdRfn(t, pm) { return function(n) { return weibR(pm[n.id], t); }; }
 function rbdR(t, pm, node) { pm = pm || rbdParamsMap(); return rbdEval(node || rbdTree(), rbdRfn(t, pm)); }
 function rbdA(pm, node) { pm = pm || rbdParamsMap(); return rbdEval(node || rbdTree(), function(n) { return pm[n.id].A; }); }
 
@@ -3441,7 +3422,7 @@ function rbdDraw(n, x, y, o, ctx, isRoot) {
 }
 
 function rbdDrawItem(n, x, y, o, ctx) {
-  var p = ctx.pm[n.id], r = Math.exp(-ctx.t / p.mtbf), sel = !!ctx.sel[n.id];
+  var p = ctx.pm[n.id], r = weibR(p, ctx.t), sel = !!ctx.sel[n.id];
   var tag = p.src === 'manual' ? ' ✎' : p.src === 'padrao' ? ' ⚠' : '';
   var dup = ctx.dup[n.ref] > 1;
   o.push('<g class="rbd-node" onclick="rbdClick(event,\'' + n.id + '\')">');
@@ -3449,7 +3430,7 @@ function rbdDrawItem(n, x, y, o, ctx) {
     (sel ? ' sel' : '') + (p.src === 'padrao' ? ' nodata' : '') + '" style="stroke:' + (sel ? 'var(--accent)' : rbdCor(r)) + '"/>');
   o.push('<rect x="' + x + '" y="' + y + '" width="5" height="' + RB.bh + '" rx="2" style="fill:' + rbdCor(r) + '"/>');
   o.push('<text x="' + (x + 13) + '" y="' + (y + 20) + '" class="rbd-t-name">' + esc(rbdCorte(n.ref, 20)) + '</text>');
-  o.push('<text x="' + (x + 13) + '" y="' + (y + 38) + '" class="rbd-t-sub">MTBF ' + rbdNum(p.mtbf) + ' h' + tag + '</text>');
+  o.push('<text x="' + (x + 13) + '" y="' + (y + 38) + '" class="rbd-t-sub">MTBF ' + rbdNum(p.mtbf) + ' h' + (p.tipo === 'weibull' ? ' · β ' + rbdNum(p.beta, 1) : '') + tag + '</text>');
   o.push('<text x="' + (x + 13) + '" y="' + (y + 55) + '" class="rbd-t-r" style="fill:' + rbdCor(r) + '">R(' + ctx.t + 'h) = ' + rbdPct(r) + '</text>');
   o.push('<text x="' + (x + 13) + '" y="' + (y + 72) + '" class="rbd-t-sub">A = ' + rbdPct(p.A, 2) + (dup ? '  · repetido' : '') + '</text>');
   var src = p.src === 'historico' ? 'MTBF do histórico (' + p.n + ' falhas)' :
@@ -3551,7 +3532,7 @@ function renderRbdInspector(ctx) {
   }
   var n = f.node, t = ctx.t, pm = ctx.pm, h = '';
   if (n.t === 'item') {
-    var p = pm[n.id], r = Math.exp(-t / p.mtbf);
+    var p = pm[n.id], r = weibR(p, t);
     var bi = rbdBirnbaum(t, pm).filter(function(b) { return b.node === n; })[0];
     var fonte = p.src === 'historico' ? 'Histórico (' + p.n + ' falhas)' : p.src === 'manual' ? 'Informado manualmente' :
       '<span style="color:var(--amber)">Padrão — histórico insuficiente (' + p.n + ' falha' + (p.n === 1 ? '' : 's') + ')</span>';
@@ -3559,14 +3540,17 @@ function renderRbdInspector(ctx) {
     h += '<table class="rbd-insp-tb">' +
       '<tr><td>Fonte do MTBF</td><td>' + fonte + '</td></tr>' +
       '<tr><td>MTBF</td><td>' + rbdNum(p.mtbf) + ' h</td></tr>' +
-      '<tr><td>λ</td><td>' + (1 / p.mtbf).toExponential(3) + ' /h</td></tr>' +
+      '<tr><td>Modelo</td><td>' + (p.tipo === 'weibull' ? 'Weibull β ' + rbdNum(p.beta, 2) + ' · η ' + rbdNum(p.eta) + ' h' : 'Exponencial (β = 1)') + '</td></tr>' +
       '<tr><td>MTTR</td><td>' + (p.mttr ? rbdNum(p.mttr, 1) + ' h' : '— (sem registro)') + '</td></tr>' +
       '<tr><td>R(' + t + 'h)</td><td style="color:' + rbdCor(r) + ';font-weight:600">' + rbdPct(r, 2) + '</td></tr>' +
       '<tr><td>Disponibilidade</td><td>' + rbdPct(p.A, 2) + '</td></tr>' +
       '<tr><td>Importância (Birnbaum)</td><td>' + bi.ib.toFixed(4) + '</td></tr>' +
       '<tr><td>Ganho se nunca falhasse</td><td>+' + (bi.ganho * 100).toFixed(2).replace('.', ',') + ' p.p.</td></tr>' +
       '</table>';
-    h += '<div class="rbd-formula">R(t) = e<sup>−t/MTBF</sup> = e<sup>−' + t + '/' + Math.round(p.mtbf) + '</sup> = ' + r.toFixed(4) + '</div>';
+    h += '<div class="rbd-formula">' + (p.tipo === 'weibull'
+      ? 'R(t) = e<sup>−(t/η)^β</sup> = e<sup>−(' + t + '/' + Math.round(p.eta) + ')^' + p.beta.toFixed(2) + '</sup> = ' + r.toFixed(4)
+      : 'R(t) = e<sup>−t/MTBF</sup> = e<sup>−' + t + '/' + Math.round(p.mtbf) + '</sup> = ' + r.toFixed(4)) + '</div>' +
+      '<div class="rbd-insp-txt" style="margin-top:8px">' + regimeTexto(p).txt + '</div>';
     h += '<div class="rbd-insp-sub">MTBF manual (deixe vazio para usar o histórico)</div>' +
       '<div style="display:flex;gap:6px"><input id="rbd-mtbf-manual" type="number" min="0" step="1" value="' + (n.mtbf || '') + '" placeholder="automático" style="flex:1">' +
       '<button class="btn btn-sm" onclick="rbdSetMtbf(\'' + n.id + '\')">Aplicar</button></div>';
@@ -3657,360 +3641,352 @@ function toggleCalculos() {
   if (b) b.style.display = b.style.display === 'none' ? 'block' : 'none';
 }
 
-// Calcula ganho simulado com base nas diretrizes do DD
+// ============================================================
+// CONFIABILIDADE — Atual (Weibull/RBD) vs Simulado (diretrizes do FMEA/DD)
+// ------------------------------------------------------------
+// O simulado é coerente com o modelo:
+//  - Tarefa por TEMPO (substituição/revisão programada): substituição por
+//    idade no intervalo ótimo T*. Só tem efeito se beta > 1 (desgaste);
+//    com beta <= 1 a falha não depende da idade e a preventiva não reduz falhas.
+//  - Tarefa por CONDIÇÃO (CBM/preditiva): uma fração q das falhas é detectada
+//    antes de virar quebra (hipótese do usuário, depende do intervalo P-F).
+//  - Redesenho: aumento de eta informado pelo usuário (hipótese).
+//  - Busca de falha / corretiva / RTF: não alteram R do ativo.
+// R simulado = probabilidade de não ocorrer quebra NÃO planejada.
+// ============================================================
+var ESTRAT_TEMPO = ['TBM - Por Tempo', 'Revisao / Inspecao', 'Combinacao'];
+var ESTRAT_DETEC = ['CBM - Sob Condicao', 'Preditiva', 'Combinacao'];
+var ESTRAT_REDES = ['Redesenho / Modificacao'];
 
-function calcGanhoDD(itemName) {
-  var ganhos = {
-    'CBM - Sob Condicao':        25,
-    'Revisao / Inspecao':        15,
-    'TBM - Por Tempo':           20,
-    'Corretiva':                  0,
-    'Preditiva':                 30,
-    'Busca de Falha (FF)':       10,
-    'Combinacao':                25,
-    'Quebra Otimizada (RTF)':     0,
-    'Redesenho / Modificacao':   40,
-    'Sem diretriz aplicável':     0
-  };
-
-  var todoGanhos = [];
-
-  // Lê diretrizes do FMEA (f.tarefa agora é array)
-  S.fmea.forEach(function(f) {
-    if (itemName !== 'GLOBAL' && f.item !== itemName) return;
-
-    var tarefas = [];
-    if (Array.isArray(f.tarefa)) {
-      tarefas = f.tarefa;
-    } else if (f.tarefa && f.tarefa !== '') {
-      tarefas = [f.tarefa]; // compatibilidade com sessões antigas
-    }
-
-    tarefas.forEach(function(t) {
-      var g = ganhos[t] || 0;
-      if (g > 0) todoGanhos.push(g);
-    });
-  });
-
-  // Também considera DD results para compatibilidade
-  S.dd_results.forEach(function(r) {
-    if (itemName !== 'GLOBAL' && r.item !== itemName) return;
-    var g = ganhos[r.tipo] || 0;
-    if (g > 0) todoGanhos.push(g);
-  });
-
-  if (!todoGanhos.length) return 0;
-
-  // Ganho combinado com diminishing returns
-  // Fórmula: G = 1 - (1-G1)(1-G2)...(1-Gn)
-  var fatorRestante = 1;
-  todoGanhos.forEach(function(g) {
-    fatorRestante *= (1 - g / 100);
-  });
-  var ganhoTotal = (1 - fatorRestante) * 100;
-
-  // Cap em 70% (nenhuma combinação elimina 100% das falhas)
-  return Math.min(ganhoTotal, 70);
+function getSimCfg() {
+  var c = getCfg();
+  if (!c.sim || typeof c.sim !== 'object') c.sim = {};
+  if (!(c.sim.cpPct > 0)) c.sim.cpPct = 20;
+  if (!(c.sim.efDetec >= 0 && c.sim.efDetec <= 95)) c.sim.efDetec = 60;
+  if (!(c.sim.ganhoRedes >= 0)) c.sim.ganhoRedes = 30;
+  return c.sim;
 }
 
+function estrategiasAtivo(nome) {
+  var lista = [];
+  (S.fmea || []).forEach(function(f) {
+    if (!f || f.item !== nome) return;
+    (Array.isArray(f.tarefa) ? f.tarefa : (f.tarefa ? [f.tarefa] : [])).forEach(function(t) { if (lista.indexOf(t) < 0) lista.push(t); });
+  });
+  (S.dd_results || []).forEach(function(r) {
+    if (r && r.item === nome && r.tipo && lista.indexOf(r.tipo) < 0) lista.push(r.tipo);
+  });
+  function tem(arr) { return lista.some(function(t) { return arr.indexOf(t) >= 0; }); }
+  return { lista: lista, tempo: tem(ESTRAT_TEMPO), detec: tem(ESTRAT_DETEC), redes: tem(ESTRAT_REDES) };
+}
 
-
-// Calcula custo acumulado ao longo do tempo para um ativo ou global
-function calcCustoAcumulado(itemName, tmax, steps) {
-  var falhas = S.historico.filter(function(h) {
-    if (itemName === 'GLOBAL') return true;
-    return h.item === itemName;
-  }).sort(function(a, b) { return new Date(a.dt) - new Date(b.dt); });
-
-  if (!falhas.length) return [];
-
-  var custoTotal = 0;
-  falhas.forEach(function(f) { custoTotal += (f.custo || 0); });
-  var custoMedio = custoTotal / falhas.length;
-
-  // Projeta custo acumulado crescente baseado na media
-  var data = [];
-  for (var i = 0; i <= steps; i++) {
-    var t = Math.round((tmax / steps) * i);
-    // Custo acumulado = lambda * t * custoMedio (falhas esperadas * custo medio)
-    var mtbf = 0;
-    if (itemName === 'GLOBAL' && rbdTemDiagrama() && S.historico.length) {
-      var rSys = calcularRBD(t) / 100;
-      if (rSys > 0 && rSys < 1) {
-        var lambdaSys = -Math.log(rSys) / (t || 1);
-        mtbf = 1 / lambdaSys;
-      }
-    }
-    if (mtbf <= 0) mtbf = calcularMTBFreal(itemName === 'GLOBAL' ? '' : itemName);
-    if (mtbf <= 0) mtbf = 720;
-
-    var falhasEsperadas = t / mtbf;
-    data.push(+(falhasEsperadas * custoMedio).toFixed(2));
+// Substituição por idade: minimiza custo por hora C(T) = (Cp R(T) + Cf F(T)) / ∫0^T R
+// (Cf = 1, Cp = razão). Retorna null se não houver ótimo melhor que rodar até falhar.
+function idadeOtima(beta, eta, cpRatio) {
+  if (beta <= 1.05) return null;
+  var N = 3000, Tmax = 3 * eta, h = Tmax / N, integ = 0, prevR = 1, best = null;
+  var taxaRTF = 1 / (eta * gammaFn(1 + 1 / beta));
+  for (var i = 1; i <= N; i++) {
+    var T = i * h, R = Math.exp(-Math.pow(T / eta, beta));
+    integ += (prevR + R) / 2 * h; prevR = R;
+    var c = (cpRatio * R + (1 - R)) / integ;
+    if (!best || c < best.taxa) best = { T: T, taxa: c };
   }
-  return data;
+  if (!best || best.taxa >= taxaRTF * 0.995 || best.T >= Tmax * 0.98) return null;
+  best.taxaRTF = taxaRTF;
+  return best;
+}
+
+function regimeTexto(p) {
+  if (p.src !== 'historico') return { cls: 'nd', txt: p.src === 'manual' ? 'MTBF manual: assume falha aleatória (β = 1).' : 'Sem histórico suficiente: usando MTBF padrão (β = 1).' };
+  if (p.tipo !== 'weibull') return { cls: 'nd', txt: 'Poucos intervalos (' + p.nInt + ' < ' + MODELO_MIN_INTERVALOS + ') para estimar β: assumindo falha aleatória (β = 1).' };
+  var ic = ' (IC 90% ' + rbdNum(p.betaLo, 2) + '–' + rbdNum(p.betaHi, 2) + ')';
+  if (p.betaHi < 1) return { cls: 'inf', txt: 'Mortalidade infantil: β = ' + rbdNum(p.beta, 2) + ic + '. Falhas concentradas logo após intervenções; preventiva por tempo tende a piorar. Investigar montagem, qualidade do reparo, partida.' };
+  if (p.betaLo > 1) return { cls: 'des', txt: 'Desgaste: β = ' + rbdNum(p.beta, 2) + ic + '. O risco cresce com a idade; substituição/revisão por tempo se justifica.' };
+  if (p.beta >= 0.9 && p.beta <= 1.1) return { cls: 'ale', txt: 'Falha aleatória: β = ' + rbdNum(p.beta, 2) + ic + '. A idade não muda o risco; preventiva por tempo não reduz falhas. Preferir monitoramento de condição, ou rodar até falhar se o impacto for baixo.' };
+  return { cls: 'inc', txt: 'Inconclusivo: β = ' + rbdNum(p.beta, 2) + ic + '. Com ' + p.nInt + ' intervalos não dá para afirmar ' + (p.beta > 1 ? 'desgaste' : 'mortalidade infantil') +
+    ' (com poucos dados o β estimado tende a sair alto). Para decidir preventiva por tempo, tratado como aleatório até haver mais falhas registradas.' };
+}
+
+// Cenário simulado de um ativo
+function simAtivo(p, est, cfgSim, custoRef) {
+  var eta = p.eta * (est.redes ? 1 + cfgSim.ganhoRedes / 100 : 1), beta = p.beta;
+  var desgaste = p.tipo === 'weibull' && p.betaLo > 1; // só com desgaste confirmado
+  var io = est.tempo && desgaste ? idadeOtima(beta, eta, cfgSim.cpPct / 100) : null;
+  var T = io ? io.T : 0;
+  var q = est.detec ? cfgSim.efDetec / 100 : 0;
+  var e = 1 - q;
+  function Rb(t) { return t <= 0 ? 1 : Math.exp(-Math.pow(t / eta, beta)); }
+  function R(t) {
+    var r;
+    if (T > 0) { var k = Math.floor(t / T); r = Math.pow(Rb(T), k) * Rb(t - k * T); } else r = Rb(t);
+    return Math.pow(r, e);
+  }
+  // MTBF entre quebras não planejadas = ∫0^∞ R
+  var mtbf;
+  if (T > 0) {
+    var I = 0, n = 400, h = T / n, pr = 1;
+    for (var i = 1; i <= n; i++) { var rr = Math.pow(Rb(i * h), e); I += (pr + rr) / 2 * h; pr = rr; }
+    mtbf = I / (1 - Math.pow(Rb(T), e));
+  } else {
+    mtbf = eta * Math.pow(e, -1 / beta) * gammaFn(1 + 1 / beta);
+  }
+  // Custo por hora (R$/h). Cf = custo médio da falha do ativo; Cp = % de Cf.
+  var Cf = p.custo || custoRef || 0, Cp = Cf * cfgSim.cpPct / 100;
+  var custoFalha = q * Cp + (1 - q) * Cf; // falha detectada vira intervenção planejada
+  var custoAtual = Cf / p.mtbf, custoSim;
+  if (T > 0) {
+    var E = 0, m2 = 400, h2 = T / m2, p2 = 1;
+    for (var j = 1; j <= m2; j++) { var r2 = Rb(j * h2); E += (p2 + r2) / 2 * h2; p2 = r2; }
+    custoSim = (Cp * Rb(T) + (1 - Rb(T)) * custoFalha) / E;
+  } else {
+    custoSim = custoFalha / (eta * gammaFn(1 + 1 / beta));
+  }
+  return { R: R, mtbf: mtbf, T: T, io: io, q: q, eta: eta, custoAtual: custoAtual, custoSim: custoSim, temCusto: Cf > 0,
+           A: mtbf / (mtbf + p.mttr) };
+}
+
+// Integral numérica de R(t) até R ~ 0 (passo crescente)
+function integraR(R, h0, tlim) {
+  var t = 0, h = h0, prev = 1, area = 0, it = 0;
+  while (t < tlim && it < 20000) {
+    var r = R(t + h);
+    area += (prev + r) / 2 * h; prev = r; t += h; h *= 1.004; it++;
+    if (r < 1e-7) break;
+  }
+  return area;
+}
+
+// Monta o cenário (Atual x Simulado) para um ativo ou para o sistema (GLOBAL)
+function confCenario(escopo) {
+  var cfgSim = getSimCfg();
+  var custos = (S.historico || []).map(function(h) { return +h.custo; }).filter(function(v) { return v > 0; });
+  var custoRef = custos.length ? custos.reduce(function(a, b) { return a + b; }, 0) / custos.length : 0;
+  var cen = { escopo: escopo, notas: [], ativos: [] };
+
+  function montaAtivo(nome, manual) {
+    var p = paramsAtivo(nome, manual), est = estrategiasAtivo(nome);
+    var s = simAtivo(p, est, cfgSim, custoRef);
+    var a = { nome: nome, p: p, est: est, sim: s, reg: regimeTexto(p) };
+    if (est.tempo && !s.io) a.avisoTempo = a.reg.cls !== 'des'
+      ? 'Há tarefa por tempo definida, mas os dados não mostram desgaste: nenhum ganho atribuído a ela.'
+      : 'Há tarefa por tempo, mas com o custo de preventiva informado ela não compensa frente a rodar até falhar.';
+    return a;
+  }
+
+  if (escopo && escopo !== 'GLOBAL') {
+    var a = montaAtivo(escopo);
+    cen.ativos = [a];
+    cen.Ra = function(t) { return weibR(a.p, t); };
+    cen.Rs = a.sim.R;
+    cen.mtbf = a.p.mtbf; cen.mtbfSim = a.sim.mtbf;
+    cen.mttr = a.p.mttr; cen.dispA = a.p.A; cen.dispS = a.sim.A;
+    cen.beta = a.p.beta; cen.eta = a.p.eta; cen.tipo = a.p.tipo; cen.src = a.p.src;
+    cen.custoA = a.sim.custoAtual; cen.custoS = a.sim.custoSim; cen.temCusto = a.sim.temCusto;
+    if (a.p.src === 'padrao') cen.notas.push('Ativo sem histórico suficiente (menos de 2 falhas): curvas usam o MTBF padrão de ' + rbdNum(getCfg().mtbfPadrao) + ' h.');
+    return cen;
+  }
+
+  // Sistema: estrutura do RBD, ou todos os ativos com histórico em série
+  var root, porId = {};
+  if (rbdTemDiagrama()) {
+    root = rbdTree();
+    cen.usandoRBD = true;
+  } else {
+    var seen = {}, folhas = [];
+    (S.sistemas || []).forEach(function(s) {
+      if (s && s.item && !seen[s.item] && modeloAtivo(s.item).ok) { seen[s.item] = true; folhas.push({ id: 'tmp' + folhas.length, t: 'item', ref: s.item }); }
+    });
+    root = { id: 'tmproot', t: 'serie', c: folhas };
+    if (folhas.length) cen.notas.push('Sem diagrama RBD: o sistema foi considerado como todos os ativos com histórico em SÉRIE. Monte o RBD para refletir redundâncias.');
+  }
+  var lv = rbdLeaves(root);
+  if (!lv.length) { cen.vazio = true; return cen; }
+  var porNome = {};
+  lv.forEach(function(L) {
+    var key = L.ref + '|' + (L.mtbf || '');
+    porId[L.id] = porNome[key] || (porNome[key] = montaAtivo(L.ref, L.mtbf));
+  });
+  cen.ativos = Object.keys(porNome).map(function(k) { return porNome[k]; });
+  cen.Ra = function(t) { return rbdEval(root, function(n) { return weibR(porId[n.id].p, t); }); };
+  cen.Rs = function(t) { return rbdEval(root, function(n) { return porId[n.id].sim.R(t); }); };
+  var mn = Math.min.apply(null, cen.ativos.map(function(a) { return Math.min(a.p.mtbf, a.sim.T || Infinity); }));
+  var mx = Math.max.apply(null, cen.ativos.map(function(a) { return a.sim.mtbf; }));
+  cen.mtbf = integraR(cen.Ra, mn / 200, 60 * mx);
+  cen.mtbfSim = integraR(cen.Rs, mn / 200, 60 * mx);
+  cen.dispA = rbdEval(root, function(n) { return porId[n.id].p.A; });
+  cen.dispS = rbdEval(root, function(n) { return porId[n.id].sim.A; });
+  var hs = (S.historico || []).map(function(h) { return +h.ttr; }).filter(function(v) { return v > 0; });
+  cen.mttr = hs.length ? hs.reduce(function(a, b) { return a + b; }, 0) / hs.length : 0;
+  cen.custoA = 0; cen.custoS = 0; cen.temCusto = false;
+  lv.forEach(function(L) { var a = porId[L.id]; cen.custoA += a.sim.custoAtual; cen.custoS += a.sim.custoSim; if (a.sim.temCusto) cen.temCusto = true; });
+  var nd = cen.ativos.filter(function(a) { return a.p.src === 'padrao'; });
+  if (getCfg().censura) cen.ativos.forEach(function(a) {
+    var ult = (S.historico || []).filter(function(h) { return h && h.item === a.nome; }).map(function(h) { return new Date(h.dt).getTime(); }).filter(function(t) { return !isNaN(t); });
+    if (ult.length && a.p.src === 'historico' && (Date.now() - Math.max.apply(null, ult)) / 3600000 > 3 * a.p.mtbf)
+      cen.notas.push(esc(a.nome) + ': a última falha registrada foi há mais de 3 MTBFs. Se o histórico não está sendo lançado, o tempo sem registro é tratado como tempo sem falha e infla o MTBF.');
+  });
+  if (nd.length) cen.notas.push(nd.length + ' ativo(s) sem histórico suficiente usando MTBF padrão: ' + nd.map(function(a) { return esc(a.nome); }).join(', ') + '.');
+  return cen;
+}
+
+// Taxa de falha h(t) = -d ln R / dt (numérica)
+function taxaFalha(R, t) {
+  var d = Math.max(t * 1e-4, 1e-3), r1 = R(Math.max(t - d, 0)), r2 = R(t + d);
+  if (r1 <= 0 || r2 <= 0) return NaN;
+  return -(Math.log(r2) - Math.log(r1)) / (t + d - Math.max(t - d, 0));
+}
+
+function confOnSimCfg() {
+  var c = getSimCfg();
+  function v(id, def) { var el = document.getElementById(id); var x = el ? parseFloat(el.value) : NaN; return isNaN(x) ? def : x; }
+  c.cpPct = Math.max(1, Math.min(100, v('conf-cp', c.cpPct)));
+  c.efDetec = Math.max(0, Math.min(95, v('conf-ef', c.efDetec)));
+  c.ganhoRedes = Math.max(0, Math.min(300, v('conf-red', c.ganhoRedes)));
+  var mo = document.getElementById('conf-modelo');
+  if (mo) getCfg().modelo = mo.value;
+  renderConfiab();
+  try { renderRbd(); } catch (e) {}
+  autoSave();
+}
+
+function confSyncInputs() {
+  var c = getSimCfg();
+  function set(id, val) { var el = document.getElementById(id); if (el && document.activeElement !== el) el.value = val; }
+  set('conf-cp', c.cpPct); set('conf-ef', c.efDetec); set('conf-red', c.ganhoRedes);
+  set('conf-modelo', getCfg().modelo === 'exp' ? 'exp' : 'auto');
 }
 
 function renderConfiab() {
   var sel = document.getElementById('conf-item-sel');
   if (!sel) return;
-  var selV = sel.value;
+  confSyncInputs();
+  var selV = sel.value || 'GLOBAL';
   var tmax = +(document.getElementById('conf-tmax') || {}).value || 1000;
-  var showCusto = document.getElementById('conf-show-custo') ? document.getElementById('conf-show-custo').checked : false;
-
-  // === CÁLCULO MTBF ATUAL ===
-  var mtbf = 0;
-  var mttr = 0;
-  var usandoRBD = false;
-
-  if (selV === 'GLOBAL' || !selV) {
-    if (rbdTemDiagrama() && S.historico.length) {
-      var rSistema = calcularRBD(tmax) / 100;
-      if (rSistema > 0 && rSistema < 1) {
-        var lambdaSys = -Math.log(rSistema) / tmax;
-        mtbf = 1 / lambdaSys;
-        usandoRBD = true;
-      }
-    }
-    if (mtbf <= 0) {
-      var ativos = [];
-      var seen = {};
-      S.sistemas.forEach(function(s) { if (!seen[s.item]) { seen[s.item] = true; ativos.push(s.item); } });
-      var soma = 0, cnt = 0;
-      ativos.forEach(function(a) { var m = calcularMTBFreal(a); if (m > 0) { soma += m; cnt++; } });
-      mtbf = cnt > 0 ? soma / cnt : 720;
-    }
-    if (S.historico.length) mttr = S.historico.reduce(function(a, b) { return a + (b.ttr || 0); }, 0) / S.historico.length;
-  } else {
-    mtbf = calcularMTBFreal(selV);
-    if (mtbf <= 0) mtbf = 720;
-    var fails = S.historico.filter(function(h) { return h.item === selV; });
-    mttr = fails.length ? fails.reduce(function(a, b) { return a + (b.ttr || 0); }, 0) / fails.length : 0;
-  }
-
-  // === CÁLCULO MTBF SIMULADO (com ganho do DD) ===
-  var ganhoDD = calcGanhoDD(selV);
-  var mtbfSim = mtbf * (1 + ganhoDD / 100);
-  var lambdaAtual = 1 / mtbf;
-  var lambdaSim = 1 / mtbfSim;
-  var dispAtual = (mtbf / (mtbf + mttr)) * 100;
-  var dispSim = (mtbfSim / (mtbfSim + mttr)) * 100;
-
-  // === KPIs ===
+  var showCusto = !!(document.getElementById('conf-show-custo') || {}).checked;
+  var cen = confCenario(selV);
   var kpi = document.getElementById('conf-kpi');
-  if (kpi) {
-    var rAtualFinal = Math.exp(-(tmax / mtbf)) * 100;
-    var rSimFinal = Math.exp(-(tmax / mtbfSim)) * 100;
-    var ganhoConfPP = rSimFinal - rAtualFinal;
 
-    var cell = 'style="background:var(--bg3);padding:10px;border-radius:6px;text-align:center;border:1px solid var(--border);"';
-    var lbl = 'style="font-size:10px;color:var(--text3);display:block;margin-bottom:4px;"';
-    var val = 'style="font-size:18px;font-weight:700;"';
-
-    var kpiHtml = '';
-    kpiHtml += '<div ' + cell + '><label ' + lbl + '>R(t) Atual em ' + tmax + 'h</label><div ' + val + ' style="font-size:18px;font-weight:700;color:var(--green)">' + rAtualFinal.toFixed(1) + '%</div></div>';
-    kpiHtml += '<div ' + cell + '><label ' + lbl + '>R(t) Simulado em ' + tmax + 'h</label><div ' + val + ' style="font-size:18px;font-weight:700;color:var(--accent)">' + rSimFinal.toFixed(1) + '%</div></div>';
-    kpiHtml += '<div ' + cell + '><label ' + lbl + '>Ganho</label><div ' + val + ' style="font-size:18px;font-weight:700;color:' + (ganhoConfPP > 0 ? 'var(--green)' : 'var(--red)') + '">+' + ganhoConfPP.toFixed(1) + ' p.p.</div></div>';
-    kpiHtml += '<div ' + cell + '><label ' + lbl + '>MTBF Atual' + (usandoRBD ? ' (RBD)' : '') + '</label><div ' + val + '>' + mtbf.toFixed(0) + ' h</div></div>';
-    kpiHtml += '<div ' + cell + '><label ' + lbl + '>MTBF Simulado (+' + ganhoDD.toFixed(0) + '%)</label><div ' + val + ' style="font-size:18px;font-weight:700;color:var(--accent)">' + mtbfSim.toFixed(0) + ' h</div></div>';
-    kpiHtml += '<div ' + cell + '><label ' + lbl + '>MTTR</label><div ' + val + ' style="font-size:18px;font-weight:700;color:var(--red)">' + mttr.toFixed(1) + ' h</div></div>';
-    kpiHtml += '<div ' + cell + '><label ' + lbl + '>Lambda</label><div ' + val + ' style="font-size:18px;font-weight:700;color:var(--amber)">' + lambdaAtual.toFixed(6) + '</div></div>';
-    kpiHtml += '<div ' + cell + '><label ' + lbl + '>Disp. Atual</label><div ' + val + ' style="font-size:18px;font-weight:700;color:var(--green)">' + dispAtual.toFixed(1) + '%</div></div>';
-    kpiHtml += '<div ' + cell + '><label ' + lbl + '>Disp. Simulada</label><div ' + val + ' style="font-size:18px;font-weight:700;color:var(--accent)">' + dispSim.toFixed(1) + '%</div></div>';
-    kpi.innerHTML = kpiHtml;
+  if (cen.vazio) {
+    if (kpi) kpi.innerHTML = '<div style="grid-column:1/-1;color:var(--text3);font-size:12px;">Sem dados: cadastre ativos, lance falhas no Histórico (2 ou mais por ativo) ou monte o RBD.</div>';
+    ['tbody-conf', 'conf-ponto-ideal', 'conf-notas'].forEach(function(id) { var el = document.getElementById(id); if (el) el.innerHTML = ''; });
+    if (confChartAtual) { confChartAtual.destroy(); confChartAtual = null; }
+    if (confChartSimulado) { confChartSimulado.destroy(); confChartSimulado = null; }
+    return;
   }
 
-  // === DADOS PARA GRÁFICOS ===
-  var steps = 20;
-  var labels = [];
-  var dataRatual = [], dataRsim = [], dataFatual = [];
-  var dataCustoAtual = [], dataCustoSim = [];
-  var tableHtml = '';
+  var rA = cen.Ra(tmax), rS = cen.Rs(tmax);
+  var cell = 'style="background:var(--bg3);padding:10px;border-radius:6px;text-align:center;border:1px solid var(--border);"';
+  var lbl = 'style="font-size:10px;color:var(--text3);display:block;margin-bottom:4px;"';
+  function k(l, v, cor) { return '<div ' + cell + '><label ' + lbl + '>' + l + '</label><div style="font-size:18px;font-weight:700;color:' + (cor || 'var(--text)') + '">' + v + '</div></div>'; }
+  var modeloTxt = selV === 'GLOBAL' ? (cen.usandoRBD ? 'RBD' : 'Série (sem RBD)') :
+    (cen.tipo === 'weibull' ? 'β ' + rbdNum(cen.beta, 2) + ' · η ' + rbdNum(cen.eta) + ' h' : 'Exponencial (β = 1)');
+  var h = '';
+  h += k('R(t) Atual em ' + tmax + 'h', rbdPct(rA), 'var(--green)');
+  h += k('R(t) Simulado em ' + tmax + 'h', rbdPct(rS), 'var(--accent)');
+  h += k('Ganho', (rS - rA >= 0 ? '+' : '') + ((rS - rA) * 100).toFixed(1).replace('.', ',') + ' p.p.', rS - rA > 0.0005 ? 'var(--green)' : 'var(--text3)');
+  h += k(selV === 'GLOBAL' ? 'MTTF Atual (∫R)' : 'MTBF Atual', rbdNum(cen.mtbf) + ' h');
+  h += k(selV === 'GLOBAL' ? 'MTTF Simulado' : 'MTBF Simulado', rbdNum(cen.mtbfSim) + ' h', 'var(--accent)');
+  h += k('Modelo', modeloTxt, 'var(--amber)');
+  h += k('MTTR', rbdNum(cen.mttr, 1) + ' h', 'var(--red)');
+  h += k('Disp. Atual', rbdPct(cen.dispA, 2), 'var(--green)');
+  h += k('Disp. Simulada', rbdPct(cen.dispS, 2), 'var(--accent)');
+  if (cen.temCusto) {
+    h += k('Custo/ano Atual', 'R$ ' + rbdNum(cen.custoA * 8760), 'var(--amber)');
+    h += k('Custo/ano Simulado', 'R$ ' + rbdNum(cen.custoS * 8760), 'var(--accent)');
+  }
+  if (kpi) kpi.innerHTML = h;
 
+  var notas = document.getElementById('conf-notas');
+  if (notas) notas.innerHTML = cen.notas.length ? '<div class="rbd-warn" style="margin-top:0">⚠ ' + cen.notas.join('<br>⚠ ') + '</div>' : '';
+
+  // Curvas
+  var steps = 60, labels = [], dRa = [], dRs = [], dFa = [], dCa = [], dCs = [], tb = '';
   for (var i = 0; i <= steps; i++) {
-    var t = Math.round((tmax / steps) * i);
-   var Ratual, Rsim;
-
-    if ((selV === 'GLOBAL' || !selV) && rbdTemDiagrama() && S.historico.length) {
-    Ratual = calcularRBD(t) / 100;
-    } else {
-      Ratual = Math.exp(-(t / mtbf));
-    }
-    Rsim = Math.exp(-(t / mtbfSim));
-    var Fatual = 1 - Ratual;
-
+    var t = Math.round(tmax / steps * i), ra = cen.Ra(t), rs = cen.Rs(t);
     labels.push(t + 'h');
-    dataRatual.push(+(Ratual * 100).toFixed(1));
-    dataRsim.push(+(Rsim * 100).toFixed(1));
-    dataFatual.push(+(Fatual * 100).toFixed(1));
-
-    tableHtml += '<tr><td>' + t + ' h</td><td><strong>' + (Ratual * 100).toFixed(1) + '%</strong></td><td style="color:var(--accent)">' + (Rsim * 100).toFixed(1) + '%</td><td>' + (Fatual * 100).toFixed(1) + '%</td><td>' + lambdaAtual.toFixed(6) + '</td></tr>';
-  }
-
-
-  // Custo acumulado
-  if (showCusto) {
-    dataCustoAtual = calcCustoAcumulado(selV === 'GLOBAL' ? 'GLOBAL' : selV, tmax, steps);
-    // Custo simulado = custo atual reduzido proporcionalmente ao ganho
-    dataCustoSim = dataCustoAtual.map(function(c) { return +(c * (1 - ganhoDD / 100)).toFixed(2); });
-  }
-
-  // === TABELA ===
-  var tbC = document.getElementById('tbody-conf');
-  if (tbC) tbC.innerHTML = tableHtml;
-
-  // === GRÁFICO 1: CONFIABILIDADE ATUAL ===
-  var canvas1 = document.getElementById('chart-conf-atual');
-  if (canvas1) {
-    if (confChartAtual) confChartAtual.destroy();
-    var datasets1 = [
-      { label: 'R(t) Atual — MTBF ' + mtbf.toFixed(0) + 'h', data: dataRatual, borderColor: '#34d399', backgroundColor: 'rgba(52,211,153,0.05)', fill: true, tension: 0.3, borderWidth: 2 },
-      { label: 'F(t) Prob. Falha', data: dataFatual, borderColor: '#f87171', borderDash: [5, 5], fill: false, tension: 0.3, borderWidth: 1.5 }
-    ];
-    if (showCusto && dataCustoAtual.length) {
-      datasets1.push({ label: 'Custo Acumulado (R$)', data: dataCustoAtual, borderColor: '#fbbf24', backgroundColor: 'rgba(251,191,36,0.05)', fill: false, tension: 0.3, borderWidth: 2, borderDash: [3, 3], yAxisID: 'yCusto' });
+    dRa.push(+(ra * 100).toFixed(2)); dRs.push(+(rs * 100).toFixed(2)); dFa.push(+((1 - ra) * 100).toFixed(2));
+    if (showCusto && cen.temCusto) { dCa.push(+(cen.custoA * t).toFixed(2)); dCs.push(+(cen.custoS * t).toFixed(2)); }
+    if (i % 3 === 0) {
+      var hz = t > 0 ? taxaFalha(cen.Ra, t) : NaN;
+      tb += '<tr><td>' + t + ' h</td><td><strong>' + rbdPct(ra) + '</strong></td><td style="color:var(--accent)">' + rbdPct(rs) + '</td><td>' + rbdPct(1 - ra) +
+        '</td><td>' + (isFinite(hz) ? hz.toExponential(3) : '—') + '</td></tr>';
     }
-    confChartAtual = new Chart(canvas1.getContext('2d'), {
-      type: 'line',
-      data: { labels: labels, datasets: datasets1 },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
+  }
+  var tbC = document.getElementById('tbody-conf'); if (tbC) tbC.innerHTML = tb;
+
+  function grafico(canvasId, chartRef, sets) {
+    var cv = document.getElementById(canvasId);
+    if (!cv) return chartRef;
+    if (chartRef) chartRef.destroy();
+    return new Chart(cv.getContext('2d'), {
+      type: 'line', data: { labels: labels, datasets: sets },
+      options: { responsive: true, maintainAspectRatio: false, elements: { point: { radius: 0 } },
+        interaction: { mode: 'index', intersect: false },
         scales: {
-          y: { min: 0, max: 100, ticks: { color: '#9ba3bc' }, grid: { color: 'rgba(255,255,255,0.05)' }, title: { display: true, text: 'R(t) / F(t) %', color: '#9ba3bc' } },
-          x: { ticks: { color: '#9ba3bc' } },
-          yCusto: { display: showCusto && dataCustoAtual.length > 0, position: 'right', min: 0, ticks: { color: '#fbbf24' }, grid: { display: false }, title: { display: true, text: 'Custo R$', color: '#fbbf24' } }
+          y: { min: 0, max: 100, ticks: { color: '#9ba3bc' }, grid: { color: 'rgba(255,255,255,0.05)' }, title: { display: true, text: '%', color: '#9ba3bc' } },
+          x: { ticks: { color: '#9ba3bc', maxTicksLimit: 12 } },
+          yCusto: { display: showCusto && cen.temCusto, position: 'right', min: 0, ticks: { color: '#fbbf24' }, grid: { display: false }, title: { display: true, text: 'Custo acumulado R$', color: '#fbbf24' } }
         },
-        plugins: { legend: { labels: { color: '#9ba3bc' } } }
-      }
+        plugins: { legend: { labels: { color: '#9ba3bc' } } } }
     });
   }
+  var s1 = [
+    { label: 'R(t) Atual', data: dRa, borderColor: '#34d399', backgroundColor: 'rgba(52,211,153,0.05)', fill: true, tension: 0.2, borderWidth: 2 },
+    { label: 'F(t) Prob. de falha', data: dFa, borderColor: '#f87171', borderDash: [5, 5], fill: false, tension: 0.2, borderWidth: 1.5 }
+  ];
+  if (showCusto && cen.temCusto) s1.push({ label: 'Custo acumulado atual (R$)', data: dCa, borderColor: '#fbbf24', borderDash: [3, 3], fill: false, borderWidth: 2, yAxisID: 'yCusto' });
+  confChartAtual = grafico('chart-conf-atual', confChartAtual, s1);
+  var s2 = [
+    { label: 'R(t) Simulado (sem quebra não planejada)', data: dRs, borderColor: '#a78bfa', backgroundColor: 'rgba(167,139,250,0.05)', fill: true, tension: 0, borderWidth: 2 },
+    { label: 'R(t) Atual (referência)', data: dRa, borderColor: '#34d399', borderDash: [8, 4], fill: false, tension: 0.2, borderWidth: 1.5 }
+  ];
+  if (showCusto && cen.temCusto) s2.push({ label: 'Custo acumulado simulado (R$)', data: dCs, borderColor: '#fbbf24', borderDash: [3, 3], fill: false, borderWidth: 2, yAxisID: 'yCusto' });
+  confChartSimulado = grafico('chart-conf-simulado', confChartSimulado, s2);
 
-  // === GRÁFICO 2: CONFIABILIDADE SIMULADA (PÓS-DD) ===
-  var canvas2 = document.getElementById('chart-conf-simulado');
-  if (canvas2) {
-    if (confChartSimulado) confChartSimulado.destroy();
-    var datasets2 = [
-      { label: 'R(t) Simulado — MTBF ' + mtbfSim.toFixed(0) + 'h (+' + ganhoDD.toFixed(0) + '% DD)', data: dataRsim, borderColor: '#a78bfa', backgroundColor: 'rgba(167,139,250,0.05)', fill: true, tension: 0.3, borderWidth: 2 },
-      { label: 'R(t) Atual (referencia)', data: dataRatual, borderColor: '#34d399', borderDash: [8, 4], fill: false, tension: 0.3, borderWidth: 1.5 }
-    ];
-    if (showCusto && dataCustoSim.length) {
-      datasets2.push({ label: 'Custo Simulado (R$)', data: dataCustoSim, borderColor: '#fbbf24', backgroundColor: 'rgba(251,191,36,0.05)', fill: false, tension: 0.3, borderWidth: 2, borderDash: [3, 3], yAxisID: 'yCusto' });
-    }
-    confChartSimulado = new Chart(canvas2.getContext('2d'), {
-      type: 'line',
-      data: { labels: labels, datasets: datasets2 },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: { min: 0, max: 100, ticks: { color: '#9ba3bc' }, grid: { color: 'rgba(255,255,255,0.05)' }, title: { display: true, text: 'R(t) %', color: '#9ba3bc' } },
-          x: { ticks: { color: '#9ba3bc' } },
-          yCusto: { display: showCusto && dataCustoSim.length > 0, position: 'right', min: 0, ticks: { color: '#fbbf24' }, grid: { display: false }, title: { display: true, text: 'Custo R$', color: '#fbbf24' } }
-        },
-        plugins: { legend: { labels: { color: '#9ba3bc' } } }
-      }
-    });
-  }
+  renderConfEstrategia(cen, tmax);
 }
 
-function calcPontoIdeal(mtbf, lambdaVal, threshold, tmax) {
-  if (lambdaVal <= 0) return { t: 0 };
-  var t = -Math.log(threshold / 100) / lambdaVal;
-  if (t > tmax) t = tmax;
-  if (t < 0) t = 0;
-  return { t: Math.round(t) };
-}
-
-function renderConfiabExtras() {
-  var sel = document.getElementById('conf-item-sel');
-  if (!sel) return;
-  var selV = sel.value;
-  var tmax = +(document.getElementById('conf-tmax') || {}).value || 1000;
-  var threshold = +(document.getElementById('conf-threshold') || {}).value || 70;
-
-  var mtbf = 0;
-  if (selV === 'GLOBAL' || !selV) {
-    if (rbdTemDiagrama() && S.historico.length) {
-      var rSistema = calcularRBD(tmax) / 100;
-      if (rSistema > 0 && rSistema < 1) {
-        var lambdaSys = -Math.log(rSistema) / tmax;
-        mtbf = 1 / lambdaSys;
-      }
-    }
-    if (mtbf <= 0) {
-      var ativos2 = [], seen2 = {};
-      S.sistemas.forEach(function(s) { if (!seen2[s.item]) { seen2[s.item] = true; ativos2.push(s.item); } });
-      var soma2 = 0, cnt2 = 0;
-      ativos2.forEach(function(a) { var m = calcularMTBFreal(a); if (m > 0) { soma2 += m; cnt2++; } });
-      mtbf = cnt2 > 0 ? soma2 / cnt2 : 720;
-    }
-  } else {
-    mtbf = calcularMTBFreal(selV);
-    if (mtbf <= 0) mtbf = 720;
-  }
-
-  var ganhoDD = calcGanhoDD(selV);
-  var mtbfSim = mtbf * (1 + ganhoDD / 100);
-  var lambdaAtual = 1 / mtbf;
-  var lambdaSim = 1 / mtbfSim;
-
-  var pontoAtual = calcPontoIdeal(mtbf, lambdaAtual, threshold, tmax);
-  var pontoSim = calcPontoIdeal(mtbfSim, lambdaSim, threshold, tmax);
-
-  var custoMedio = 0;
-  var falhasHist = S.historico.filter(function(h) {
-    if (selV === 'GLOBAL') return true;
-    return h.item === selV;
-  });
-  if (falhasHist.length) {
-    var totalCusto = 0;
-    falhasHist.forEach(function(f) { totalCusto += (f.custo || 0); });
-    custoMedio = totalCusto / falhasHist.length;
-  }
-
-  var custoAtualPonto = pontoAtual.t > 0 ? ((pontoAtual.t / mtbf) * custoMedio) : 0;
-  var custoSimPonto = pontoSim.t > 0 ? ((pontoSim.t / mtbfSim) * custoMedio * (1 - ganhoDD / 100)) : 0;
-
-  var rAtualTmax = Math.exp(-lambdaAtual * tmax) * 100;
-  var rSimTmax = Math.exp(-lambdaSim * tmax) * 100;
-  var ganhoConf = rSimTmax - rAtualTmax;
-
+// Painel por ativo: regime de falha, diretrizes, intervalo ótimo e tempo até R mínima
+function renderConfEstrategia(cen, tmax) {
   var box = document.getElementById('conf-ponto-ideal');
   if (!box) return;
-
-  var boxHtml = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">';
-
-  boxHtml += '<div style="background:var(--bg3);padding:14px;border-radius:8px;border:1px solid var(--border);">';
-  boxHtml += '<div style="font-weight:700;color:var(--green);margin-bottom:8px;">ATUAL</div>';
-  boxHtml += '<div style="font-size:12px;margin-bottom:4px;">Ponto em R(t) = ' + threshold + '%:</div>';
-  boxHtml += '<div style="font-size:20px;font-weight:700;color:var(--text);">' + pontoAtual.t + ' h</div>';
-  boxHtml += '<div style="font-size:11px;color:var(--amber);margin-top:4px;">Custo acumulado: R$ ' + custoAtualPonto.toFixed(2) + '</div>';
-  boxHtml += '</div>';
-
-  boxHtml += '<div style="background:var(--bg3);padding:14px;border-radius:8px;border:2px solid var(--accent);">';
-  boxHtml += '<div style="font-weight:700;color:var(--accent);margin-bottom:8px;">SIMULADO (pos-DD)</div>';
-  boxHtml += '<div style="font-size:12px;margin-bottom:4px;">Ponto em R(t) = ' + threshold + '%:</div>';
-  boxHtml += '<div style="font-size:20px;font-weight:700;color:var(--text);">' + pontoSim.t + ' h</div>';
-  boxHtml += '<div style="font-size:11px;color:var(--amber);margin-top:4px;">Custo acumulado: R$ ' + custoSimPonto.toFixed(2) + '</div>';
-  boxHtml += '</div>';
-
-  boxHtml += '</div>';
-
-  boxHtml += '<div style="margin-top:12px;padding:10px;background:rgba(52,211,153,0.08);border-radius:6px;display:flex;justify-content:space-between;align-items:center;">';
-  boxHtml += '<span style="font-size:12px;color:var(--text2);">Ganho de confiabilidade em t=' + tmax + 'h:</span>';
-  boxHtml += '<span style="font-size:16px;font-weight:700;color:var(--green);">+' + ganhoConf.toFixed(1) + ' p.p.</span>';
-  boxHtml += '</div>';
-
-  var economia = custoAtualPonto - custoSimPonto;
-  if (economia > 0) {
-    boxHtml += '<div style="margin-top:8px;padding:10px;background:rgba(251,191,36,0.08);border-radius:6px;display:flex;justify-content:space-between;align-items:center;">';
-    boxHtml += '<span style="font-size:12px;color:var(--text2);">Economia estimada no ponto ideal:</span>';
-    boxHtml += '<span style="font-size:16px;font-weight:700;color:var(--amber);">R$ ' + economia.toFixed(2) + '</span>';
-    boxHtml += '</div>';
+  var thr = Math.max(1, Math.min(99, +(document.getElementById('conf-threshold') || {}).value || 70)) / 100;
+  function tAte(R) { // primeiro t em que R(t) <= thr (busca até 50 x tmax)
+    var lo = 0, hi = tmax;
+    while (R(hi) > thr && hi < tmax * 50) hi *= 2;
+    if (R(hi) > thr) return null;
+    for (var i = 0; i < 60; i++) { var m = (lo + hi) / 2; if (R(m) > thr) lo = m; else hi = m; }
+    return hi;
   }
-
-  box.innerHTML = boxHtml;
+  var ta = tAte(cen.Ra), ts = tAte(cen.Rs);
+  var h = '<div style="display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--text2);margin-bottom:12px;">' +
+    '<div>Tempo até R(t) cair para ' + Math.round(thr * 100) + '%: <b style="color:var(--green)">' + (ta ? rbdNum(ta) + ' h' : '> ' + rbdNum(tmax * 50) + ' h') + '</b> atual · ' +
+    '<b style="color:var(--accent)">' + (ts ? rbdNum(ts) + ' h' : '> ' + rbdNum(tmax * 50) + ' h') + '</b> simulado</div></div>';
+  h += '<div style="overflow-x:auto"><table><thead><tr><th>Ativo</th><th>Modelo</th><th>MTBF</th><th>Regime de falha</th><th>Diretrizes (FMEA/DD)</th><th>Efeito simulado</th>' +
+    (cen.temCusto ? '<th>Custo/ano atual → sim.</th>' : '') + '</tr></thead><tbody>';
+  cen.ativos.forEach(function(a) {
+    var p = a.p, s = a.sim, ef = [];
+    if (s.T > 0) ef.push('Preventiva por idade a cada <b>' + rbdNum(s.T) + ' h</b> (T* ótimo)');
+    if (s.q > 0) ef.push('Detecção antecipada de ' + Math.round(s.q * 100) + '% das falhas');
+    if (a.est.redes) ef.push('Redesenho: η +' + getSimCfg().ganhoRedes + '%');
+    if (a.avisoTempo) ef.push('<span style="color:var(--amber)">' + a.avisoTempo + '</span>');
+    if (!ef.length) ef.push('<span style="color:var(--text3)">Sem efeito (nenhuma diretriz que altere R)</span>');
+    var cor = { des: 'var(--amber)', ale: 'var(--teal)', inf: 'var(--red)', inc: 'var(--text2)', nd: 'var(--text3)' }[a.reg.cls];
+    h += '<tr><td><b>' + esc(a.nome) + '</b></td>' +
+      '<td style="white-space:nowrap">' + (p.tipo === 'weibull' ? 'Weibull<br>β ' + rbdNum(p.beta, 2) + ' · η ' + rbdNum(p.eta) + ' h' : 'Exponencial<br>β = 1') + '</td>' +
+      '<td style="white-space:nowrap">' + rbdNum(p.mtbf) + ' h</td>' +
+      '<td style="color:' + cor + ';min-width:220px">' + a.reg.txt + '</td>' +
+      '<td style="min-width:140px">' + (a.est.lista.length ? a.est.lista.map(esc).join('<br>') : '<span style="color:var(--text3)">—</span>') + '</td>' +
+      '<td style="min-width:200px">' + ef.join('<br>') + '</td>' +
+      (cen.temCusto ? '<td style="white-space:nowrap">R$ ' + rbdNum(s.custoAtual * 8760) + ' → R$ ' + rbdNum(s.custoSim * 8760) + '</td>' : '') + '</tr>';
+  });
+  h += '</tbody></table></div>';
+  box.innerHTML = h;
 }
+
+function renderConfiabExtras() { /* incorporado em renderConfiab */ }
+
 
 
 // ============================================================
@@ -4100,11 +4076,6 @@ document.addEventListener('blur', function(e) {
 }, true);
 
 
-var _originalRenderConfiab = renderConfiab;
-renderConfiab = function() {
-  _originalRenderConfiab();
-  renderConfiabExtras();
-};
 
 
 function updateConfiabSelect() {
@@ -4162,7 +4133,7 @@ function openHistoricoModal(idx) {
     '<div class="form-group"><label>Data da Falha</label><input id="h-dt" type="date" value="' + (h.dt || '') + '"></div>' +
     '<div class="form-group"><label>MTTR (h)</label><input id="h-ttr" type="number" step="0.5" value="' + (h.ttr || '') + '"></div>' +
     '<div class="form-group"><label>Custo (R$)</label><input id="h-custo" type="number" step="0.01" value="' + (h.custo || '') + '" placeholder="0.00"></div>' +
-    '<div class="form-group" style="grid-column:1/-1"><label>Causa Raiz</label><input id="h-causa" value="' + esc(h.causa || '') + '"></div>' +
+    '<div class="form-group" style="grid-column:1/-1"><label>Causa Raiz</label><textarea id="h-causa" rows="1" class="autogrow">' + esc(h.causa || '') + '</textarea></div>' +
     '<div class="form-group" style="grid-column:1/-1"><label>Descricao</label><textarea id="h-desc" rows="2">' + esc(h.desc || '') + '</textarea></div>' +
     '</div>' +
     '<div class="modal-btns">' +
@@ -4321,7 +4292,7 @@ function openSpareModal(idx) {
     '<div class="form-group"><label>Nome da Peca</label><input id="sp-peca" value="' + esc(sp.peca || '') + '" placeholder="Ex: Rolamento 6205"></div>' +
     '<div class="form-group"><label>Quantidade</label><input id="sp-qtd" type="number" min="1" value="' + (sp.qtd || 1) + '"></div>' +
     '<div class="form-group"><label>Valor Unitario (R$)</label><input id="sp-valor" type="number" step="0.01" value="' + (sp.valor || '') + '" placeholder="0.00"></div>' +
-    '<div class="form-group" style="grid-column:1/-1"><label>Observacao</label><input id="sp-obs" value="' + esc(sp.obs || '') + '" placeholder="Fornecedor, lead time, etc."></div>' +
+    '<div class="form-group" style="grid-column:1/-1"><label>Observacao</label><textarea id="sp-obs" rows="1" class="autogrow" placeholder="Fornecedor, lead time, etc.">' + esc(sp.obs || '') + '</textarea></div>' +
     '</div>' +
     '<div class="modal-btns">' +
     '<button class="btn" onclick="closeModal(\'modal-item\')">Cancelar</button>' +
@@ -4512,27 +4483,17 @@ function renderSpareTree() {
 function generatePDF() {
   // Calcula dados de confiabilidade para o gráfico SVG
   var pdfTmax = +(document.getElementById('conf-tmax') || {}).value || 8760;
-  var pdfSteps = 20;
-  var pdfMtbf = 0;
+  var pdfSteps = 60;
+  var pdfCen = confCenario('GLOBAL');
   var pdfAtivos = [], pdfSeen = {};
   S.sistemas.forEach(function(s) { if (!pdfSeen[s.item]) { pdfSeen[s.item] = true; pdfAtivos.push(s.item); } });
-  var pdfSoma = 0, pdfCnt = 0;
-  pdfAtivos.forEach(function(a) { var m = calcularMTBFreal(a); if (m > 0) { pdfSoma += m; pdfCnt++; } });
-  pdfMtbf = pdfCnt > 0 ? pdfSoma / pdfCnt : 8760;
-  var pdfGanho = calcGanhoDD('GLOBAL');
-  var pdfMtbfSim = pdfMtbf * (1 + pdfGanho / 100);
-
+  if (pdfCen.vazio) { pdfCen.Ra = pdfCen.Rs = function() { return 1; }; pdfCen.mtbf = pdfCen.mtbfSim = 0; pdfCen.dispA = pdfCen.dispS = 1; }
+  var pdfMtbf = pdfCen.mtbf, pdfMtbfSim = pdfCen.mtbfSim;
   var pdfPointsAtual = [];
   var pdfPointsSim = [];
   for (var pi = 0; pi <= pdfSteps; pi++) {
     var pt = Math.round((pdfTmax / pdfSteps) * pi);
-    var pRa, pRs;
-    if (rbdTemDiagrama() && S.historico.length) {
-      pRa = calcularRBD(pt);
-    } else {
-      pRa = Math.exp(-(pt / pdfMtbf)) * 100;
-    }
-    pRs = Math.exp(-(pt / pdfMtbfSim)) * 100;
+    var pRa = pdfCen.Ra(pt) * 100, pRs = pdfCen.Rs(pt) * 100;
     pdfPointsAtual.push({ t: pt, r: pRa });
     pdfPointsSim.push({ t: pt, r: pRs });
   }
@@ -4733,8 +4694,7 @@ function generatePDF() {
   var rAtualFinal = pdfPointsAtual[pdfPointsAtual.length - 1].r;
   var rSimFinal = pdfPointsSim[pdfPointsSim.length - 1].r;
   var ganhoFinal = rSimFinal - rAtualFinal;
-  var lambdaPdf = 1 / pdfMtbf;
-  var dispPdf = (pdfMtbf / (pdfMtbf + (S.historico.length ? S.historico.reduce(function(a, b) { return a + (b.ttr || 0); }, 0) / S.historico.length : 0))) * 100;
+  var dispPdf = pdfCen.dispA * 100, dispSimPdf = pdfCen.dispS * 100;
 
   html += '<div class="kpi-grid">';
   html += '<div class="kpi-item"><div class="v" style="color:#34d399;">' + rAtualFinal.toFixed(1) + '%</div><span class="l">R(t) Atual ' + pdfTmax + 'h</span></div>';
@@ -4742,8 +4702,8 @@ function generatePDF() {
   html += '<div class="kpi-item"><div class="v" style="color:#34d399;">+' + ganhoFinal.toFixed(1) + ' p.p.</div><span class="l">Ganho</span></div>';
   html += '<div class="kpi-item"><div class="v">' + pdfMtbf.toFixed(0) + 'h</div><span class="l">MTBF Atual</span></div>';
   html += '<div class="kpi-item"><div class="v" style="color:#a78bfa;">' + pdfMtbfSim.toFixed(0) + 'h</div><span class="l">MTBF Simulado</span></div>';
-  html += '<div class="kpi-item"><div class="v">' + lambdaPdf.toFixed(6) + '</div><span class="l">Lambda</span></div>';
-  html += '<div class="kpi-item"><div class="v">' + dispPdf.toFixed(1) + '%</div><span class="l">Disponibilidade</span></div>';
+  html += '<div class="kpi-item"><div class="v">' + dispPdf.toFixed(1) + '%</div><span class="l">Disp. Atual</span></div>';
+  html += '<div class="kpi-item"><div class="v" style="color:#a78bfa;">' + dispSimPdf.toFixed(1) + '%</div><span class="l">Disp. Simulada</span></div>';
   html += '</div>';
 
   // Gráfico SVG
@@ -4752,15 +4712,15 @@ function generatePDF() {
 
   // Tabela por ativo
   html += '<h3>Confiabilidade por Ativo</h3>';
-  html += '<table><thead><tr><th>Ativo</th><th>MTBF (h)</th><th>Lambda</th><th>R(' + pdfTmax + 'h)</th></tr></thead><tbody>';
+  html += '<table><thead><tr><th>Ativo</th><th>Modelo</th><th>MTBF (h)</th><th>R(' + pdfTmax + 'h)</th><th>Regime de falha</th></tr></thead><tbody>';
   pdfAtivos.forEach(function(a) {
-    var m = calcularMTBFreal(a);
-    if (m > 0) {
-      var lam = 1 / m;
-      var r = (Math.exp(-lam * pdfTmax) * 100).toFixed(1);
-      html += '<tr><td>' + esc(a) + '</td><td>' + m.toFixed(0) + '</td><td>' + lam.toFixed(6) + '</td><td>' + r + '%</td></tr>';
+    var mo = modeloAtivo(a);
+    if (mo.ok) {
+      var pa = paramsAtivo(a);
+      var r = (weibR(pa, pdfTmax) * 100).toFixed(1);
+      html += '<tr><td>' + esc(a) + '</td><td>' + (pa.tipo === 'weibull' ? 'Weibull β=' + pa.beta.toFixed(2) + ', η=' + pa.eta.toFixed(0) + 'h' : 'Exponencial') + '</td><td>' + pa.mtbf.toFixed(0) + '</td><td>' + r + '%</td><td>' + regimeTexto(pa).txt + '</td></tr>';
     } else {
-      html += '<tr><td>' + esc(a) + '</td><td colspan="3" style="color:#aaa;">Historico insuficiente</td></tr>';
+      html += '<tr><td>' + esc(a) + '</td><td colspan="4" style="color:#aaa;">Historico insuficiente</td></tr>';
     }
   });
   html += '</tbody></table>';
@@ -4787,11 +4747,11 @@ function generatePDF() {
   html += '<div class="pb"></div>';
   html += '<h1>8. Plano de Acoes</h1>';
   html += '<div class="section">';
-  var abertas = S.acoes.filter(function(a) { return a.status !== 'Concluido'; }).length;
+  var abertas = S.acoes.filter(function(a) { return !acaoConcluida(a); }).length;
   html += '<p>Total: <strong>' + S.acoes.length + '</strong> | Pendentes: <strong style="color:#fbbf24;">' + abertas + '</strong></p>';
   html += '<table><thead><tr><th>Responsavel</th><th>Acao</th><th>Status</th><th>Data</th><th>Prazo (dias)</th></tr></thead><tbody>';
   S.acoes.forEach(function(a) {
-    var corStatus = a.status === 'Concluido' ? 'color:#34d399;' : 'color:#fbbf24;';
+    var corStatus = acaoConcluida(a) ? 'color:#34d399;' : 'color:#fbbf24;';
     html += '<tr><td>' + esc(a.resp) + '</td><td>' + esc(a.acao) + '</td><td style="font-weight:600;' + corStatus + '">' + a.status + '</td><td>' + a.dt + '</td><td>' + a.dias + '</td></tr>';
   });
   html += '</tbody></table></div>';
@@ -4813,10 +4773,6 @@ function generatePDF() {
 // ============================================================
 // MTBF DO ATIVO (corrigido — usa S.historico)
 // ============================================================
-function calcularMTBFdoAtivo(n) {
-  var m = calcularMTBFreal(n);
-  return m > 0 ? m : getCfg().mtbfPadrao;
-}
 
 
 </script>
