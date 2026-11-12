@@ -91,15 +91,53 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); font
 .tree-sub-title { font-size: 12px; font-weight: 600; color: var(--amber); margin-bottom: 4px; }
 .tree-item-tag { display: inline-block; background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 3px; font-size: 11px; margin: 2px; border: 1px solid var(--border); color: var(--text2); }
 
-/* ── RBD INTERACTIVE CONTAINER ── */
-.rbd-workspace { background: var(--bg3); border: 2px dashed var(--border); border-radius: 10px; padding: 20px; min-height: 250px; display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px; }
-.rbd-row { display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; background: rgba(0,0,0,0.15); padding: 14px; border-radius: 8px; border: 1px solid var(--border); position: relative; }
-.rbd-row::before { content: '➔'; position: absolute; left: -15px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 16px; }
-.rbd-group-title { font-size: 11px; font-family: var(--mono); color: var(--text3); position: absolute; top: 4px; left: 8px; text-transform: uppercase; }
-.rbd-parallel-box { display: flex; flex-direction: column; gap: 8px; background: rgba(74,124,247,0.04); border: 1px dashed var(--accent); padding: 12px; border-radius: 6px; min-width: 140px; align-items: center; }
-.rbd-block { background: var(--bg4); border: 1px solid var(--border2); border-radius: 6px; padding: 10px 14px; min-width: 130px; text-align: center; font-family: var(--mono); cursor: grab; position: relative; font-size: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
-.rbd-block:active { cursor: grabbing; }
-.rbd-block .del-btn { position: absolute; top: -6px; right: -6px; background: var(--red); color: #fff; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
+/* ── RBD — editor em árvore ── */
+.rbd-main { display: grid; grid-template-columns: minmax(0,1fr) 320px; gap: 14px; align-items: start; margin-bottom: 16px; }
+@media (max-width: 1150px) { .rbd-main { grid-template-columns: 1fr; } }
+.rbd-workspace { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 12px; min-height: 260px; overflow: auto; }
+.rbd-empty { color: var(--text3); padding: 60px 20px; text-align: center; line-height: 1.8; }
+.rbd-svg { display: block; margin: 0 auto; font-family: var(--mono); }
+.rbd-wire { stroke: var(--text3); stroke-width: 2; }
+.rbd-dot { fill: var(--text3); }
+.rbd-term { fill: var(--bg4); stroke: var(--text2); stroke-width: 2; }
+.rbd-t-term { fill: var(--text2); font-size: 10px; font-weight: 700; letter-spacing: .5px; }
+.rbd-node, .rbd-grp { cursor: pointer; }
+.rbd-box { fill: var(--bg4); stroke-width: 1.5; }
+.rbd-box.sel { stroke-width: 3; filter: drop-shadow(0 0 6px rgba(74,124,247,.7)); }
+.rbd-box.nodata { stroke-dasharray: 6 4; }
+.rbd-node:hover .rbd-box { fill: #2c3346; }
+.rbd-t-name { fill: var(--teal); font-size: 12px; font-weight: 700; }
+.rbd-t-sub { fill: var(--text2); font-size: 10.5px; }
+.rbd-t-r { font-size: 11.5px; font-weight: 700; }
+.rbd-frame { stroke-width: 1.5; }
+.rbd-frame.par { fill: rgba(167,139,250,.06); stroke: var(--purple); stroke-dasharray: 7 4; }
+.rbd-frame.ser { fill: rgba(34,211,238,.03); stroke: var(--border2); stroke-dasharray: 3 3; }
+.rbd-frame.sel { stroke: var(--accent); stroke-width: 3; stroke-dasharray: none; }
+.rbd-grp:hover .rbd-frame { stroke-width: 2.5; }
+.rbd-glbl { font-size: 10.5px; font-weight: 700; letter-spacing: .4px; }
+.rbd-glbl.par { fill: var(--purple); }
+.rbd-glbl.ser { fill: var(--text3); }
+.rbd-toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.rbd-toolbar select { background: var(--bg3); color: var(--text); border: 1px solid var(--border2); border-radius: 6px; padding: 7px 10px; min-width: 200px; }
+.rbd-toolbar .sep { width: 1px; height: 26px; background: var(--border); margin: 0 4px; }
+.rbd-toolbar .btn:disabled { opacity: .35; cursor: not-allowed; }
+.rbd-cfg { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 10px; font-size: 12px; color: var(--text2); }
+.rbd-cfg input[type=number] { width: 90px; background: var(--bg3); color: var(--text); border: 1px solid var(--border2); border-radius: 5px; padding: 4px 6px; }
+.rbd-hint { margin-top: 10px; font-size: 12px; color: var(--text2); background: rgba(74,124,247,.08); border-left: 3px solid var(--accent); padding: 7px 10px; border-radius: 4px; }
+#rbd-inspector { margin: 0; font-size: 12px; }
+.rbd-insp-title { font-size: 14px; font-weight: 700; color: var(--teal); margin-bottom: 8px; word-break: break-word; }
+.rbd-insp-txt { color: var(--text2); line-height: 1.5; margin-bottom: 8px; }
+.rbd-insp-rule { border-left: 3px solid var(--text3); padding: 6px 8px; margin: 6px 0; color: var(--text2); line-height: 1.5; background: var(--bg3); border-radius: 4px; }
+.rbd-insp-rule.par { border-left-color: var(--purple); }
+.rbd-insp-rule code { font-family: var(--mono); color: var(--amber); font-size: 11px; }
+.rbd-insp-tb td { padding: 4px 6px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.rbd-insp-tb td:last-child { text-align: right; font-family: var(--mono); }
+.rbd-insp-sub { margin: 10px 0 4px; font-size: 11px; color: var(--text3); }
+.rbd-formula { margin-top: 10px; font-family: var(--mono); font-size: 11px; color: var(--amber); background: var(--bg3); padding: 8px; border-radius: 6px; word-break: break-word; line-height: 1.6; }
+#rbd-inspector input, #rbd-inspector select { background: var(--bg3); color: var(--text); border: 1px solid var(--border2); border-radius: 5px; padding: 5px 7px; }
+.mtbf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.rbd-zoom { display: inline-flex; gap: 4px; align-items: center; margin-left: auto; }
+.rbd-warn { margin-top: 12px; font-size: 12px; color: var(--amber); background: rgba(251,191,36,.08); border: 1px solid rgba(251,191,36,.3); border-radius: 6px; padding: 8px 12px; line-height: 1.6; }
 
 /* ── TABLES & FORMS ── */
 .tbl-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
@@ -156,13 +194,13 @@ tr:hover td { background: rgba(255,255,255,.02); }
 .modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
 
 @media print {
-  #topbar, #sidebar, .btn-row, .btn, .rbd-controls, .del-btn, input[type="file"] { display: none !important; }
+  #topbar, #sidebar, .btn-row, .btn, .rbd-controls, #rbd-inspector, .del-btn, input[type="file"] { display: none !important; }
   #modal-new, #modal-pin, #modal-item { display: none !important; }
   #layout { display: block; overflow: visible; }
   #main { padding: 0; overflow: visible; width: 100%; }
   .page { display: block !important; opacity: 1 !important; visibility: visible !important; page-break-after: always; margin-bottom: 40px; }
   body { color: #000 !important; background: #fff !important; font-size: 12px; height: auto; overflow: visible; }
-  .card, .tree-container, .tree-branch, .rbd-workspace, .rbd-row, .kpi, .mtbf-cell { border: 1px solid #777 !important; background: #fff !important; color: #000 !important; break-inside: avoid; }
+  .card, .tree-container, .tree-branch, .rbd-workspace, .kpi, .mtbf-cell { border: 1px solid #777 !important; background: #fff !important; color: #000 !important; break-inside: avoid; }
   th { background: #ddd !important; color: #000 !important; border: 1px solid #777 !important; }
   td { color: #000 !important; border: 1px solid #777 !important; }
   .kpi-value, .val, .tree-header, .tree-sub-title { color: #000 !important; }
@@ -473,15 +511,33 @@ tr:hover td { background: rgba(255,255,255,.02); }
     <!-- ========== RBD ========== -->
     <div id="pg-rbd" class="page">
       <div class="page-title">Reliability Block Diagram (RBD)</div>
-      <div class="page-sub">Modele o fluxo de confiabilidade do sistema</div>
+      <div class="page-sub">Monte o caminho da ENTRADA até a SAÍDA: blocos no mesmo caminho estão em série; caminhos que se dividem e se juntam estão em paralelo.</div>
       <div class="card rbd-controls">
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="addRbdStage()">+ Adicionar Estagio</button>
-          <select id="rbd-item-picker" class="btn" style="background:var(--bg3);"></select>
-          <button class="btn" onclick="addBlockToSelectedStage()">+ Inserir no Ultimo Estagio</button>
+        <div class="rbd-toolbar">
+          <select id="rbd-item-picker" onchange="rbdSyncControls()" title="Ativo a inserir"></select>
+          <button class="btn btn-primary" onclick="rbdAdd('depois')" title="Novo bloco depois do selecionado, no mesmo caminho">→ Em série</button>
+          <button class="btn" onclick="rbdAdd('antes')" title="Novo bloco antes do selecionado, no mesmo caminho">← Série antes</button>
+          <button class="btn" id="rbd-b-par" onclick="rbdAdd('paralelo')" title="Novo bloco num caminho alternativo ao selecionado">⇅ Em paralelo</button>
+          <button class="btn" id="rbd-b-ramo" onclick="rbdAdd('ramo')" title="Novo ramo no grupo paralelo selecionado">+ Ramo no grupo</button>
+          <span class="sep"></span>
+          <button class="btn" id="rbd-b-trocar" onclick="rbdTrocar()" title="Trocar o ativo do bloco selecionado pelo da lista">⇄ Trocar ativo</button>
+          <button class="btn" id="rbd-b-esq" onclick="rbdMover(-1)" title="Mover para trás/cima">◀</button>
+          <button class="btn" id="rbd-b-dir" onclick="rbdMover(1)" title="Mover para frente/baixo">▶</button>
+          <button class="btn btn-danger" id="rbd-b-del" onclick="rbdRemover()" title="Remover o selecionado (tecla Delete)">🗑 Remover</button>
+          <button class="btn btn-danger" onclick="rbdLimpar()" style="margin-left:auto">Limpar tudo</button>
+        </div>
+        <div class="rbd-hint" id="rbd-hint"></div>
+        <div class="rbd-cfg">
+          <label>Tempo de missão t <input id="rbd-tempo" type="number" min="1" step="1" onchange="rbdOnTempo(this.value)"> h</label>
+          <label>MTBF padrão p/ ativo sem histórico <input id="rbd-mtbf-padrao" type="number" min="1" step="1" onchange="rbdOnCfg()"> h</label>
+          <label title="Conta o tempo desde a última falha até hoje no cálculo do MTBF (estimador com censura). Afeta todo o app."><input id="rbd-censura" type="checkbox" onchange="rbdOnCfg()"> Considerar tempo desde a última falha no MTBF</label>
+          <span class="rbd-zoom">Zoom <button class="btn btn-sm" onclick="rbdSetZoom(-1)">−</button><button class="btn btn-sm" id="rbd-zoom-fit" onclick="rbdSetZoom(0)">Ajustar</button><button class="btn btn-sm" onclick="rbdSetZoom(1)">+</button></span>
         </div>
       </div>
-      <div class="rbd-workspace" id="rbd-space-area" style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px;"></div>
+      <div class="rbd-main">
+        <div class="rbd-workspace" id="rbd-space-area"></div>
+        <div class="card" id="rbd-inspector"></div>
+      </div>
       <div id="rbd-kpi-summary" style="margin-top:16px;"></div>
     </div>
 
@@ -673,12 +729,13 @@ let S = {
   acoes: [],
   spare: [],
   dd_results: [],
-  rbd_structure: []
+  rbd_structure: [],
+  rbd_tree: null,
+  cfg: { censura: true, mtbfPadrao: 8760 }
 };
 let pendingData = null;
 let sessionActive = false;
 let confChart = null, rpnChart = null, stratChart = null;
-let activeRbdRowId = null;
 let fileHandle = null; // File System Access API — referência ao arquivo aberto
 
 
@@ -779,50 +836,29 @@ function renderAcoes() {
 }
 
 
-// === MTBF REAL — Fonte: S.historico ===
-function calcularMTBFreal(nomeDoAtivo) {
-  var falhas = S.historico.filter(function(h) { return h.item === nomeDoAtivo && h.dt; });
-  if (falhas.length < 2) return 0;
-  var datas = [];
-  falhas.forEach(function(f) {
-    var t = new Date(f.dt).getTime();
-    if (!isNaN(t)) datas.push(t);
-  });
-  datas.sort(function(a, b) { return a - b; });
-  if (datas.length < 2) return 0;
-  var soma = 0;
-  for (var i = 1; i < datas.length; i++) {
-    soma += (datas[i] - datas[i - 1]) / (1000 * 60 * 60);
-  }
-  return soma / (datas.length - 1);
-}
-
 // ============================================================
 // MTBF REAL — Calcula a partir do histórico de falhas
 // ============================================================
 function calcularMTBFreal(nomeAtivo) {
   if (!nomeAtivo) return 0;
-  var falhas = S.historico.filter(function(h) {
-    return h.item === nomeAtivo;
-  }).sort(function(a, b) {
-    return new Date(a.dt) - new Date(b.dt);
-  });
-
-  if (falhas.length < 2) return 0;
-
-  var datas = falhas.map(function(f) { return new Date(f.dt).getTime(); });
-  var somaIntervalos = 0;
-  for (var i = 1; i < datas.length; i++) {
-    somaIntervalos += (datas[i] - datas[i - 1]) / 3600000; // ms → horas
-  }
-
-  return somaIntervalos / (datas.length - 1);
+  var datas = S.historico.filter(function(h) { return h.item === nomeAtivo; })
+    .map(function(h) { return new Date(h.dt).getTime(); })
+    .filter(function(t) { return !isNaN(t); })
+    .sort(function(a, b) { return a - b; });
+  if (datas.length < 2) return 0;
+  var ini = datas[0], fim = datas[datas.length - 1];
+  // Censura à direita: o tempo desde a última falha até hoje também é tempo
+  // de operação sem falha. Sem isso o MTBF fica enviesado para baixo.
+  if (getCfg().censura) fim = Math.max(fim, Date.now());
+  // Datas têm resolução de dia: falhas no mesmo dia contam como < 24 h
+  var horas = Math.max(fim - ini, 86400000) / 3600000;
+  return horas / (datas.length - 1);
 }
 
 
 function calcularMTBFdoAtivo(n) {
   var m = calcularMTBFreal(n);
-  return m > 0 ? m : 8760;
+  return m > 0 ? m : getCfg().mtbfPadrao;
 }
 
 
@@ -840,7 +876,9 @@ function getEmptyState() {
     acoes: [],
     spare: [],
     dd_results: [],
-    rbd_structure: []
+    rbd_structure: [],
+    rbd_tree: null,
+    cfg: { censura: true, mtbfPadrao: 8760 }
   };
 }
 
@@ -1159,7 +1197,7 @@ function updateProgress() {
     (S.sistemas && S.sistemas.length > 0) ? 1 : 0,
     (S.fmea && S.fmea.length > 0) ? 1 : 0,
     (S.dd_results && S.dd_results.length > 0) ? 1 : 0,
-    (S.rbd_structure && S.rbd_structure.length > 0) ? 1 : 0
+    rbdTemDiagrama() ? 1 : 0
   ];
   
   const pct = Math.round((steps.reduce((a,b) => a + b, 0) / steps.length) * 100);
@@ -1187,6 +1225,7 @@ function navigate(page) {
   event.currentTarget.classList.add('active');
   if(page === 'dash') renderDash();
   if(page === 'confiab') renderConfiab();
+  if(page === 'rbd') renderRbd();
 }
 
 // DASHBOARD LOGIC (MERGE COM GRÁFICOS E FLUXOS COMPLETOS)
@@ -1224,10 +1263,7 @@ function renderDash() {
     seen[s.item] = true;
     var temFmea = S.fmea.some(function(f) { return f.item === s.item; });
     var temDD = S.dd_results.some(function(d) { return d.item === s.item; });
-    var temRBD = false;
-    S.rbd_structure.forEach(function(st) {
-      if (st.items.indexOf(s.item) >= 0) temRBD = true;
-    });
+    var temRBD = rbdLeaves(rbdTree()).some(function(L) { return L.ref === s.item; });
     if (temFmea) ativosComFmea++;
     if (temDD) ativosComDD++;
     if (temRBD) ativosComRBD++;
@@ -2935,199 +2971,635 @@ function renderDD() {
   tb.innerHTML = html || '<tr><td colspan="5" style="text-align:center;padding:12px">Nenhuma amarracao.</td></tr>';
 }
 
-function addRbdRow() {
-  const row = { id: uid(), items: [] };
-  S.rbd_structure.push(row);
-  activeRbdRowId = row.id;
+// ============================================================
+// RBD — DIAGRAMA DE BLOCOS EM ÁRVORE (série / paralelo / k-de-n)
+// ------------------------------------------------------------
+// Modelo salvo em S.rbd_tree (raiz é sempre uma 'serie'):
+//   { id, t:'item',  ref:'Nome do ativo', mtbf?: h (opcional, manual) }
+//   { id, t:'serie', c:[nós] }            -> todos precisam funcionar
+//   { id, t:'par',   k:1, c:[nós] }       -> k ramos (de n) precisam funcionar
+// Sessões antigas (S.rbd_structure em estágios) são convertidas na 1a leitura.
+// ============================================================
+var rbdSel = null;  // id do nó selecionado no editor
+var rbdSel2 = null; // Shift+clique: outra ponta de um trecho em série
+var rbdZoom = 0, rbdZoomAtual = 1; // 0 = ajustar à largura da área
+
+function rbdSetZoom(d) {
+  rbdZoom = d === 0 ? 0 : Math.max(0.3, Math.min(2, (rbdZoom || rbdZoomAtual) + d * 0.15));
   renderRbd();
+}
+window.addEventListener('resize', function() {
+  var pg = document.getElementById('pg-rbd');
+  if (pg && pg.classList.contains('active') && !rbdZoom) renderRbd();
+});
+
+// Seleção atual: um nó, ou um trecho contínuo de uma mesma série (Shift+clique)
+function rbdSelecao() {
+  if (!rbdSel) return null;
+  var f = rbdFind(rbdSel);
+  if (!f || !f.parent) return null;
+  var r = { P: f.parent, i: f.idx, j: f.idx, node: f.node };
+  if (rbdSel2 && rbdSel2 !== rbdSel) {
+    var g = rbdFind(rbdSel2);
+    if (g && g.parent === f.parent && f.parent.t === 'serie') { r.i = Math.min(f.idx, g.idx); r.j = Math.max(f.idx, g.idx); }
+  }
+  r.multi = r.j > r.i;
+  r.nodes = r.P.c.slice(r.i, r.j + 1);
+  return r;
+}
+
+// Configurações de confiabilidade usadas pelo app inteiro
+function getCfg() {
+  if (!S.cfg) S.cfg = {};
+  if (S.cfg.censura === undefined) S.cfg.censura = true;
+  if (!(S.cfg.mtbfPadrao > 0)) S.cfg.mtbfPadrao = 8760;
+  return S.cfg;
+}
+
+function rbdTree() {
+  if (S.rbd_tree && S.rbd_tree.t === 'serie' && Array.isArray(S.rbd_tree.c)) return S.rbd_tree;
+  var root = { id: uid(), t: 'serie', c: [] };
+  (S.rbd_structure || []).forEach(function(st) {
+    var its = (st.items || []).map(function(n) { return { id: uid(), t: 'item', ref: n }; });
+    if (!its.length) return;
+    if (st.type === 'PARALELO' && its.length > 1) root.c.push({ id: uid(), t: 'par', k: 1, c: its });
+    else Array.prototype.push.apply(root.c, its);
+  });
+  S.rbd_tree = root;
+  S.rbd_structure = [];
+  return root;
+}
+
+function rbdLeaves(n, out) {
+  out = out || [];
+  if (n.t === 'item') out.push(n); else n.c.forEach(function(ch) { rbdLeaves(ch, out); });
+  return out;
+}
+function rbdTemDiagrama() { return rbdLeaves(rbdTree()).length > 0; }
+
+function rbdFind(id, n, parent) {
+  n = n || rbdTree();
+  if (n.id === id) return { node: n, parent: parent || null, idx: parent ? parent.c.indexOf(n) : -1 };
+  if (n.c) for (var i = 0; i < n.c.length; i++) { var r = rbdFind(id, n.c[i], n); if (r) return r; }
+  return null;
+}
+
+// Simplifica a árvore: série dentro de série vira uma série só, paralelo(1)
+// dentro de paralelo(1) idem, grupo com 1 filho vira o próprio filho.
+function rbdNormalize(n) {
+  if (n.t === 'item') return n;
+  var out = [];
+  n.c.forEach(function(ch) {
+    ch = rbdNormalize(ch);
+    if (!ch) return;
+    if (n.t === 'serie' && ch.t === 'serie') out = out.concat(ch.c);
+    else if (n.t === 'par' && ch.t === 'par' && (n.k || 1) === 1 && (ch.k || 1) === 1) out = out.concat(ch.c);
+    else out.push(ch);
+  });
+  n.c = out;
+  if (n.t === 'par') n.k = Math.max(1, Math.min(n.k || 1, n.c.length));
+  if (!n.c.length) return null;
+  if (n.c.length === 1) return n.c[0];
+  return n;
+}
+
+function rbdCommit() {
+  var r = rbdTree();
+  var res = rbdNormalize(r);
+  if (!res) S.rbd_tree = { id: r.id, t: 'serie', c: [] };
+  else if (res.t !== 'serie') S.rbd_tree = { id: r.id, t: 'serie', c: [res] };
+  else S.rbd_tree = res;
+  if (rbdSel && !rbdFind(rbdSel)) rbdSel = null;
+  if (rbdSel2 && !rbdFind(rbdSel2)) rbdSel2 = null;
+  renderRbd();
+  try { updateProgress(); } catch (e) {}
   autoSave();
 }
 
-function addBlockToActiveRow() {
-  const item = document.getElementById('rbd-item-picker').value;
-  if(!item) { alert("Cadastre ativos na hierarquia estrutural primeiro."); return; }
-  if(!activeRbdRowId && S.rbd_structure.length > 0) activeRbdRowId = S.rbd_structure[0].id;
-  if(!activeRbdRowId) { addRbdRow(); }
-  
-  const r = S.rbd_structure.find(x => x.id === activeRbdRowId);
-  if(r) { r.items.push(item); renderRbd(); autoSave(); }
+// ---------- Dados de cada bloco ----------
+function rbdAtivoStats(name) {
+  var hs = S.historico.filter(function(h) { return h.item === name; });
+  var n = hs.filter(function(h) { return !isNaN(new Date(h.dt).getTime()); }).length;
+  var ttrs = hs.map(function(h) { return +h.ttr; }).filter(function(v) { return v > 0; });
+  var mttr = ttrs.length ? ttrs.reduce(function(a, b) { return a + b; }, 0) / ttrs.length : 0;
+  return { n: n, mtbf: calcularMTBFreal(name), mttr: mttr };
 }
 
-//=============================================================
-// RBD — COM LAMBDA E R(t) NOS BLOCOS
-// ============================================================
+function rbdParamsMap() {
+  var pm = {}, cache = {};
+  rbdLeaves(rbdTree()).forEach(function(L) {
+    var st = cache[L.ref] || (cache[L.ref] = rbdAtivoStats(L.ref));
+    var src, mtbf;
+    if (L.mtbf > 0) { src = 'manual'; mtbf = +L.mtbf; }
+    else if (st.mtbf > 0) { src = 'historico'; mtbf = st.mtbf; }
+    else { src = 'padrao'; mtbf = getCfg().mtbfPadrao; }
+    pm[L.id] = { mtbf: mtbf, mttr: st.mttr, n: st.n, src: src, A: mtbf / (mtbf + st.mttr) };
+  });
+  return pm;
+}
 
+// ---------- Cálculo ----------
+// Probabilidade de pelo menos k de n blocos independentes funcionarem
+function rbdKdeN(ps, k) {
+  var dp = [1];
+  ps.forEach(function(p) {
+    var nx = new Array(dp.length + 1).fill(0);
+    for (var j = 0; j < dp.length; j++) { nx[j] += dp[j] * (1 - p); nx[j + 1] += dp[j] * p; }
+    dp = nx;
+  });
+  var s = 0;
+  for (var j = k; j < dp.length; j++) s += dp[j];
+  return s;
+}
+
+// Avalia a estrutura com f(item) = probabilidade de o item funcionar
+function rbdEval(n, f) {
+  if (n.t === 'item') return f(n);
+  var ps = n.c.map(function(ch) { return rbdEval(ch, f); });
+  if (n.t === 'serie') return ps.reduce(function(a, b) { return a * b; }, 1);
+  return rbdKdeN(ps, n.k || 1);
+}
+
+function rbdRfn(t, pm) { return function(n) { return Math.exp(-t / pm[n.id].mtbf); }; }
+function rbdR(t, pm, node) { pm = pm || rbdParamsMap(); return rbdEval(node || rbdTree(), rbdRfn(t, pm)); }
+function rbdA(pm, node) { pm = pm || rbdParamsMap(); return rbdEval(node || rbdTree(), function(n) { return pm[n.id].A; }); }
+
+// MTTF do sistema = integral de R(t) de 0 a infinito (vale para série, paralelo e k-de-n)
+function rbdMTTF(pm) {
+  pm = pm || rbdParamsMap();
+  var ms = rbdLeaves(rbdTree()).map(function(L) { return pm[L.id].mtbf; });
+  if (!ms.length) return 0;
+  var mn = Math.min.apply(null, ms), mx = Math.max.apply(null, ms);
+  var t = 0, h = mn / 200, prev = 1, area = 0, f;
+  while (t < 60 * mx) {
+    var r = rbdR(t + h, pm);
+    area += (prev + r) / 2 * h;
+    prev = r; t += h; h *= 1.01;
+    if (r < 1e-9) break;
+  }
+  return area;
+}
+
+// Importância de Birnbaum: quanto R do sistema depende de cada bloco
+function rbdBirnbaum(t, pm) {
+  pm = pm || rbdParamsMap();
+  var root = rbdTree(), base = rbdRfn(t, pm), rs = rbdEval(root, base);
+  return rbdLeaves(root).map(function(L) {
+    var r1 = rbdEval(root, function(n) { return n === L ? 1 : base(n); });
+    var r0 = rbdEval(root, function(n) { return n === L ? 0 : base(n); });
+    return { node: L, r: base(L), ib: r1 - r0, ganho: r1 - rs };
+  });
+}
+
+// API usada pelas outras telas (retorna %)
+function calcularRBD(tempo) {
+  if (!rbdTemDiagrama()) return 0;
+  return rbdR(tempo) * 100;
+}
+
+// Tempo de missão (compartilhado com a aba Confiabilidade)
+function getRbdTempo() {
+  var el = document.getElementById('conf-tmax') || document.getElementById('rbd-tempo');
+  return el ? (+el.value || 720) : 720;
+}
+
+// ---------- Edição ----------
 function populateRbdPickers() {
   var p = document.getElementById('rbd-item-picker');
   if (!p) return;
-  var opts = '';
+  var atual = p.value, seen = {}, opts = '';
   S.sistemas.forEach(function(s) {
-    opts += '<option value="' + esc(s.item) + '">' + esc(s.item) + '</option>';
+    if (seen[s.item]) return; seen[s.item] = true;
+    opts += '<option value="' + escA(s.item) + '">' + esc(s.item) + '</option>';
   });
-  p.innerHTML = opts || '<option>Sem ativos</option>';
+  p.innerHTML = opts || '<option value="">Sem ativos cadastrados</option>';
+  if (atual && seen[atual]) p.value = atual;
 }
 
-function addRbdStage() {
-  S.rbd_structure.push({ id: uid(), type: 'SERIE', items: [] });
-  activeRbdRowId = S.rbd_structure[S.rbd_structure.length - 1].id;
-  renderRbd();
-  autoSave();
+function escA(t) { return esc(String(t == null ? '' : t)).replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+
+function rbdNovoBloco() {
+  var v = (document.getElementById('rbd-item-picker') || {}).value;
+  if (!v || !S.sistemas.some(function(s) { return s.item === v; })) {
+    alert('Cadastre ativos na hierarquia estrutural e escolha um na lista.');
+    return null;
+  }
+  return { id: uid(), t: 'item', ref: v };
 }
 
-function addBlockToSelectedStage() {
-  var item = document.getElementById('rbd-item-picker').value;
-  if (!item) { alert('Cadastre ativos.'); return; }
-  if (!S.rbd_structure.length) { addRbdStage(); return; }
-  var target = null;
-  if (activeRbdRowId) {
-    for (var i = 0; i < S.rbd_structure.length; i++) {
-      if (S.rbd_structure[i].id === activeRbdRowId) { target = S.rbd_structure[i]; break; }
+// mode: 'depois' | 'antes' (série)  |  'paralelo'  |  'ramo' (novo ramo no grupo paralelo)
+function rbdAdd(mode) {
+  var root = rbdTree();
+  var sel = rbdSelecao();
+  if (!sel && root.c.length && (mode === 'paralelo' || mode === 'ramo')) {
+    alert('Selecione primeiro o bloco, o grupo ou o trecho (Shift+clique) que vai ficar em paralelo com o novo.');
+    return;
+  }
+  var N = rbdNovoBloco();
+  if (!N) return;
+  if (!sel) {
+    if (mode === 'antes') root.c.unshift(N); else root.c.push(N);
+  } else {
+    var X = sel.node, P = sel.P, i = sel.i, j = sel.j;
+    if (mode === 'depois' || mode === 'antes') {
+      if (P.t === 'serie') P.c.splice(mode === 'depois' ? j + 1 : i, 0, N);
+      else P.c[i] = { id: uid(), t: 'serie', c: mode === 'depois' ? [X, N] : [N, X] };
+    } else if (mode === 'ramo' && !sel.multi && X.t === 'par') {
+      X.c.push(N);
+    } else if (sel.multi) {
+      // trecho em série vira um ramo; o novo bloco é o caminho alternativo
+      var trecho = { id: uid(), t: 'serie', c: sel.nodes };
+      P.c.splice(i, j - i + 1, { id: uid(), t: 'par', k: 1, c: [trecho, N] });
+    } else {
+      if (P.t === 'par' && (P.k || 1) === 1) P.c.splice(i + 1, 0, N);
+      else P.c[i] = { id: uid(), t: 'par', k: 1, c: [X, N] };
     }
   }
-  if (!target) {
-    target = S.rbd_structure[S.rbd_structure.length - 1];
-    activeRbdRowId = target.id;
+  rbdSel = N.id; rbdSel2 = null;
+  rbdCommit();
+}
+
+function rbdTrocar() {
+  var sel = rbdSelecao();
+  if (!sel || sel.multi || sel.node.t !== 'item') { alert('Selecione um bloco para trocar o ativo.'); return; }
+  var v = document.getElementById('rbd-item-picker').value;
+  if (!v) return;
+  sel.node.ref = v;
+  delete sel.node.mtbf;
+  rbdCommit();
+}
+
+function rbdMover(d) {
+  var sel = rbdSelecao();
+  if (!sel || sel.multi) return;
+  var j = sel.i + d;
+  if (j < 0 || j >= sel.P.c.length) return;
+  var tmp = sel.P.c[j]; sel.P.c[j] = sel.node; sel.P.c[sel.i] = tmp;
+  rbdCommit();
+}
+
+function rbdRemover() {
+  var sel = rbdSelecao();
+  if (!sel) return;
+  sel.P.c.splice(sel.i, sel.j - sel.i + 1);
+  rbdSel = rbdSel2 = null;
+  rbdCommit();
+}
+
+function rbdLimpar() {
+  if (!rbdTemDiagrama()) return;
+  if (!confirm('Apagar todo o diagrama de blocos?')) return;
+  S.rbd_tree = { id: uid(), t: 'serie', c: [] };
+  rbdSel = rbdSel2 = null;
+  rbdCommit();
+}
+
+function rbdSetK(id, k) {
+  var f = rbdFind(id);
+  if (f && f.node.t === 'par') { f.node.k = +k; rbdCommit(); }
+}
+
+function rbdToggleTipo(id) {
+  var f = rbdFind(id);
+  if (!f || f.node.t === 'item') return;
+  if (f.node.t === 'par') f.node.t = 'serie';
+  else { f.node.t = 'par'; f.node.k = 1; }
+  rbdCommit();
+}
+
+function rbdSetMtbf(id) {
+  var f = rbdFind(id);
+  var el = document.getElementById('rbd-mtbf-manual');
+  if (!f || !el) return;
+  var v = parseFloat(el.value);
+  if (v > 0) f.node.mtbf = v; else delete f.node.mtbf;
+  rbdCommit();
+}
+
+function rbdClick(e, id) {
+  if (e) e.stopPropagation();
+  if (e && e.shiftKey && rbdSel && id && id !== rbdSel) {
+    var f = rbdFind(rbdSel), g = rbdFind(id);
+    if (f && g && f.parent && f.parent === g.parent && f.parent.t === 'serie') { rbdSel2 = id; renderRbd(); return; }
   }
-  target.items.push(item);
+  rbdSel2 = null;
+  rbdSel = rbdSel === id ? null : id;
+  renderRbd();
+}
+
+function rbdOnTempo(v) {
+  var c = document.getElementById('conf-tmax');
+  if (c) c.value = v;
+  var r = document.getElementById('rbd-tempo');
+  if (r) r.value = v;
+  renderRbd();
+}
+
+function rbdOnCfg() {
+  var c = getCfg();
+  var mp = parseFloat(document.getElementById('rbd-mtbf-padrao').value);
+  c.mtbfPadrao = mp > 0 ? mp : 8760;
+  c.censura = document.getElementById('rbd-censura').checked;
   renderRbd();
   autoSave();
 }
 
-function toggleStageType(id) {
-  var s = S.rbd_structure.find(function(x) { return x.id === id; });
-  if (s) { s.type = s.type === 'SERIE' ? 'PARALELO' : 'SERIE'; renderRbd(); autoSave(); }
+document.addEventListener('keydown', function(e) {
+  var pg = document.getElementById('pg-rbd');
+  if (!pg || !pg.classList.contains('active') || !rbdSel) return;
+  var tag = (e.target && e.target.tagName) || '';
+  if (/INPUT|SELECT|TEXTAREA/.test(tag)) return;
+  if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); rbdRemover(); }
+  if (e.key === 'Escape') { rbdSel = rbdSel2 = null; renderRbd(); }
+});
+
+// ---------- Formatação ----------
+function rbdPct(p, d) { return (p * 100).toFixed(d === undefined ? 1 : d).replace('.', ',') + '%'; }
+function rbdNum(v, d) { return (+v).toLocaleString('pt-BR', { maximumFractionDigits: d || 0, minimumFractionDigits: d || 0 }); }
+function rbdCor(r) { return r >= 0.8 ? 'var(--green)' : r >= 0.5 ? 'var(--amber)' : 'var(--red)'; }
+function rbdCorte(s, n) { s = String(s); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
+function rbdNomeNo(n) {
+  if (n.t === 'item') return n.ref;
+  if (n.t === 'serie') return 'Série de ' + n.c.length + ' elementos';
+  return (n.k > 1 ? 'Grupo ' + n.k + ' de ' + n.c.length : 'Paralelo de ' + n.c.length + ' ramos');
 }
 
-function delBlockRbd(id, idx) {
-  var s = S.rbd_structure.find(function(x) { return x.id === id; });
-  if (!s) return;
-  s.items.splice(idx, 1);
-  if (!s.items.length) S.rbd_structure = S.rbd_structure.filter(function(x) { return x.id !== id; });
-  renderRbd();
-  autoSave();
+// ---------- Layout do desenho (esquerda -> direita) ----------
+var RB = { bw: 178, bh: 82, gx: 40, gy: 18, fx: 12, lbl: 26, fb: 12, rail: 14, rg: 24 };
+
+function rbdLabel(n, ctx) {
+  var r = rbdR(ctx.t, ctx.pm, n);
+  if (n.t === 'serie') return 'SÉRIE · todos · R ' + rbdPct(r);
+  if ((n.k || 1) === 1) return 'PARALELO · basta 1 de ' + n.c.length + ' · R ' + rbdPct(r);
+  return 'k-DE-N · ' + n.k + ' de ' + n.c.length + ' · R ' + rbdPct(r);
 }
 
-function selectRbdStage(id) { activeRbdRowId = id; renderRbd(); }
+function rbdLayout(n, isRoot, ctx) {
+  if (n.t === 'item') { n._w = RB.bw; n._h = RB.bh; n._m = RB.bh / 2; return; }
+  n.c.forEach(function(ch) { rbdLayout(ch, false, ctx); });
+  n._lbl = isRoot ? '' : rbdLabel(n, ctx);
+  var lblW = isRoot ? 0 : n._lbl.length * 6.7 + 24;
+  if (n.t === 'serie') {
+    var px = isRoot ? 0 : RB.fx, top = isRoot ? 0 : RB.lbl, bot = isRoot ? 0 : RB.fb;
+    var mTop = 0, mBot = 0, w = 0;
+    n.c.forEach(function(ch, i) {
+      mTop = Math.max(mTop, ch._m); mBot = Math.max(mBot, ch._h - ch._m);
+      w += ch._w + (i ? RB.gx : 0);
+    });
+    var inner = Math.max(w, lblW - 2 * px), cx = px + (inner - w) / 2;
+    n._m = top + mTop; n._h = top + mTop + mBot + bot; n._w = inner + 2 * px;
+    n.c.forEach(function(ch) { ch._dx = cx; ch._dy = n._m - ch._m; cx += ch._w + RB.gx; });
+  } else {
+    var side = RB.rail + RB.rg;
+    var W = Math.max(Math.max.apply(null, n.c.map(function(ch) { return ch._w; })), lblW - 2 * side);
+    var y = RB.lbl;
+    n.c.forEach(function(ch) { ch._dx = side + (W - ch._w) / 2; ch._dy = y; y += ch._h + RB.gy; });
+    n._w = W + 2 * side; n._h = y - RB.gy + RB.fb;
+    var f = n.c[0], l = n.c[n.c.length - 1];
+    n._m = (f._dy + f._m + l._dy + l._m) / 2;
+  }
+}
 
-// Tempo padrão para exibir R(t) nos blocos (usa o valor da aba confiabilidade ou 720h)
-function getRbdTempo() {
-  var el = document.getElementById('conf-tmax');
-  return el ? (+el.value || 720) : 720;
+function rbdLine(o, x1, y1, x2, y2) {
+  o.push('<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" class="rbd-wire"/>');
+}
+
+function rbdDraw(n, x, y, o, ctx, isRoot) {
+  if (n.t === 'item') return rbdDrawItem(n, x, y, o, ctx);
+  var sel = !!ctx.sel[n.id], isPar = n.t === 'par';
+  if (!isRoot) {
+    o.push('<g class="rbd-grp" onclick="rbdClick(event,\'' + n.id + '\')">');
+    o.push('<rect x="' + x + '" y="' + y + '" width="' + n._w + '" height="' + n._h + '" rx="10" class="rbd-frame ' +
+      (isPar ? 'par' : 'ser') + (sel ? ' sel' : '') + '"/>');
+    o.push('<text x="' + (x + 10) + '" y="' + (y + 17) + '" class="rbd-glbl ' + (isPar ? 'par' : 'ser') + '">' + esc(n._lbl) + '</text>');
+    o.push('<title>' + (isPar ? 'Clique para selecionar o grupo paralelo' : 'Clique para selecionar a série inteira') + '</title></g>');
+  }
+  var my = y + n._m;
+  if (!isPar) {
+    n.c.forEach(function(ch, i) {
+      if (i) { var p = n.c[i - 1]; rbdLine(o, x + p._dx + p._w, my, x + ch._dx, my); }
+    });
+    if (!isRoot) {
+      var f0 = n.c[0], l0 = n.c[n.c.length - 1];
+      rbdLine(o, x, my, x + f0._dx, my);
+      rbdLine(o, x + l0._dx + l0._w, my, x + n._w, my);
+    }
+  } else {
+    var rl = x + RB.rail, rr = x + n._w - RB.rail;
+    var f = n.c[0], l = n.c[n.c.length - 1];
+    rbdLine(o, x, my, rl, my); rbdLine(o, rr, my, x + n._w, my);
+    rbdLine(o, rl, y + f._dy + f._m, rl, y + l._dy + l._m);
+    rbdLine(o, rr, y + f._dy + f._m, rr, y + l._dy + l._m);
+    n.c.forEach(function(ch) {
+      var cy = y + ch._dy + ch._m;
+      rbdLine(o, rl, cy, x + ch._dx, cy);
+      rbdLine(o, x + ch._dx + ch._w, cy, rr, cy);
+      o.push('<circle cx="' + rl + '" cy="' + cy + '" r="3" class="rbd-dot"/><circle cx="' + rr + '" cy="' + cy + '" r="3" class="rbd-dot"/>');
+    });
+  }
+  n.c.forEach(function(ch) { rbdDraw(ch, x + ch._dx, y + ch._dy, o, ctx, false); });
+}
+
+function rbdDrawItem(n, x, y, o, ctx) {
+  var p = ctx.pm[n.id], r = Math.exp(-ctx.t / p.mtbf), sel = !!ctx.sel[n.id];
+  var tag = p.src === 'manual' ? ' ✎' : p.src === 'padrao' ? ' ⚠' : '';
+  var dup = ctx.dup[n.ref] > 1;
+  o.push('<g class="rbd-node" onclick="rbdClick(event,\'' + n.id + '\')">');
+  o.push('<rect x="' + x + '" y="' + y + '" width="' + RB.bw + '" height="' + RB.bh + '" rx="8" class="rbd-box' +
+    (sel ? ' sel' : '') + (p.src === 'padrao' ? ' nodata' : '') + '" style="stroke:' + (sel ? 'var(--accent)' : rbdCor(r)) + '"/>');
+  o.push('<rect x="' + x + '" y="' + y + '" width="5" height="' + RB.bh + '" rx="2" style="fill:' + rbdCor(r) + '"/>');
+  o.push('<text x="' + (x + 13) + '" y="' + (y + 20) + '" class="rbd-t-name">' + esc(rbdCorte(n.ref, 20)) + '</text>');
+  o.push('<text x="' + (x + 13) + '" y="' + (y + 38) + '" class="rbd-t-sub">MTBF ' + rbdNum(p.mtbf) + ' h' + tag + '</text>');
+  o.push('<text x="' + (x + 13) + '" y="' + (y + 55) + '" class="rbd-t-r" style="fill:' + rbdCor(r) + '">R(' + ctx.t + 'h) = ' + rbdPct(r) + '</text>');
+  o.push('<text x="' + (x + 13) + '" y="' + (y + 72) + '" class="rbd-t-sub">A = ' + rbdPct(p.A, 2) + (dup ? '  · repetido' : '') + '</text>');
+  var src = p.src === 'historico' ? 'MTBF do histórico (' + p.n + ' falhas)' :
+            p.src === 'manual' ? 'MTBF informado manualmente' :
+            'Sem histórico suficiente (' + p.n + ' falha' + (p.n === 1 ? '' : 's') + '): usando MTBF padrão';
+  o.push('<title>' + esc(n.ref) + '\n' + src + (dup ? '\nAtenção: este ativo aparece mais de uma vez no diagrama' : '') + '</title></g>');
+}
+
+// ---------- Render principal ----------
+function rbdSyncControls() {
+  var c = getCfg();
+  var t = document.getElementById('rbd-tempo'); if (t && document.activeElement !== t) t.value = getRbdTempo();
+  var m = document.getElementById('rbd-mtbf-padrao'); if (m && document.activeElement !== m) m.value = c.mtbfPadrao;
+  var k = document.getElementById('rbd-censura'); if (k) k.checked = !!c.censura;
+
+  var sel = rbdSelecao();
+  var temSel = !!sel, um = temSel && !sel.multi;
+  var isItem = um && sel.node.t === 'item', isPar = um && sel.node.t === 'par';
+  var vazio = !rbdTree().c.length;
+  function dis(id, off) { var b = document.getElementById(id); if (b) b.disabled = !!off; }
+  dis('rbd-b-par', !temSel);
+  dis('rbd-b-ramo', !isPar);
+  dis('rbd-b-trocar', !isItem);
+  dis('rbd-b-esq', !um || sel.i === 0);
+  dis('rbd-b-dir', !um || sel.i === sel.P.c.length - 1);
+  dis('rbd-b-del', !temSel);
+
+  var hint = document.getElementById('rbd-hint');
+  if (hint) {
+    var novo = (document.getElementById('rbd-item-picker') || {}).value || 'o ativo escolhido';
+    if (vazio) hint.innerHTML = 'Escolha um ativo e clique <b>→ Em série</b> para colocar o primeiro bloco entre a ENTRADA e a SAÍDA.';
+    else if (temSel && sel.multi) hint.innerHTML = 'Trecho selecionado: <b>' + sel.nodes.length + ' elementos em série</b>. <b>⇅ Em paralelo</b> cria um caminho alternativo a esse trecho inteiro com <b>' + esc(novo) + '</b>.';
+    else if (!temSel) hint.innerHTML = 'Nada selecionado: <b>→ Em série</b> coloca <b>' + esc(novo) + '</b> no fim da linha. Clique num bloco ou na moldura de um grupo para inserir ao lado dele; <b>Shift+clique</b> num segundo bloco da mesma linha seleciona o trecho entre eles.';
+    else hint.innerHTML = 'Selecionado: <b>' + esc(rbdNomeNo(sel.node)) + '</b>. <b>→ / ← Em série</b>: <b>' + esc(novo) +
+      '</b> entra no mesmo caminho (os dois precisam funcionar). <b>⇅ Em paralelo</b>: abre um caminho alternativo (basta um funcionar).';
+  }
 }
 
 function renderRbd() {
   var area = document.getElementById('rbd-space-area');
   if (!area) return;
+  var root = rbdTree();
+  rbdSyncControls();
 
-  if (!S.rbd_structure.length) {
-    area.innerHTML = '<div style="color:var(--text3);padding:20px;text-align:center;">Vazio. Adicione estagios.</div>';
+  if (!root.c.length) {
+    area.innerHTML = '<div class="rbd-empty">Diagrama vazio.<br>Comece escolhendo um ativo e clicando em <b>→ Em série</b>.</div>';
+    renderRbdInspector(null);
     renderRbdKpi();
     return;
   }
 
-  var tempo = getRbdTempo();
-  var html = '';
+  var ctx = { t: getRbdTempo(), pm: rbdParamsMap(), dup: {}, sel: {} };
+  var selAtual = rbdSelecao();
+  if (selAtual) selAtual.nodes.forEach(function(nd) { ctx.sel[nd.id] = true; });
+  rbdLeaves(root).forEach(function(L) { ctx.dup[L.ref] = (ctx.dup[L.ref] || 0) + 1; });
+  rbdLayout(root, true, ctx);
 
-  S.rbd_structure.forEach(function(s, i) {
-    var isActive = s.id === activeRbdRowId;
-    html += '<div style="display:flex;flex-direction:column;align-items:center;width:100%;">';
-    html += '<div style="background:var(--bg4);border:2px solid ' + (isActive ? 'var(--accent)' : 'var(--border2)') + ';padding:15px;border-radius:10px;min-width:280px;text-align:center;cursor:pointer;" onclick="selectRbdStage(\'' + s.id + '\')">';
-    
-    // Header do estágio
-    html += '<div style="display:flex;justify-content:space-between;margin-bottom:10px;">';
-    html += '<small style="color:var(--accent);font-weight:bold;cursor:pointer" onclick="event.stopPropagation();toggleStageType(\'' + s.id + '\')">[' + s.type + '] alternar</small>';
-    html += '<button onclick="event.stopPropagation();S.rbd_structure.splice(' + i + ',1);renderRbd();autoSave()" style="background:transparent;border:none;color:var(--red);cursor:pointer;font-size:16px;">x</button>';
-    html += '</div>';
-
-    // Blocos dos itens COM lambda e R(t)
-    html += '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;">';
-    if (s.items.length) {
-      s.items.forEach(function(it, idx) {
-        var mtbf = calcularMTBFreal(it);
-        var lambda = mtbf > 0 ? (1 / mtbf) : 0;
-        var rt = mtbf > 0 ? (Math.exp(-lambda * tempo) * 100) : 0;
-        
-        var lambdaStr = lambda > 0 ? lambda.toFixed(5) : '--';
-        var rtStr = rt > 0 ? rt.toFixed(1) + '%' : '--';
-        var rtColor = rt >= 80 ? 'var(--green)' : rt >= 50 ? 'var(--amber)' : rt > 0 ? 'var(--red)' : 'var(--text3)';
-
-        html += '<div style="background:var(--bg3);padding:8px 12px;border-radius:6px;border:1px solid var(--border);font-size:11px;min-width:130px;">';
-        html += '<div style="font-weight:600;color:var(--teal);margin-bottom:4px;">⚙️ ' + esc(it) + '</div>';
-        html += '<div style="color:var(--amber);font-size:10px;">λ = ' + lambdaStr + '</div>';
-        html += '<div style="color:' + rtColor + ';font-size:10px;font-weight:600;">R(' + tempo + 'h) = ' + rtStr + '</div>';
-        html += '<span style="cursor:pointer;color:var(--red);font-size:10px;" onclick="event.stopPropagation();delBlockRbd(\'' + s.id + '\',' + idx + ')">remover</span>';
-        html += '</div>';
-      });
-    } else {
-      html += '<span style="color:var(--text3);font-size:11px;">Vazio</span>';
-    }
-    html += '</div>';
-
-    // R(t) do estágio
-    if (s.items.length) {
-      var stageR = calcStageReliability(s, tempo);
-      html += '<div style="margin-top:10px;padding:6px;background:rgba(124,106,255,0.1);border-radius:4px;font-size:11px;">';
-      html += '<strong style="color:var(--accent)">R estagio (' + tempo + 'h) = ' + stageR.toFixed(2) + '%</strong>';
-      html += ' <span style="color:var(--text3)">(' + s.type + ')</span>';
-      html += '</div>';
-    }
-
-    html += '</div>';
-
-    // Seta entre estágios
-    if (i < S.rbd_structure.length - 1) {
-      html += '<div style="font-size:24px;margin:10px 0;color:var(--text3);">⬇️</div>';
-    }
-    html += '</div>';
-  });
-
-  area.innerHTML = html;
-  renderRbdKpi();
+  var M = 84, T = 14;
+  var W = root._w + 2 * M, H = root._h + 2 * T, my = T + root._m;
+  var avail = area.clientWidth - 26;
+  var z = rbdZoom || (avail > 100 ? Math.max(0.35, Math.min(1, avail / W)) : 1);
+  rbdZoomAtual = z;
+  var zf = document.getElementById('rbd-zoom-fit'); if (zf) zf.textContent = rbdZoom ? 'Ajustar (' + Math.round(z * 100) + '%)' : 'Ajustado ' + Math.round(z * 100) + '%';
+  var o = [];
+  o.push('<svg class="rbd-svg" xmlns="http://www.w3.org/2000/svg" width="' + Math.round(W * z) + '" height="' + Math.round(H * z) + '" viewBox="0 0 ' + W + ' ' + H + '" onclick="rbdClick(null,null)">');
+  rbdLine(o, 40, my, M, my);
+  rbdLine(o, M + root._w, my, W - 40, my);
+  o.push('<circle cx="32" cy="' + my + '" r="8" class="rbd-term"/><text x="32" y="' + (my - 14) + '" class="rbd-t-term" text-anchor="middle">ENTRADA</text>');
+  o.push('<circle cx="' + (W - 32) + '" cy="' + my + '" r="8" class="rbd-term"/><text x="' + (W - 32) + '" y="' + (my - 14) + '" class="rbd-t-term" text-anchor="middle">SAÍDA</text>');
+  rbdDraw(root, M, T, o, ctx, true);
+  o.push('</svg>');
+  area.innerHTML = o.join('');
+  renderRbdInspector(ctx);
+  renderRbdKpi(ctx);
 }
 
-// Calcula R(t) de um estágio individual
-function calcStageReliability(stage, tempo) {
-  if (!stage.items.length) return 0;
-  if (stage.type === 'SERIE') {
-    var Rs = 1;
-    stage.items.forEach(function(n) {
-      var m = calcularMTBFreal(n);
-      if (m > 0) Rs *= Math.exp(-(tempo / m));
-    });
-    return Rs * 100;
-  } else {
-    var Q = 1;
-    stage.items.forEach(function(n) {
-      var m = calcularMTBFreal(n);
-      if (m > 0) Q *= (1 - Math.exp(-(tempo / m)));
-    });
-    return (1 - Q) * 100;
+// Painel lateral: detalhes e fórmula do que está selecionado
+function renderRbdInspector(ctx) {
+  var box = document.getElementById('rbd-inspector');
+  if (!box) return;
+  var sel = rbdSelecao();
+  if (ctx && sel && sel.multi) {
+    var rr = sel.nodes.map(function(nd) { return rbdR(ctx.t, ctx.pm, nd); });
+    var prod = rr.reduce(function(a, b) { return a * b; }, 1);
+    box.innerHTML = '<div class="rbd-insp-title">→ Trecho de ' + sel.nodes.length + ' elementos em série</div>' +
+      '<div class="rbd-insp-txt">Todos precisam funcionar. Use <b>⇅ Em paralelo</b> para dar a esse trecho um caminho alternativo, ou <b>🗑 Remover</b> para apagar o trecho.</div>' +
+      '<div class="rbd-formula">R = ' + rr.map(function(v) { return v.toFixed(4); }).join(' × ') + ' = ' + prod.toFixed(4) + '</div>';
+    return;
   }
+  var f = sel ? { node: sel.node, parent: sel.P } : null;
+  if (!ctx || !f) {
+    box.innerHTML = '<div class="rbd-insp-title">Como ler o diagrama</div>' +
+      '<div class="rbd-insp-txt">O sistema funciona se existir pelo menos um caminho da <b>ENTRADA</b> até a <b>SAÍDA</b> passando só por blocos funcionando.</div>' +
+      '<div class="rbd-insp-rule"><b>Série</b> — blocos um após o outro no mesmo caminho. Se qualquer um falhar, o caminho cai.<br><code>R = R1 × R2 × … × Rn</code></div>' +
+      '<div class="rbd-insp-rule par"><b>Paralelo</b> — o caminho se divide e depois se junta. Basta um ramo funcionar (redundância).<br><code>R = 1 − (1−R1)(1−R2)…</code></div>' +
+      '<div class="rbd-insp-rule par"><b>k-de-n</b> — paralelo em que pelo menos k ramos precisam funcionar (ex.: 2 de 3 compressores para atender a demanda).</div>' +
+      '<div class="rbd-insp-txt" style="margin-top:8px;color:var(--text3)">Clique num bloco ou na moldura de um grupo para ver o cálculo dele.</div>';
+    return;
+  }
+  var n = f.node, t = ctx.t, pm = ctx.pm, h = '';
+  if (n.t === 'item') {
+    var p = pm[n.id], r = Math.exp(-t / p.mtbf);
+    var bi = rbdBirnbaum(t, pm).filter(function(b) { return b.node === n; })[0];
+    var fonte = p.src === 'historico' ? 'Histórico (' + p.n + ' falhas)' : p.src === 'manual' ? 'Informado manualmente' :
+      '<span style="color:var(--amber)">Padrão — histórico insuficiente (' + p.n + ' falha' + (p.n === 1 ? '' : 's') + ')</span>';
+    h += '<div class="rbd-insp-title">⚙️ ' + esc(n.ref) + '</div>';
+    h += '<table class="rbd-insp-tb">' +
+      '<tr><td>Fonte do MTBF</td><td>' + fonte + '</td></tr>' +
+      '<tr><td>MTBF</td><td>' + rbdNum(p.mtbf) + ' h</td></tr>' +
+      '<tr><td>λ</td><td>' + (1 / p.mtbf).toExponential(3) + ' /h</td></tr>' +
+      '<tr><td>MTTR</td><td>' + (p.mttr ? rbdNum(p.mttr, 1) + ' h' : '— (sem registro)') + '</td></tr>' +
+      '<tr><td>R(' + t + 'h)</td><td style="color:' + rbdCor(r) + ';font-weight:600">' + rbdPct(r, 2) + '</td></tr>' +
+      '<tr><td>Disponibilidade</td><td>' + rbdPct(p.A, 2) + '</td></tr>' +
+      '<tr><td>Importância (Birnbaum)</td><td>' + bi.ib.toFixed(4) + '</td></tr>' +
+      '<tr><td>Ganho se nunca falhasse</td><td>+' + (bi.ganho * 100).toFixed(2).replace('.', ',') + ' p.p.</td></tr>' +
+      '</table>';
+    h += '<div class="rbd-formula">R(t) = e<sup>−t/MTBF</sup> = e<sup>−' + t + '/' + Math.round(p.mtbf) + '</sup> = ' + r.toFixed(4) + '</div>';
+    h += '<div class="rbd-insp-sub">MTBF manual (deixe vazio para usar o histórico)</div>' +
+      '<div style="display:flex;gap:6px"><input id="rbd-mtbf-manual" type="number" min="0" step="1" value="' + (n.mtbf || '') + '" placeholder="automático" style="flex:1">' +
+      '<button class="btn btn-sm" onclick="rbdSetMtbf(\'' + n.id + '\')">Aplicar</button></div>';
+  } else {
+    var rs = n.c.map(function(ch) { return rbdR(t, pm, ch); });
+    var rg = rbdR(t, pm, n), ag = rbdA(pm, n), isPar = n.t === 'par';
+    h += '<div class="rbd-insp-title">' + (isPar ? '⇅ ' : '→ ') + esc(rbdNomeNo(n)) + '</div>';
+    h += '<div class="rbd-insp-txt">' + (isPar ? ((n.k || 1) === 1 ? 'Basta <b>um</b> ramo funcionar.' : 'Pelo menos <b>' + n.k + '</b> dos ' + n.c.length + ' ramos precisam funcionar.') :
+      'Todos os elementos precisam funcionar.') + '</div>';
+    h += '<table class="rbd-insp-tb">';
+    n.c.forEach(function(ch, i) {
+      h += '<tr><td>' + esc(rbdCorte(rbdNomeNo(ch), 26)) + '</td><td style="color:' + rbdCor(rs[i]) + '">' + rbdPct(rs[i], 2) + '</td></tr>';
+    });
+    h += '<tr><td><b>R do grupo (' + t + 'h)</b></td><td style="color:' + rbdCor(rg) + ';font-weight:700">' + rbdPct(rg, 2) + '</td></tr>';
+    h += '<tr><td>Disponibilidade do grupo</td><td>' + rbdPct(ag, 2) + '</td></tr></table>';
+    var fm;
+    if (!isPar) fm = 'R = ' + rs.map(function(v) { return v.toFixed(4); }).join(' × ') + ' = ' + rg.toFixed(4);
+    else if ((n.k || 1) === 1) fm = 'R = 1 − ' + rs.map(function(v) { return '(1 − ' + v.toFixed(4) + ')'; }).join('') + ' = ' + rg.toFixed(4);
+    else fm = 'R = P(≥ ' + n.k + ' de ' + n.c.length + ' ramos funcionando) = ' + rg.toFixed(4);
+    h += '<div class="rbd-formula">' + fm + '</div>';
+    if (isPar) {
+      h += '<div class="rbd-insp-sub">Quantos ramos precisam funcionar?</div><select onchange="rbdSetK(\'' + n.id + '\',this.value)" style="width:100%">';
+      for (var k = 1; k <= n.c.length; k++) {
+        var d = k === 1 ? ' — redundância total' : k === n.c.length ? ' — equivale a série' : '';
+        h += '<option value="' + k + '"' + (k === (n.k || 1) ? ' selected' : '') + '>' + k + ' de ' + n.c.length + d + '</option>';
+      }
+      h += '</select>';
+    }
+    h += '<button class="btn btn-sm" style="margin-top:10px;width:100%" onclick="rbdToggleTipo(\'' + n.id + '\')">' +
+      (isPar ? 'Transformar em série' : 'Transformar em paralelo') + '</button>';
+  }
+  box.innerHTML = h;
 }
 
-// Calcula R(t) do sistema completo via RBD
-function calcularRBD(tempo) {
-  if (!S.rbd_structure.length) return 0;
-  var R = 1;
-  S.rbd_structure.forEach(function(stage) {
-    if (!stage.items.length) return;
-    if (stage.type === 'SERIE') {
-      var Rs = 1;
-      stage.items.forEach(function(n) {
-        var m = calcularMTBFreal(n);
-        if (m > 0) Rs *= Math.exp(-(tempo / m));
-      });
-      R *= Rs;
-    } else {
-      var Q = 1;
-      stage.items.forEach(function(n) {
-        var m = calcularMTBFreal(n);
-        if (m > 0) Q *= (1 - Math.exp(-(tempo / m)));
-      });
-      R *= (1 - Q);
-    }
+// KPIs do sistema + ranking de criticidade (abaixo do diagrama)
+function renderRbdKpi(ctx) {
+  var container = document.getElementById('rbd-kpi-summary');
+  if (!container) return;
+  if (!ctx || !rbdTemDiagrama()) { container.innerHTML = ''; return; }
+  var t = ctx.t, pm = ctx.pm;
+  var rSis = rbdR(t, pm), aSis = rbdA(pm), mttf = rbdMTTF(pm);
+  var bir = rbdBirnbaum(t, pm).sort(function(a, b) { return b.ib - a.ib; });
+  var semDados = rbdLeaves(rbdTree()).filter(function(L) { return pm[L.id].src === 'padrao'; });
+  var dups = Object.keys(ctx.dup).filter(function(k) { return ctx.dup[k] > 1; });
+
+  var html = '<div class="mtbf-grid">';
+  html += '<div class="mtbf-cell"><label>R sistema (' + t + 'h)</label><div class="val" style="color:' + rbdCor(rSis) + '">' + rbdPct(rSis, 2) + '</div></div>';
+  html += '<div class="mtbf-cell"><label>Disponibilidade sistema</label><div class="val" style="color:var(--teal)">' + rbdPct(aSis, 2) + '</div></div>';
+  html += '<div class="mtbf-cell"><label>MTTF sistema (∫R dt)</label><div class="val" style="color:var(--green)">' + rbdNum(mttf) + ' h</div></div>';
+  html += '<div class="mtbf-cell"><label>Bloco mais crítico</label><div class="val" style="color:var(--amber);font-size:15px">' + esc(rbdCorte(bir[0].node.ref, 22)) + '</div></div>';
+  html += '</div>';
+
+  if (semDados.length || dups.length) {
+    html += '<div class="rbd-warn">';
+    if (semDados.length) html += '⚠ ' + semDados.length + ' bloco(s) sem histórico suficiente (menos de 2 falhas) estão usando o MTBF padrão de ' +
+      rbdNum(getCfg().mtbfPadrao) + ' h: ' + semDados.map(function(L) { return '<b>' + esc(L.ref) + '</b>'; }).join(', ') + '. Informe um MTBF manual (catálogo/fabricante) para melhorar o cálculo.<br>';
+    if (dups.length) html += '⚠ Ativo(s) repetido(s) no diagrama: ' + dups.map(function(k) { return '<b>' + esc(k) + '</b>'; }).join(', ') +
+      '. O cálculo trata cada bloco como independente; se for o mesmo equipamento físico, o resultado fica otimista.';
+    html += '</div>';
+  }
+
+  html += '<div class="card" style="margin-top:12px"><div class="card-title" style="margin-bottom:6px">Criticidade dos blocos (importância de Birnbaum)</div>' +
+    '<div style="font-size:11px;color:var(--text3);margin-bottom:8px">Quanto o R do sistema muda se o bloco passa de "sempre falha" para "nunca falha". Melhorar os primeiros da lista dá mais retorno em confiabilidade.</div>' +
+    '<table><thead><tr><th>#</th><th>Ativo</th><th>R(' + t + 'h)</th><th>Importância</th><th>Ganho se nunca falhasse</th></tr></thead><tbody>';
+  bir.forEach(function(b, i) {
+    var w = bir[0].ib > 0 ? Math.round(b.ib / bir[0].ib * 100) : 0;
+    html += '<tr style="cursor:pointer" onclick="rbdClick(event,\'' + b.node.id + '\')"><td>' + (i + 1) + '</td><td>' + esc(b.node.ref) + '</td>' +
+      '<td style="color:' + rbdCor(b.r) + '">' + rbdPct(b.r, 2) + '</td>' +
+      '<td><div style="display:flex;align-items:center;gap:6px"><div style="height:6px;width:' + w + 'px;max-width:100px;background:var(--amber);border-radius:3px"></div>' + b.ib.toFixed(4) + '</div></td>' +
+      '<td>+' + (b.ganho * 100).toFixed(2).replace('.', ',') + ' p.p.</td></tr>';
   });
-  return R * 100;
+  html += '</tbody></table></div>';
+  container.innerHTML = html;
 }
 
 // ============================================================
@@ -3218,7 +3690,7 @@ function calcCustoAcumulado(itemName, tmax, steps) {
     var t = Math.round((tmax / steps) * i);
     // Custo acumulado = lambda * t * custoMedio (falhas esperadas * custo medio)
     var mtbf = 0;
-    if (itemName === 'GLOBAL' && S.rbd_structure.length && S.historico.length) {
+    if (itemName === 'GLOBAL' && rbdTemDiagrama() && S.historico.length) {
       var rSys = calcularRBD(t) / 100;
       if (rSys > 0 && rSys < 1) {
         var lambdaSys = -Math.log(rSys) / (t || 1);
@@ -3247,7 +3719,7 @@ function renderConfiab() {
   var usandoRBD = false;
 
   if (selV === 'GLOBAL' || !selV) {
-    if (S.rbd_structure.length && S.historico.length) {
+    if (rbdTemDiagrama() && S.historico.length) {
       var rSistema = calcularRBD(tmax) / 100;
       if (rSistema > 0 && rSistema < 1) {
         var lambdaSys = -Math.log(rSistema) / tmax;
@@ -3314,7 +3786,7 @@ function renderConfiab() {
     var t = Math.round((tmax / steps) * i);
    var Ratual, Rsim;
 
-    if ((selV === 'GLOBAL' || !selV) && S.rbd_structure.length && S.historico.length) {
+    if ((selV === 'GLOBAL' || !selV) && rbdTemDiagrama() && S.historico.length) {
     Ratual = calcularRBD(t) / 100;
     } else {
       Ratual = Math.exp(-(t / mtbf));
@@ -3414,7 +3886,7 @@ function renderConfiabExtras() {
 
   var mtbf = 0;
   if (selV === 'GLOBAL' || !selV) {
-    if (S.rbd_structure.length && S.historico.length) {
+    if (rbdTemDiagrama() && S.historico.length) {
       var rSistema = calcularRBD(tmax) / 100;
       if (rSistema > 0 && rSistema < 1) {
         var lambdaSys = -Math.log(rSistema) / tmax;
@@ -3607,27 +4079,6 @@ function updateConfiabSelect() {
 }
 
 
-
-// KPI resumo do RBD (aparece abaixo do diagrama)
-function renderRbdKpi() {
-  var container = document.getElementById('rbd-kpi-summary');
-  if (!container) return;
-  if (!S.rbd_structure.length || !S.historico.length) {
-    container.innerHTML = '<div style="font-size:11px;color:var(--text3);padding:10px;">Cadastre ativos no RBD e lance falhas no Historico para ver os calculos.</div>';
-    return;
-  }
-  var tempo = getRbdTempo();
-  var rSistema = calcularRBD(tempo);
-  var lambdaSistema = rSistema > 0 ? (-Math.log(rSistema / 100) / tempo) : 0;
-  var mtbfSistema = lambdaSistema > 0 ? (1 / lambdaSistema) : 0;
-
-  var html = '<div class="mtbf-grid">';
-  html += '<div class="mtbf-cell"><label>R sistema (' + tempo + 'h)</label><div class="val" style="color:var(--accent)">' + rSistema.toFixed(2) + '%</div></div>';
-  html += '<div class="mtbf-cell"><label>Lambda sistema</label><div class="val" style="color:var(--amber)">' + lambdaSistema.toFixed(6) + '</div></div>';
-  html += '<div class="mtbf-cell"><label>MTBF sistema (equiv)</label><div class="val" style="color:var(--green)">' + mtbfSistema.toFixed(0) + ' h</div></div>';
-  html += '</div>';
-  container.innerHTML = html;
-}
 
 // ============================================================
 // HISTÓRICO DE FALHAS — Com cascata Sistema/Sub/Ativo + Custo
@@ -4032,7 +4483,7 @@ function generatePDF() {
   for (var pi = 0; pi <= pdfSteps; pi++) {
     var pt = Math.round((pdfTmax / pdfSteps) * pi);
     var pRa, pRs;
-    if (S.rbd_structure.length && S.historico.length) {
+    if (rbdTemDiagrama() && S.historico.length) {
       pRa = calcularRBD(pt);
     } else {
       pRa = Math.exp(-(pt / pdfMtbf)) * 100;
@@ -4269,7 +4720,7 @@ function generatePDF() {
     }
   });
   html += '</tbody></table>';
-  if (S.rbd_structure.length) {
+  if (rbdTemDiagrama()) {
     var rSysPdf = calcularRBD(pdfTmax);
     html += '<p><strong>R sistema (RBD) em ' + pdfTmax + 'h:</strong> ' + rSysPdf.toFixed(2) + '%</p>';
   }
@@ -4320,7 +4771,7 @@ function generatePDF() {
 // ============================================================
 function calcularMTBFdoAtivo(n) {
   var m = calcularMTBFreal(n);
-  return m > 0 ? m : 8760;
+  return m > 0 ? m : getCfg().mtbfPadrao;
 }
 
 
