@@ -1595,16 +1595,6 @@ function getAcoesProximas() {
 
 // CONTEXTO OPERACIONAL
 
-function collectContexto() {
-  S.contexto.linha = document.getElementById('ctx-linha').value;
-  S.contexto.dt = document.getElementById('ctx-dt').value;
-  S.contexto.processo = document.getElementById('ctx-processo').value;
-  S.contexto.turnos = document.getElementById('ctx-turnos').value;
-  S.contexto.cap = document.getElementById('ctx-cap').value;
-  S.contexto.limites = document.getElementById('ctx-limites').value;
-  S.contexto.padroes = document.getElementById('ctx-padroes').value;
-  S.contexto.docs = document.getElementById('ctx-docs').value;
-}
 
 function addTeamMember() {
   const nome = document.getElementById('eq-nome').value.trim();
@@ -1797,32 +1787,30 @@ function salvarNovoItem() {
 // ============================================================
 // CONTEXTO — Dados Gerais + Equipe
 // ============================================================
+// Os dados gerais do contexto foram gravados em dois formatos ao longo das versões
+// ('processo' e 'ctx-processo'). Lê o que estiver preenchido e grava nos dois.
+var CTX_GERAIS = { 'ctx-linha': 'linha', 'ctx-dt': 'dt', 'ctx-processo': 'processo', 'ctx-turnos': 'turnos',
+                   'ctx-cap': 'cap', 'ctx-limites': 'limites', 'ctx-padroes': 'padroes' };
+function ctxGeralValor(id) {
+  var c = S.contexto || {}, novo = c[id], antigo = c[CTX_GERAIS[id]];
+  return (novo !== undefined && novo !== null && String(novo) !== '') ? novo : (antigo || '');
+}
 function salvarContextoGeral() {
   if (!S.contexto) S.contexto = {};
-  S.contexto.linha = (document.getElementById('ctx-linha') || {}).value || '';
-  S.contexto.dt = (document.getElementById('ctx-dt') || {}).value || '';
-  S.contexto.processo = (document.getElementById('ctx-processo') || {}).value || '';
-  S.contexto.turnos = (document.getElementById('ctx-turnos') || {}).value || '';
-  S.contexto.cap = (document.getElementById('ctx-cap') || {}).value || '';
-  S.contexto.limites = (document.getElementById('ctx-limites') || {}).value || '';
-  S.contexto.padroes = (document.getElementById('ctx-padroes') || {}).value || '';
+  Object.keys(CTX_GERAIS).forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    S.contexto[id] = el.value;
+    S.contexto[CTX_GERAIS[id]] = el.value;
+  });
   autoSave();
 }
 
 function carregarContextoGeral() {
   if (!S.contexto) return;
-  var campos = {
-    'ctx-linha': S.contexto.linha,
-    'ctx-dt': S.contexto.dt,
-    'ctx-processo': S.contexto.processo,
-    'ctx-turnos': S.contexto.turnos,
-    'ctx-cap': S.contexto.cap,
-    'ctx-limites': S.contexto.limites,
-    'ctx-padroes': S.contexto.padroes
-  };
-  Object.keys(campos).forEach(function(id) {
+  Object.keys(CTX_GERAIS).forEach(function(id) {
     var el = document.getElementById(id);
-    if (el && campos[id]) el.value = campos[id];
+    if (el) el.value = ctxGeralValor(id);
   });
   renderEquipe();
 }
@@ -3994,12 +3982,10 @@ function renderConfiabExtras() { /* incorporado em renderConfiab */ }
 // ============================================================
 function loadContexto() {
   // Carrega dados gerais
-  var camposGerais = ['ctx-linha', 'ctx-dt', 'ctx-processo', 'ctx-turnos', 'ctx-cap', 'ctx-limites', 'ctx-padroes'];
-  camposGerais.forEach(function(id) {
+  if (!S.contexto) S.contexto = {};
+  Object.keys(CTX_GERAIS).forEach(function(id) {
     var el = document.getElementById(id);
-    if (el && S.contexto[id] !== undefined) {
-      el.value = S.contexto[id];
-    }
+    if (el) el.value = ctxGeralValor(id);
   });
 
   // Carrega perguntas (14 seções)
@@ -4016,10 +4002,11 @@ function loadContexto() {
 
 function salvarContexto() {
   // Salva dados gerais
-  var camposGerais = ['ctx-linha', 'ctx-dt', 'ctx-processo', 'ctx-turnos', 'ctx-cap', 'ctx-limites', 'ctx-padroes'];
-  camposGerais.forEach(function(id) {
+  Object.keys(CTX_GERAIS).forEach(function(id) {
     var el = document.getElementById(id);
-    if (el) S.contexto[id] = el.value;
+    if (!el) return;
+    S.contexto[id] = el.value;
+    S.contexto[CTX_GERAIS[id]] = el.value;
   });
 
   // Salva perguntas
