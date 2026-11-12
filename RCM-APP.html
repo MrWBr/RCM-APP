@@ -841,7 +841,7 @@ function renderAcoes() {
 // ============================================================
 function calcularMTBFreal(nomeAtivo) {
   if (!nomeAtivo) return 0;
-  var datas = S.historico.filter(function(h) { return h.item === nomeAtivo; })
+  var datas = (S.historico || []).filter(function(h) { return h && h.item === nomeAtivo; })
     .map(function(h) { return new Date(h.dt).getTime(); })
     .filter(function(t) { return !isNaN(t); })
     .sort(function(a, b) { return a - b; });
@@ -3016,17 +3016,54 @@ function getCfg() {
   return S.cfg;
 }
 
-function rbdTree() {
-  if (S.rbd_tree && S.rbd_tree.t === 'serie' && Array.isArray(S.rbd_tree.c)) return S.rbd_tree;
+// Limpa uma árvore vinda de JSON (arquivo antigo, editado à mão ou corrompido):
+// descarta nós inválidos em vez de quebrar, garante ids únicos.
+function rbdSanitize(n, seen, depth) {
+  if (!n || typeof n !== 'object' || depth > 60) return null;
+  var id = (typeof n.id === 'string' && n.id && !seen[n.id]) ? n.id : uid();
+  seen[id] = true;
+  if (n.t === 'item') {
+    if (typeof n.ref !== 'string' || !n.ref) return null;
+    var it = { id: id, t: 'item', ref: n.ref };
+    if (+n.mtbf > 0) it.mtbf = +n.mtbf;
+    return it;
+  }
+  if (n.t === 'serie' || n.t === 'par') {
+    var c = Array.isArray(n.c) ? n.c.map(function(ch) { return rbdSanitize(ch, seen, depth + 1); }).filter(Boolean) : [];
+    var g = { id: id, t: n.t, c: c };
+    if (n.t === 'par') g.k = Math.max(1, parseInt(n.k, 10) || 1);
+    return g;
+  }
+  return null;
+}
+
+// Converte o formato antigo (lista de estágios) para árvore.
+// O S.rbd_structure original NÃO é apagado: continua no JSON como estava.
+function rbdFromStages(stages) {
   var root = { id: uid(), t: 'serie', c: [] };
-  (S.rbd_structure || []).forEach(function(st) {
-    var its = (st.items || []).map(function(n) { return { id: uid(), t: 'item', ref: n }; });
+  (Array.isArray(stages) ? stages : []).forEach(function(st) {
+    if (!st || typeof st !== 'object') return;
+    var its = (Array.isArray(st.items) ? st.items : [])
+      .filter(function(n) { return typeof n === 'string' && n; })
+      .map(function(n) { return { id: uid(), t: 'item', ref: n }; });
     if (!its.length) return;
     if (st.type === 'PARALELO' && its.length > 1) root.c.push({ id: uid(), t: 'par', k: 1, c: its });
     else Array.prototype.push.apply(root.c, its);
   });
-  S.rbd_tree = root;
-  S.rbd_structure = [];
+  return root;
+}
+
+var rbdTreeOk = null; // árvore já validada para o S atual
+function rbdTree() {
+  if (S.rbd_tree && S.rbd_tree === rbdTreeOk) return S.rbd_tree;
+  var base = null;
+  if (S.rbd_tree && typeof S.rbd_tree === 'object') base = rbdSanitize(S.rbd_tree, {}, 0);
+  if (!base) base = rbdFromStages(S.rbd_structure);
+  var res = rbdNormalize(base);
+  var root = !res ? { id: base.id || uid(), t: 'serie', c: [] } : res.t === 'serie' ? res : { id: uid(), t: 'serie', c: [res] };
+  S.rbd_tree = rbdTreeOk = root;
+  if (rbdSel && !rbdFind(rbdSel)) rbdSel = null;
+  if (rbdSel2 && !rbdFind(rbdSel2)) rbdSel2 = null;
   return root;
 }
 
@@ -3069,6 +3106,7 @@ function rbdCommit() {
   if (!res) S.rbd_tree = { id: r.id, t: 'serie', c: [] };
   else if (res.t !== 'serie') S.rbd_tree = { id: r.id, t: 'serie', c: [res] };
   else S.rbd_tree = res;
+  rbdTreeOk = S.rbd_tree;
   if (rbdSel && !rbdFind(rbdSel)) rbdSel = null;
   if (rbdSel2 && !rbdFind(rbdSel2)) rbdSel2 = null;
   renderRbd();
@@ -3078,7 +3116,7 @@ function rbdCommit() {
 
 // ---------- Dados de cada bloco ----------
 function rbdAtivoStats(name) {
-  var hs = S.historico.filter(function(h) { return h.item === name; });
+  var hs = (S.historico || []).filter(function(h) { return h && h.item === name; });
   var n = hs.filter(function(h) { return !isNaN(new Date(h.dt).getTime()); }).length;
   var ttrs = hs.map(function(h) { return +h.ttr; }).filter(function(v) { return v > 0; });
   var mttr = ttrs.length ? ttrs.reduce(function(a, b) { return a + b; }, 0) / ttrs.length : 0;
@@ -3168,8 +3206,8 @@ function populateRbdPickers() {
   var p = document.getElementById('rbd-item-picker');
   if (!p) return;
   var atual = p.value, seen = {}, opts = '';
-  S.sistemas.forEach(function(s) {
-    if (seen[s.item]) return; seen[s.item] = true;
+  (S.sistemas || []).forEach(function(s) {
+    if (!s || !s.item || seen[s.item]) return; seen[s.item] = true;
     opts += '<option value="' + escA(s.item) + '">' + esc(s.item) + '</option>';
   });
   p.innerHTML = opts || '<option value="">Sem ativos cadastrados</option>';
@@ -3180,7 +3218,7 @@ function escA(t) { return esc(String(t == null ? '' : t)).replace(/"/g, '&quot;'
 
 function rbdNovoBloco() {
   var v = (document.getElementById('rbd-item-picker') || {}).value;
-  if (!v || !S.sistemas.some(function(s) { return s.item === v; })) {
+  if (!v || !(S.sistemas || []).some(function(s) { return s && s.item === v; })) {
     alert('Cadastre ativos na hierarquia estrutural e escolha um na lista.');
     return null;
   }
@@ -3249,7 +3287,7 @@ function rbdRemover() {
 function rbdLimpar() {
   if (!rbdTemDiagrama()) return;
   if (!confirm('Apagar todo o diagrama de blocos?')) return;
-  S.rbd_tree = { id: uid(), t: 'serie', c: [] };
+  S.rbd_tree = rbdTreeOk = { id: uid(), t: 'serie', c: [] };
   rbdSel = rbdSel2 = null;
   rbdCommit();
 }
@@ -3335,28 +3373,30 @@ function rbdLabel(n, ctx) {
 }
 
 function rbdLayout(n, isRoot, ctx) {
-  if (n.t === 'item') { n._w = RB.bw; n._h = RB.bh; n._m = RB.bh / 2; return; }
+  // medidas de desenho ficam numa propriedade não-enumerável: não vão para o JSON salvo
+  Object.defineProperty(n, '_L', { value: {}, writable: true, configurable: true, enumerable: false });
+  if (n.t === 'item') { n._L.w = RB.bw; n._L.h = RB.bh; n._L.m = RB.bh / 2; return; }
   n.c.forEach(function(ch) { rbdLayout(ch, false, ctx); });
-  n._lbl = isRoot ? '' : rbdLabel(n, ctx);
-  var lblW = isRoot ? 0 : n._lbl.length * 6.7 + 24;
+  n._L.lbl = isRoot ? '' : rbdLabel(n, ctx);
+  var lblW = isRoot ? 0 : n._L.lbl.length * 6.7 + 24;
   if (n.t === 'serie') {
     var px = isRoot ? 0 : RB.fx, top = isRoot ? 0 : RB.lbl, bot = isRoot ? 0 : RB.fb;
     var mTop = 0, mBot = 0, w = 0;
     n.c.forEach(function(ch, i) {
-      mTop = Math.max(mTop, ch._m); mBot = Math.max(mBot, ch._h - ch._m);
-      w += ch._w + (i ? RB.gx : 0);
+      mTop = Math.max(mTop, ch._L.m); mBot = Math.max(mBot, ch._L.h - ch._L.m);
+      w += ch._L.w + (i ? RB.gx : 0);
     });
     var inner = Math.max(w, lblW - 2 * px), cx = px + (inner - w) / 2;
-    n._m = top + mTop; n._h = top + mTop + mBot + bot; n._w = inner + 2 * px;
-    n.c.forEach(function(ch) { ch._dx = cx; ch._dy = n._m - ch._m; cx += ch._w + RB.gx; });
+    n._L.m = top + mTop; n._L.h = top + mTop + mBot + bot; n._L.w = inner + 2 * px;
+    n.c.forEach(function(ch) { ch._L.dx = cx; ch._L.dy = n._L.m - ch._L.m; cx += ch._L.w + RB.gx; });
   } else {
     var side = RB.rail + RB.rg;
-    var W = Math.max(Math.max.apply(null, n.c.map(function(ch) { return ch._w; })), lblW - 2 * side);
+    var W = Math.max(Math.max.apply(null, n.c.map(function(ch) { return ch._L.w; })), lblW - 2 * side);
     var y = RB.lbl;
-    n.c.forEach(function(ch) { ch._dx = side + (W - ch._w) / 2; ch._dy = y; y += ch._h + RB.gy; });
-    n._w = W + 2 * side; n._h = y - RB.gy + RB.fb;
+    n.c.forEach(function(ch) { ch._L.dx = side + (W - ch._L.w) / 2; ch._L.dy = y; y += ch._L.h + RB.gy; });
+    n._L.w = W + 2 * side; n._L.h = y - RB.gy + RB.fb;
     var f = n.c[0], l = n.c[n.c.length - 1];
-    n._m = (f._dy + f._m + l._dy + l._m) / 2;
+    n._L.m = (f._L.dy + f._L.m + l._L.dy + l._L.m) / 2;
   }
 }
 
@@ -3369,35 +3409,35 @@ function rbdDraw(n, x, y, o, ctx, isRoot) {
   var sel = !!ctx.sel[n.id], isPar = n.t === 'par';
   if (!isRoot) {
     o.push('<g class="rbd-grp" onclick="rbdClick(event,\'' + n.id + '\')">');
-    o.push('<rect x="' + x + '" y="' + y + '" width="' + n._w + '" height="' + n._h + '" rx="10" class="rbd-frame ' +
+    o.push('<rect x="' + x + '" y="' + y + '" width="' + n._L.w + '" height="' + n._L.h + '" rx="10" class="rbd-frame ' +
       (isPar ? 'par' : 'ser') + (sel ? ' sel' : '') + '"/>');
-    o.push('<text x="' + (x + 10) + '" y="' + (y + 17) + '" class="rbd-glbl ' + (isPar ? 'par' : 'ser') + '">' + esc(n._lbl) + '</text>');
+    o.push('<text x="' + (x + 10) + '" y="' + (y + 17) + '" class="rbd-glbl ' + (isPar ? 'par' : 'ser') + '">' + esc(n._L.lbl) + '</text>');
     o.push('<title>' + (isPar ? 'Clique para selecionar o grupo paralelo' : 'Clique para selecionar a série inteira') + '</title></g>');
   }
-  var my = y + n._m;
+  var my = y + n._L.m;
   if (!isPar) {
     n.c.forEach(function(ch, i) {
-      if (i) { var p = n.c[i - 1]; rbdLine(o, x + p._dx + p._w, my, x + ch._dx, my); }
+      if (i) { var p = n.c[i - 1]; rbdLine(o, x + p._L.dx + p._L.w, my, x + ch._L.dx, my); }
     });
     if (!isRoot) {
       var f0 = n.c[0], l0 = n.c[n.c.length - 1];
-      rbdLine(o, x, my, x + f0._dx, my);
-      rbdLine(o, x + l0._dx + l0._w, my, x + n._w, my);
+      rbdLine(o, x, my, x + f0._L.dx, my);
+      rbdLine(o, x + l0._L.dx + l0._L.w, my, x + n._L.w, my);
     }
   } else {
-    var rl = x + RB.rail, rr = x + n._w - RB.rail;
+    var rl = x + RB.rail, rr = x + n._L.w - RB.rail;
     var f = n.c[0], l = n.c[n.c.length - 1];
-    rbdLine(o, x, my, rl, my); rbdLine(o, rr, my, x + n._w, my);
-    rbdLine(o, rl, y + f._dy + f._m, rl, y + l._dy + l._m);
-    rbdLine(o, rr, y + f._dy + f._m, rr, y + l._dy + l._m);
+    rbdLine(o, x, my, rl, my); rbdLine(o, rr, my, x + n._L.w, my);
+    rbdLine(o, rl, y + f._L.dy + f._L.m, rl, y + l._L.dy + l._L.m);
+    rbdLine(o, rr, y + f._L.dy + f._L.m, rr, y + l._L.dy + l._L.m);
     n.c.forEach(function(ch) {
-      var cy = y + ch._dy + ch._m;
-      rbdLine(o, rl, cy, x + ch._dx, cy);
-      rbdLine(o, x + ch._dx + ch._w, cy, rr, cy);
+      var cy = y + ch._L.dy + ch._L.m;
+      rbdLine(o, rl, cy, x + ch._L.dx, cy);
+      rbdLine(o, x + ch._L.dx + ch._L.w, cy, rr, cy);
       o.push('<circle cx="' + rl + '" cy="' + cy + '" r="3" class="rbd-dot"/><circle cx="' + rr + '" cy="' + cy + '" r="3" class="rbd-dot"/>');
     });
   }
-  n.c.forEach(function(ch) { rbdDraw(ch, x + ch._dx, y + ch._dy, o, ctx, false); });
+  n.c.forEach(function(ch) { rbdDraw(ch, x + ch._L.dx, y + ch._L.dy, o, ctx, false); });
 }
 
 function rbdDrawItem(n, x, y, o, ctx) {
@@ -3468,7 +3508,7 @@ function renderRbd() {
   rbdLayout(root, true, ctx);
 
   var M = 84, T = 14;
-  var W = root._w + 2 * M, H = root._h + 2 * T, my = T + root._m;
+  var W = root._L.w + 2 * M, H = root._L.h + 2 * T, my = T + root._L.m;
   var avail = area.clientWidth - 26;
   var z = rbdZoom || (avail > 100 ? Math.max(0.35, Math.min(1, avail / W)) : 1);
   rbdZoomAtual = z;
@@ -3476,7 +3516,7 @@ function renderRbd() {
   var o = [];
   o.push('<svg class="rbd-svg" xmlns="http://www.w3.org/2000/svg" width="' + Math.round(W * z) + '" height="' + Math.round(H * z) + '" viewBox="0 0 ' + W + ' ' + H + '" onclick="rbdClick(null,null)">');
   rbdLine(o, 40, my, M, my);
-  rbdLine(o, M + root._w, my, W - 40, my);
+  rbdLine(o, M + root._L.w, my, W - 40, my);
   o.push('<circle cx="32" cy="' + my + '" r="8" class="rbd-term"/><text x="32" y="' + (my - 14) + '" class="rbd-t-term" text-anchor="middle">ENTRADA</text>');
   o.push('<circle cx="' + (W - 32) + '" cy="' + my + '" r="8" class="rbd-term"/><text x="' + (W - 32) + '" y="' + (my - 14) + '" class="rbd-t-term" text-anchor="middle">SAÍDA</text>');
   rbdDraw(root, M, T, o, ctx, true);
@@ -3571,6 +3611,8 @@ function renderRbdKpi(ctx) {
   var bir = rbdBirnbaum(t, pm).sort(function(a, b) { return b.ib - a.ib; });
   var semDados = rbdLeaves(rbdTree()).filter(function(L) { return pm[L.id].src === 'padrao'; });
   var dups = Object.keys(ctx.dup).filter(function(k) { return ctx.dup[k] > 1; });
+  var nomes = {}; (S.sistemas || []).forEach(function(s) { if (s && s.item) nomes[s.item] = true; });
+  var orfaos = Object.keys(ctx.dup).filter(function(k) { return !nomes[k]; });
 
   var html = '<div class="mtbf-grid">';
   html += '<div class="mtbf-cell"><label>R sistema (' + t + 'h)</label><div class="val" style="color:' + rbdCor(rSis) + '">' + rbdPct(rSis, 2) + '</div></div>';
@@ -3579,8 +3621,10 @@ function renderRbdKpi(ctx) {
   html += '<div class="mtbf-cell"><label>Bloco mais crítico</label><div class="val" style="color:var(--amber);font-size:15px">' + esc(rbdCorte(bir[0].node.ref, 22)) + '</div></div>';
   html += '</div>';
 
-  if (semDados.length || dups.length) {
+  if (semDados.length || dups.length || orfaos.length) {
     html += '<div class="rbd-warn">';
+    if (orfaos.length) html += '⚠ Bloco(s) com ativo que não existe mais na Estrutura de Ativos (excluído ou renomeado): ' +
+      orfaos.map(function(k) { return '<b>' + esc(k) + '</b>'; }).join(', ') + '. Use ⇄ Trocar ativo ou 🗑 Remover.<br>';
     if (semDados.length) html += '⚠ ' + semDados.length + ' bloco(s) sem histórico suficiente (menos de 2 falhas) estão usando o MTBF padrão de ' +
       rbdNum(getCfg().mtbfPadrao) + ' h: ' + semDados.map(function(L) { return '<b>' + esc(L.ref) + '</b>'; }).join(', ') + '. Informe um MTBF manual (catálogo/fabricante) para melhorar o cálculo.<br>';
     if (dups.length) html += '⚠ Ativo(s) repetido(s) no diagrama: ' + dups.map(function(k) { return '<b>' + esc(k) + '</b>'; }).join(', ') +
