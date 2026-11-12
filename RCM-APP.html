@@ -191,6 +191,15 @@ textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
 
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
 .overlay.open { display: flex !important; }
+.tag-aviso { display: inline-block; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 4px; margin-left: 4px; white-space: nowrap; cursor: help; vertical-align: middle; }
+.tag-aviso.peca { color: var(--amber); background: rgba(251,191,36,.12); border: 1px solid rgba(251,191,36,.35); }
+.tag-aviso.dup { color: var(--red); background: rgba(248,113,113,.12); border: 1px solid rgba(248,113,113,.35); }
+.tree-item-tag.tree-item-peca { border-color: rgba(251,191,36,.5) !important; color: var(--amber) !important; cursor: help; }
+.tree-item-tag.tree-item-dup { border-color: rgba(248,113,113,.6) !important; cursor: help; }
+.novidades { font-size: 13px; color: var(--text2); line-height: 1.55; }
+.novidades h4 { color: var(--teal); margin: 14px 0 4px; font-size: 13px; }
+.novidades ul { margin: 0; padding-left: 18px; }
+.novidades li { margin: 3px 0; }
 .modal { background: var(--bg2); border: 1px solid var(--border2); border-radius: 12px; padding: 28px; width: 500px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
 .modal-title { font-size: 17px; font-weight: 600; margin-bottom: 20px; }
 .modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
@@ -281,7 +290,7 @@ textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
       <div class="nav-item" onclick="navigate('confiab')"><span class="nav-icon">&#128200;</span> Confiabilidade</div>
       <div class="nav-item" onclick="navigate('spare')"><span class="nav-icon">&#128297;</span> Spare Parts</div>
     </div>
-    <div class="lwb-watermark">Created by LWB</div>
+    <div class="lwb-watermark"><a href="#" onclick="abrirNovidades();return false;" style="color:inherit">Novidades</a> · Created by LWB</div>
   </div>
 
   <div id="main">
@@ -436,6 +445,7 @@ textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
     <div class="page" id="pg-sistemas">
       <div class="page-title">Estrutura de Ativos</div>
       <div class="page-sub">Mapeamento fisico hierarquico</div>
+      <div id="estrutura-avisos"></div>
       <div class="card">
         <div class="card-title">Árvore Estrutural — <span id="nivel0-nome" style="color:#a78bfa;cursor:pointer" onclick="editarNivel0()" title="Clique para editar">[ Definir Equipamento ]</span></div>
         <div id="tree-view-zone"></div>
@@ -1767,6 +1777,10 @@ function salvarNovoItem() {
   var funcao = document.getElementById('ni-funcao').value.trim();
   if (!item) { alert('Nome do ativo obrigatorio.'); return; }
   if (!funcao) { alert('Funcao obrigatoria.'); return; }
+  var pk = pecaProvavel(item);
+  if (pk && !confirm('"' + item + '" parece uma peça (' + pk + '), não um ativo.\n\n' + MSG_PECA + '\n\nCadastrar mesmo assim?')) return;
+  if (S.sistemas.some(function(s) { return normTxt(s.item).trim() === normTxt(item).trim(); }) &&
+      !confirm('Já existe um ativo chamado "' + item + '".\n\n' + MSG_DUP + '\n\nCadastrar mesmo assim?')) return;
   var subRef = getAllSubsistemas().find(function(s) { return s.codSub === codSub; });
   if (!subRef) { alert('Subsistema invalido.'); return; }
   S.sistemas.push({
@@ -2003,19 +2017,127 @@ function carregarContexto() {
 
 
 // ============================================================
+// QUALIDADE DA ESTRUTURA — sinaliza itens que parecem peças e nomes repetidos.
+// Só aviso: nada é alterado no JSON do usuário.
+// ============================================================
+var PECA_RE = /\b(chavetas?|rolamentos?|retentor(es)?|aneis|anel|o-?rings?|gaxetas?|juntas?|porcas?|parafusos?|arruelas?|pinos?|contrapinos?|prisioneiros?|molas?|buchas?|casquilhos?|correias?|belt|elementos? elasticos?|elementos? de fixacao|bicos? de lubrificacao|graxeir[ao]s?|tirantes?|espacador(es)?|travas?|abracadeiras?|rebites?|fusiveis?|lampadas?|eixos?|pinhao|pinhoes|engrenage(m|ns)|polias?|fusos?|embolos?|pistao|pistoes|volantes?)\b/;
+var EQUIP_RE = /\b(transportador(es)?|esteiras?|conjunto|sistema|bombas?|motobomba|motor(es)?|redutor(es)?|compressor(es)?|valvulas?|ventilador(es)?|trocador(es)?|tanques?|unidade|maquinas?|painel|paineis|misturador(es)?|concha|skid|caixas?|cilindros?|turbinas?|chiller|torres?)\b/;
+function normTxt(t) { return String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+function pecaProvavel(nome) {
+  var n = normTxt(nome);
+  if (EQUIP_RE.test(n)) return null;
+  var m = n.match(PECA_RE);
+  return m ? m[1] : null;
+}
+function analiseEstrutura() {
+  var cont = {}, pecas = [], dups = [];
+  (S.sistemas || []).forEach(function(s) { var k = normTxt(s.item).trim(); cont[k] = (cont[k] || 0) + 1; });
+  (S.sistemas || []).forEach(function(s, i) {
+    var p = pecaProvavel(s.item);
+    if (p) pecas.push({ i: i, item: s.item, palavra: p });
+    if (cont[normTxt(s.item).trim()] > 1) dups.push({ i: i, item: s.item });
+  });
+  var nomesDup = {}; dups.forEach(function(d) { nomesDup[d.item] = true; });
+  return { pecas: pecas, dups: dups, nomesDup: Object.keys(nomesDup), cont: cont };
+}
+var MSG_PECA = 'Parece uma peça, não um ativo. No RCM, ativo é o equipamento que cumpre uma função (motor, redutor, bomba, mancal). Peças entram como causa no FMEA e como item no Spare Parts.';
+var MSG_DUP = 'Nome repetido: FMEA, histórico e RBD são ligados pelo nome, então os dados de itens com o mesmo nome se misturam. Use um nome único (com posição ou TAG).';
+function badgesAtivo(s, an) {
+  var h = '';
+  if (pecaProvavel(s.item)) h += ' <span class="tag-aviso peca" title="' + escA(MSG_PECA) + '">⚠ parece peça</span>';
+  if (an.cont[normTxt(s.item).trim()] > 1) h += ' <span class="tag-aviso dup" title="' + escA(MSG_DUP) + '">⚠ nome repetido</span>';
+  return h;
+}
+function renderAvisosEstrutura(an) {
+  var box = document.getElementById('estrutura-avisos');
+  if (!box) return;
+  if (!an.pecas.length && !an.dups.length) { box.innerHTML = ''; return; }
+  var h = '<div class="rbd-warn" style="margin:0 0 14px 0">';
+  if (an.pecas.length) {
+    h += '<b>⚠ ' + an.pecas.length + ' de ' + S.sistemas.length + ' itens parecem peças, não ativos.</b> ' +
+      'No RCM, ativo é o equipamento que cumpre uma função (motor, redutor, bomba, mancal, válvula). Peças como chaveta, rolamento, retentor e parafuso ' +
+      'entram como <b>causa</b> no FMEA do equipamento e como item no <b>Spare Parts</b>. Ativos no nível de peça pulverizam o histórico e distorcem o RBD.' +
+      '<details style="margin-top:6px"><summary style="cursor:pointer">Ver quais</summary><div style="margin-top:4px;color:var(--text2)">' +
+      an.pecas.map(function(p) { return esc(p.item); }).join('<br>') + '</div></details>';
+  }
+  if (an.dups.length) {
+    h += (an.pecas.length ? '<div style="margin-top:10px"></div>' : '') +
+      '<b>⚠ ' + an.nomesDup.length + ' nome(s) repetido(s)</b> em ' + an.dups.length + ' itens. FMEA, histórico e RBD são ligados pelo nome: os dados desses itens vão se misturar. Dê um nome único a cada um (com posição ou TAG).' +
+      '<details style="margin-top:6px"><summary style="cursor:pointer">Ver quais</summary><div style="margin-top:4px;color:var(--text2)">' +
+      an.nomesDup.map(esc).join('<br>') + '</div></details>';
+  }
+  h += '<div style="margin-top:8px;color:var(--text3);font-size:11px">Aviso apenas: nada foi alterado no seu arquivo. Revise e corrija quando puder.</div></div>';
+  box.innerHTML = h;
+}
+
+// ============================================================
+// NOVIDADES — aparece uma vez por versão ao abrir o app
+// ============================================================
+var NOVIDADES_VERSAO = '2026-11-12';
+function abrirNovidades() {
+  var ov = document.getElementById('novidades-overlay');
+  if (!ov) {
+    ov = document.createElement('div');
+    ov.id = 'novidades-overlay';
+    ov.className = 'overlay';
+    ov.innerHTML = '<div class="modal" style="width:640px">' +
+      '<div class="modal-title">🚀 Novidades desta atualização</div>' +
+      '<div class="novidades">' +
+      '<p style="color:var(--green)">Seus arquivos .json continuam abrindo normalmente — nada precisa ser feito.</p>' +
+      '<h4>Diagrama de Blocos (RBD) refeito</h4><ul>' +
+      '<li>Desenho da ENTRADA à SAÍDA: mesmo caminho = série; caminhos que se dividem = paralelo.</li>' +
+      '<li>Selecione um bloco e use <b>→ Em série</b> ou <b>⇅ Em paralelo</b>. Shift+clique seleciona um trecho.</li>' +
+      '<li>Grupos "k de n" (ex.: 2 de 3 precisam funcionar), MTBF manual por bloco e conta mostrada no painel lateral.</li>' +
+      '<li>Disponibilidade do sistema, MTTF e ranking dos blocos mais críticos.</li></ul>' +
+      '<h4>Confiabilidade mais precisa</h4><ul>' +
+      '<li>MTBF considera o tempo desde a última falha (pode desligar na aba RBD).</li>' +
+      '<li>Modelo Weibull: identifica desgaste, falha aleatória ou mortalidade infantil por ativo.</li>' +
+      '<li>Simulação coerente: preventiva por tempo só tem ganho com desgaste confirmado; intervalo ótimo calculado pelo custo.</li>' +
+      '<li>Novo painel "Estratégia por ativo". <b>Os números vão mudar</b> — a versão anterior aplicava ganhos fixos.</li>' +
+      '<li>Mantenham o histórico em dia: período sem lançamento conta como período sem falha.</li></ul>' +
+      '<h4>Estrutura de Ativos</h4><ul>' +
+      '<li>Aviso para itens que parecem <b>peças</b> (chaveta, rolamento, retentor...) e para <b>nomes repetidos</b>. É só sinalização: revisem e corrijam.</li></ul>' +
+      '<h4>Correções</h4><ul>' +
+      '<li>Contexto: Processo, Turnos, Capacidade e Limites podiam aparecer vazios e ser apagados ao editar.</li>' +
+      '<li>Ações concluídas apareciam como abertas no Dashboard e no PDF.</li>' +
+      '<li>Textos com aspas eram cortados ao editar.</li>' +
+      '<li>Apagar/editar subsistema pela árvore não funcionava.</li>' +
+      '<li>Renomear/apagar ativo agora atualiza o RBD; apagar um ativo não apaga o histórico de outro com o mesmo nome.</li>' +
+      '<li>Caixas de texto longas crescem com o conteúdo.</li></ul>' +
+      '</div>' +
+      '<div class="modal-btns"><button class="btn btn-primary" onclick="fecharNovidades()">Entendi</button></div></div>';
+    ov.addEventListener('click', function(e) { if (e.target === ov) fecharNovidades(); });
+    document.body.appendChild(ov);
+  }
+  ov.classList.add('open');
+}
+function fecharNovidades() {
+  var ov = document.getElementById('novidades-overlay');
+  if (ov) ov.classList.remove('open');
+  try { localStorage.setItem('rcm_novidades', NOVIDADES_VERSAO); } catch (e) {}
+}
+window.addEventListener('load', function() {
+  var visto = null;
+  try { visto = localStorage.getItem('rcm_novidades'); } catch (e) {}
+  if (visto !== NOVIDADES_VERSAO) setTimeout(abrirNovidades, 300);
+});
+
+// ============================================================
 // RENDER — Tabela + Arvore
 // ============================================================
 function renderSistemas() {
   var tb = document.getElementById('tbody-sistemas');
   if (!tb) return;
   var html = '';
+  var an = analiseEstrutura();
+  renderAvisosEstrutura(an);
   S.sistemas.forEach(function(s, i) {
     html += '<tr>' +
       '<td><code style="color:var(--accent)">' + esc(s.codSis) + '</code></td>' +
       '<td><code style="color:var(--amber)">' + esc(s.codSub) + '</code></td>' +
       '<td style="font-weight:600">' + esc(s.sistema) + '</td>' +
       '<td>' + esc(s.sub) + '</td>' +
-      '<td style="color:var(--teal)">' + esc(s.item) + '</td>' +
+      '<td style="color:var(--teal)">' + esc(s.item) + badgesAtivo(s, an) + '</td>' +
       '<td style="font-size:11px">' + esc(s.funcao) + (s.funcao2 ? '<br><span style="color:var(--text3);font-size:10px;">2a: ' + esc(s.funcao2) + '</span>' : '') + '</td>' +
       '<td>' +
       '<button class="btn btn-sm" onclick="openEditItemModal(' + i + ')" title="Editar">✏️</button> ' +
@@ -2209,7 +2331,12 @@ function renderTreeView() {
         html += '</span></div>';
         html += '<div>';
         if (sub.items.length) {
-          sub.items.forEach(function(it) { html += '<span class="tree-item-tag">⚙️ ' + esc(it) + '</span>'; });
+          sub.items.forEach(function(it) {
+            var pk = pecaProvavel(it);
+            var dp = S.sistemas.filter(function(x) { return normTxt(x.item).trim() === normTxt(it).trim(); }).length > 1;
+            var tt = [pk ? MSG_PECA : '', dp ? MSG_DUP : ''].filter(Boolean).join('\n\n');
+            html += '<span class="tree-item-tag' + (pk ? ' tree-item-peca' : '') + (dp ? ' tree-item-dup' : '') + '"' + (tt ? ' title="' + escA(tt) + '"' : '') + '>' + (pk || dp ? '⚠ ' : '⚙️ ') + esc(it) + '</span>';
+          });
         } else {
           html += '<span style="font-size:11px;color:var(--text3)">Sem ativos</span>';
         }
