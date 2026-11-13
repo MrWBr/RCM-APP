@@ -117,6 +117,10 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); font
 .rbd-glbl { font-size: 10.5px; font-weight: 700; letter-spacing: .4px; }
 .rbd-glbl.par { fill: var(--purple); }
 .rbd-glbl.ser { fill: var(--text3); }
+.rbd-glbl.nomeado { fill: var(--teal); font-size: 11.5px; }
+.rbd-fechado { fill: #2a2440; }
+.rbd-stack { fill: var(--bg3); stroke: var(--border2); stroke-width: 1; }
+.rbd-t-grp { fill: var(--purple); font-size: 12.5px; font-weight: 700; }
 .rbd-toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .rbd-toolbar select { background: var(--bg3); color: var(--text); border: 1px solid var(--border2); border-radius: 6px; padding: 7px 10px; min-width: 200px; }
 .rbd-toolbar .sep { width: 1px; height: 26px; background: var(--border); margin: 0 4px; }
@@ -191,6 +195,19 @@ textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
 
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
 .overlay.open { display: flex !important; }
+.dd-hist-btn { margin-top: 4px; font-size: 10px !important; padding: 2px 6px !important; white-space: nowrap; }
+.dd-hist-ctx { font-size: 12px; color: var(--text2); background: var(--bg3); border-radius: 6px; padding: 8px 10px; margin-bottom: 12px; line-height: 1.6; }
+.dd-hist-bloco { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; font-size: 12.5px; }
+.dd-hist-bloco.atual { border-color: var(--teal); }
+.dd-hist-tit { font-size: 11px; text-transform: uppercase; letter-spacing: .4px; color: var(--text3); margin-bottom: 6px; }
+.dd-hist-tit span { text-transform: none; letter-spacing: 0; margin-left: 6px; }
+.dd-hist-caminho { margin: 8px 0 0; padding-left: 20px; }
+.dd-hist-caminho li { margin: 4px 0; line-height: 1.45; }
+.dd-hist-q { color: var(--text2); }
+.dd-hist-a { font-weight: 700; margin-left: 4px; }
+.dd-hist-a.sim { color: var(--green); } .dd-hist-a.nao { color: var(--red); }
+.dd-hist-chip { display: inline-block; background: rgba(124,106,255,.12); border: 1px solid rgba(124,106,255,.25); border-radius: 4px; padding: 1px 6px; margin: 2px 2px 0 0; color: var(--accent); }
+.dd-hist-aviso { font-size: 11.5px; color: var(--amber); }
 .tag-aviso { display: inline-block; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 4px; margin-left: 4px; white-space: nowrap; cursor: help; vertical-align: middle; }
 .tag-aviso.peca { color: var(--amber); background: rgba(251,191,36,.12); border: 1px solid rgba(251,191,36,.35); }
 .tag-aviso.dup { color: var(--red); background: rgba(248,113,113,.12); border: 1px solid rgba(248,113,113,.35); }
@@ -531,11 +548,16 @@ textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
           <button class="btn" onclick="rbdAdd('antes')" title="Novo bloco antes do selecionado, no mesmo caminho">← Série antes</button>
           <button class="btn" id="rbd-b-par" onclick="rbdAdd('paralelo')" title="Novo bloco num caminho alternativo ao selecionado">⇅ Em paralelo</button>
           <button class="btn" id="rbd-b-ramo" onclick="rbdAdd('ramo')" title="Novo ramo no grupo paralelo selecionado">+ Ramo no grupo</button>
+          <button class="btn" id="rbd-b-agrupar" onclick="rbdAgrupar()" title="Agrupar o bloco ou trecho selecionado num grupo com nome">▣ Agrupar</button>
           <span class="sep"></span>
           <button class="btn" id="rbd-b-trocar" onclick="rbdTrocar()" title="Trocar o ativo do bloco selecionado pelo da lista">⇄ Trocar ativo</button>
           <button class="btn" id="rbd-b-esq" onclick="rbdMover(-1)" title="Mover para trás/cima">◀</button>
           <button class="btn" id="rbd-b-dir" onclick="rbdMover(1)" title="Mover para frente/baixo">▶</button>
           <button class="btn btn-danger" id="rbd-b-del" onclick="rbdRemover()" title="Remover o selecionado (tecla Delete)">🗑 Remover</button>
+          <span class="sep"></span>
+          <button class="btn" onclick="rbdAgruparPorSubsistema()" title="Cria um grupo para cada subsistema da estrutura, com os blocos soltos da linha principal">Agrupar por subsistema</button>
+          <button class="btn" onclick="rbdTodos(true)" title="Recolher todos os grupos com nome">▸ Recolher</button>
+          <button class="btn" onclick="rbdTodos(false)" title="Abrir todos os grupos com nome">▾ Abrir</button>
           <button class="btn btn-danger" onclick="rbdLimpar()" style="margin-left:auto">Limpar tudo</button>
         </div>
         <div class="rbd-hint" id="rbd-hint"></div>
@@ -2073,7 +2095,7 @@ function renderAvisosEstrutura(an) {
 // ============================================================
 // NOVIDADES — aparece uma vez por versão ao abrir o app
 // ============================================================
-var NOVIDADES_VERSAO = '2026-11-12';
+var NOVIDADES_VERSAO = '2026-11-13';
 function abrirNovidades() {
   var ov = document.getElementById('novidades-overlay');
   if (!ov) {
@@ -2084,6 +2106,13 @@ function abrirNovidades() {
       '<div class="modal-title">🚀 Novidades desta atualização</div>' +
       '<div class="novidades">' +
       '<p style="color:var(--green)">Seus arquivos .json continuam abrindo normalmente — nada precisa ser feito.</p>' +
+      '<h4>Novo (13/11)</h4><ul>' +
+      '<li><b>RBD em grupos:</b> selecione blocos e use <b>▣ Agrupar</b> para criar grupos com nome (ex.: Acionamento). Duplo clique recolhe ou abre o grupo.</li>' +
+      '<li><b>Agrupar por subsistema</b> monta os grupos automaticamente a partir da Estrutura de Ativos.</li>' +
+      '<li>Diagramas longos quebram em várias linhas para caber na tela.</li>' +
+      '<li><b>FMEA:</b> o botão <b>🧭 DD</b> mostra a estratégia anterior, a adotada e o caminho de perguntas e respostas do Diagrama Decisional.</li>' +
+      '<li>O Diagrama Decisional não mistura mais o resultado com as diretrizes marcadas no FMEA.</li></ul>' +
+      '<h4>Atualização anterior (12/11)</h4>' +
       '<h4>Diagrama de Blocos (RBD) refeito</h4><ul>' +
       '<li>Desenho da ENTRADA à SAÍDA: mesmo caminho = série; caminhos que se dividem = paralelo.</li>' +
       '<li>Selecione um bloco e use <b>→ Em série</b> ou <b>⇅ Em paralelo</b>. Shift+clique seleciona um trecho.</li>' +
@@ -2669,7 +2698,9 @@ function renderFmea() {
       '<td>' + f.o + '</td>' +
       '<td>' + f.d + '</td>' +
       '<td style="font-weight:700;color:' + rpnColor + '">' + f.rpn + '</td>' +
-      '<td><span class="badge ' + badgeClass + '">' + (f.origem || 'Criada') + '</span></td>' +
+      '<td><span class="badge ' + badgeClass + '">' + (f.origem || 'Criada') + '</span>' +
+        (f.dd || (S.dd_results || []).some(function(r) { return r && r.fmea_id === f.id; })
+          ? '<br><button class="btn btn-sm dd-hist-btn" onclick="abrirHistoricoDD(' + i + ')" title="Ver como essa estratégia foi decidida">🧭 DD: ' + esc(f.dd || 'ver') + '</button>' : '') + '</td>' +
       '<td style="font-size:11px;color:var(--accent)">' + (Array.isArray(f.tarefa) ? f.tarefa.map(function(t){ return '<span style="display:inline-block;background:rgba(124,106,255,0.12);border:1px solid rgba(124,106,255,0.25);border-radius:4px;padding:1px 6px;margin:1px;font-size:.85em' + (t==='Sem diretriz aplicável'?';color:#f87171;border-color:rgba(248,113,113,0.3);background:rgba(248,113,113,0.08)':'') + '">' + esc(t) + '</span>'; }).join('') : esc(f.tarefa || '')) + '</td>' +
       '<td><button class="btn btn-sm" onclick="openFmeaModal(' + i + ')">✏️</button> <button class="btn btn-sm btn-danger" onclick="delFmea(' + i + ')">🗑</button></td>' +
       '</tr>';
@@ -3020,25 +3051,99 @@ function answerDD(key, ans) {
   renderDDFlow();
 }
 
+// Caminho percorrido no diagrama (perguntas e respostas), na ordem
+function ddCaminhoAtual() {
+  var out = [], cur = 'ROOT', guard = 0;
+  while (cur && DD_TREE[cur] && !DD_TREE[cur].terminal && guard++ < 50) {
+    var nd = DD_TREE[cur], a = ddAnswers[cur];
+    if (!a) break;
+    out.push({ no: cur, label: nd.label || '', pergunta: nd.text || '', resposta: a });
+    cur = a === 'S' ? nd.yes : nd.no;
+  }
+  return out;
+}
+
 function saveDDResult(tarefa, tipo, origem) {
-  if (ddFmIdx === null && ddFmIdx !== 0) return;
+  if (ddFmIdx === null || ddFmIdx === '' || ddFmIdx === undefined) return;
   var f = S.fmea[+ddFmIdx];
-  f.tarefa = Array.isArray(f.tarefa) ? f.tarefa.concat([tarefa]).filter(function(v,i,a){ return a.indexOf(v)===i; }) : [tarefa];
-  f.dd = tipo;
-  f.origem = origem;
+  if (!f) return;
+  // diretrizes que o FMEA tinha antes desta decisão (só as do catálogo, sem rótulos do DD)
+  var antesFmea = (Array.isArray(f.tarefa) ? f.tarefa : (f.tarefa ? [f.tarefa] : [])).filter(function(t) { return STRATS.indexOf(t) >= 0; });
 
   var exist = -1;
   for (var i = 0; i < S.dd_results.length; i++) {
     if (S.dd_results[i].fmea_id === f.id) { exist = i; break; }
   }
+  var velho = exist >= 0 ? S.dd_results[exist] : null;
+  var historico = [];
+  if (velho) {
+    historico = (velho.historico || []).slice();
+    var v = {}; Object.keys(velho).forEach(function(k) { if (k !== 'historico') v[k] = velho[k]; });
+    historico.unshift(v);
+  }
+  f.dd = tipo;
+  f.origem = origem;
 
-  var entry = { fmea_id: f.id, item: f.item, modo: f.modo, tarefa: tarefa, tipo: tipo, origem: origem };
+  var entry = { fmea_id: f.id, item: f.item, modo: f.modo, tarefa: tarefa, tipo: tipo, origem: origem,
+                data: new Date().toISOString(), respostas: ddCaminhoAtual(), diretrizesAntes: antesFmea, historico: historico };
   if (exist >= 0) S.dd_results[exist] = entry; else S.dd_results.push(entry);
 
   renderFmea();
   renderDD();
   autoSave();
   document.getElementById('dd-flow').innerHTML += '<div style="margin-top:15px;padding:10px;background:rgba(52,211,153,0.1);border-radius:6px;color:var(--green);font-weight:600;">✓ Vinculado com sucesso!</div>';
+}
+
+// ---------- Histórico da decisão (aberto pelo FMEA) ----------
+function ddFmtData(iso) {
+  if (!iso) return 'data não registrada';
+  var d = new Date(iso);
+  return isNaN(d.getTime()) ? 'data não registrada' : d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+}
+function ddBlocoDecisao(r, titulo, atual) {
+  var h = '<div class="dd-hist-bloco' + (atual ? ' atual' : '') + '">';
+  h += '<div class="dd-hist-tit">' + titulo + ' <span>' + ddFmtData(r.data) + '</span></div>';
+  h += '<div><b>' + esc(r.tipo || r.dd || '—') + '</b>' + (r.tarefa && r.tarefa !== r.tipo ? ' — ' + esc(r.tarefa) : '') +
+    (r.origem ? ' <span class="badge ' + (r.origem === 'Adotadas' ? 'badge-green' : 'badge-amber') + '">' + esc(r.origem) + '</span>' : '') + '</div>';
+  if (Array.isArray(r.respostas) && r.respostas.length) {
+    h += '<ol class="dd-hist-caminho">';
+    r.respostas.forEach(function(q) {
+      h += '<li><span class="dd-hist-q">' + esc(q.label) + ' ' + esc(q.pergunta) + '</span> <span class="dd-hist-a ' + (q.resposta === 'S' ? 'sim' : 'nao') + '">' + (q.resposta === 'S' ? 'Sim' : 'Não') + '</span></li>';
+    });
+    h += '</ol>';
+  } else {
+    h += '<div class="dd-hist-aviso">As respostas desta decisão não foram registradas (decisão feita antes desta versão do app). Para registrar o caminho, refaça o Diagrama Decisional deste modo de falha.</div>';
+  }
+  return h + '</div>';
+}
+function abrirHistoricoDD(fmeaIdx) {
+  var f = S.fmea[fmeaIdx];
+  if (!f) return;
+  var r = (S.dd_results || []).filter(function(x) { return x && x.fmea_id === f.id; })[0];
+  var h = '<div class="modal-title">🧭 Decisão de manutenção</div>';
+  h += '<div class="dd-hist-ctx"><b>' + esc(f.item) + '</b><br>Modo de falha: <span style="color:var(--red)">' + esc(f.modo) + '</span><br>Efeito: ' + esc(f.efeito || '—') + ' · RPN ' + esc(f.rpn) + '</div>';
+  if (!r && !f.dd) {
+    h += '<div class="dd-hist-aviso">Este modo de falha ainda não passou pelo Diagrama Decisional.</div>';
+  } else {
+    if (!r) r = { tipo: f.dd, origem: f.origem };
+    var antes = Array.isArray(r.diretrizesAntes) ? r.diretrizesAntes :
+      (Array.isArray(f.tarefa) ? f.tarefa : (f.tarefa ? [f.tarefa] : [])).filter(function(t) { return STRATS.indexOf(t) >= 0; });
+    h += '<div class="dd-hist-bloco"><div class="dd-hist-tit">Estratégia anterior (diretrizes do FMEA antes do DD)' +
+      (Array.isArray(r.diretrizesAntes) ? '' : ' <span>reconstruída</span>') + '</div>' +
+      (antes.length ? antes.map(function(t) { return '<span class="dd-hist-chip">' + esc(t) + '</span>'; }).join(' ') : '<span style="color:var(--text3)">Nenhuma diretriz marcada</span>') +
+      (Array.isArray(r.diretrizesAntes) ? '' : '<div class="dd-hist-aviso" style="margin-top:6px">Arquivo de versão anterior: estas são as diretrizes marcadas no FMEA, que podem incluir alterações feitas depois do DD.</div>') + '</div>';
+    h += ddBlocoDecisao(r, 'Estratégia adotada (atual)', true);
+    (r.historico || []).forEach(function(old, i) { h += ddBlocoDecisao(old, 'Decisão anterior ' + (i + 1), false); });
+  }
+  h += '<div class="modal-btns"><button class="btn" onclick="closeModal(\'modal-item\')">Fechar</button>' +
+    '<button class="btn btn-primary" onclick="closeModal(\'modal-item\');refazerDD(' + fmeaIdx + ')">Refazer Diagrama Decisional</button></div>';
+  document.getElementById('modal-item-content').innerHTML = h;
+  document.getElementById('modal-item').classList.add('open');
+}
+function refazerDD(fmeaIdx) {
+  navigate('dd');
+  var sel = document.getElementById('dd-select');
+  if (sel) { populateDDSelect(); sel.value = String(fmeaIdx); startDD(); }
 }
 
 function renderDD() {
@@ -3119,6 +3224,8 @@ function rbdSanitize(n, seen, depth) {
     var c = Array.isArray(n.c) ? n.c.map(function(ch) { return rbdSanitize(ch, seen, depth + 1); }).filter(Boolean) : [];
     var g = { id: id, t: n.t, c: c };
     if (n.t === 'par') g.k = Math.max(1, parseInt(n.k, 10) || 1);
+    if (typeof n.nome === 'string' && n.nome.trim()) g.nome = n.nome.trim().slice(0, 60);
+    if (g.nome && n.fechado === true) g.fechado = true;
     return g;
   }
   return null;
@@ -3197,14 +3304,18 @@ function rbdNormalize(n) {
   n.c.forEach(function(ch) {
     ch = rbdNormalize(ch);
     if (!ch) return;
-    if (n.t === 'serie' && ch.t === 'serie') out = out.concat(ch.c);
-    else if (n.t === 'par' && ch.t === 'par' && (n.k || 1) === 1 && (ch.k || 1) === 1) out = out.concat(ch.c);
+    // grupos com nome são preservados (não se fundem com o pai)
+    if (n.t === 'serie' && ch.t === 'serie' && !ch.nome) out = out.concat(ch.c);
+    else if (n.t === 'par' && ch.t === 'par' && !ch.nome && (n.k || 1) === 1 && (ch.k || 1) === 1) out = out.concat(ch.c);
     else out.push(ch);
   });
   n.c = out;
   if (n.t === 'par') n.k = Math.max(1, Math.min(n.k || 1, n.c.length));
   if (!n.c.length) return null;
-  if (n.c.length === 1) return n.c[0];
+  if (n.c.length === 1) {
+    if (!n.nome) return n.c[0];
+    if (n.t === 'par') { n.t = 'serie'; delete n.k; } // grupo nomeado com 1 elemento vira série de 1
+  }
   return n;
 }
 
@@ -3380,6 +3491,71 @@ function rbdRemover() {
   rbdCommit();
 }
 
+// Agrupa a seleção (um nó ou trecho em série) numa série com nome
+function rbdAgrupar() {
+  var sel = rbdSelecao();
+  if (!sel) { alert('Selecione um bloco ou um trecho (Shift+clique) para agrupar.'); return; }
+  var nome = prompt('Nome do grupo (ex.: Acionamento, Caixa de engrenagens):', '');
+  if (nome === null) return;
+  nome = nome.trim();
+  if (!nome) { alert('Informe um nome para o grupo.'); return; }
+  var X = sel.node;
+  if (!sel.multi && X.t !== 'item' && !X.nome) { X.nome = nome; rbdSel = X.id; rbdSel2 = null; rbdCommit(); return; }
+  var g = { id: uid(), t: 'serie', nome: nome, c: sel.nodes.slice() };
+  sel.P.c.splice(sel.i, sel.j - sel.i + 1, g);
+  rbdSel = g.id; rbdSel2 = null;
+  rbdCommit();
+}
+function rbdDesagrupar(id) {
+  var f = rbdFind(id);
+  if (!f || !f.node.nome) return;
+  delete f.node.nome; delete f.node.fechado;
+  rbdCommit();
+}
+function rbdRenomear(id, nome) {
+  var f = rbdFind(id);
+  if (!f || f.node.t === 'item') return;
+  nome = String(nome || '').trim().slice(0, 60);
+  if (nome) f.node.nome = nome; else { delete f.node.nome; delete f.node.fechado; }
+  rbdCommit();
+}
+function rbdAlternar(id, e) {
+  if (e) e.stopPropagation();
+  var f = rbdFind(id);
+  if (!f || !f.node.nome) return;
+  if (f.node.fechado) delete f.node.fechado; else f.node.fechado = true;
+  rbdSel = id; rbdSel2 = null;
+  rbdCommit();
+}
+function rbdTodos(fechar) {
+  (function walk(n) {
+    if (n.t === 'item') return;
+    if (n.nome) { if (fechar) n.fechado = true; else delete n.fechado; }
+    n.c.forEach(walk);
+  })(rbdTree());
+  rbdCommit();
+}
+// Agrupa blocos consecutivos da linha principal pelo subsistema cadastrado na estrutura
+function rbdAgruparPorSubsistema() {
+  var root = rbdTree(), subsDe = {}, usados = {};
+  (S.sistemas || []).forEach(function(s) { if (s && s.item && s.sub) (subsDe[s.item] = subsDe[s.item] || []).push(s.sub); });
+  var novo = [], atual = null, criados = 0;
+  root.c.forEach(function(ch) {
+    var lista = ch.t === 'item' ? (subsDe[ch.ref] || []) : [];
+    // nome repetido em vários subsistemas: continua o grupo atual se couber; senão usa o próximo ainda não usado
+    var k = ch.ref + '|' + (usados[ch.ref] || 0);
+    var sub = (atual && lista.indexOf(atual.nome) >= 0) ? atual.nome : (lista[usados[ch.ref] || 0] || lista[0] || '');
+    if (ch.t === 'item') usados[ch.ref] = (usados[ch.ref] || 0) + 1;
+    if (sub && atual && atual.nome === sub) { atual.c.push(ch); return; }
+    if (sub) { atual = { id: uid(), t: 'serie', nome: sub, fechado: true, c: [ch] }; novo.push(atual); criados++; return; }
+    atual = null; novo.push(ch);
+  });
+  if (!criados) { alert('Nenhum bloco solto na linha principal para agrupar.'); return; }
+  root.c = novo;
+  rbdSel = rbdSel2 = null;
+  rbdCommit();
+}
+
 function rbdLimpar() {
   if (!rbdTemDiagrama()) return;
   if (!confirm('Apagar todo o diagrama de blocos?')) return;
@@ -3454,6 +3630,7 @@ function rbdCor(r) { return r >= 0.8 ? 'var(--green)' : r >= 0.5 ? 'var(--amber)
 function rbdCorte(s, n) { s = String(s); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
 function rbdNomeNo(n) {
   if (n.t === 'item') return n.ref;
+  if (n.nome) return n.nome;
   if (n.t === 'serie') return 'Série de ' + n.c.length + ' elementos';
   return (n.k > 1 ? 'Grupo ' + n.k + ' de ' + n.c.length : 'Paralelo de ' + n.c.length + ' ramos');
 }
@@ -3462,16 +3639,16 @@ function rbdNomeNo(n) {
 var RB = { bw: 178, bh: 82, gx: 40, gy: 18, fx: 12, lbl: 26, fb: 12, rail: 14, rg: 24 };
 
 function rbdLabel(n, ctx) {
-  var r = rbdR(ctx.t, ctx.pm, n);
-  if (n.t === 'serie') return 'SÉRIE · todos · R ' + rbdPct(r);
-  if ((n.k || 1) === 1) return 'PARALELO · basta 1 de ' + n.c.length + ' · R ' + rbdPct(r);
-  return 'k-DE-N · ' + n.k + ' de ' + n.c.length + ' · R ' + rbdPct(r);
+  var r = rbdR(ctx.t, ctx.pm, n), pre = n.nome ? n.nome.toUpperCase() + ' · ' : '';
+  if (n.t === 'serie') return (pre || 'SÉRIE · todos · ') + 'R ' + rbdPct(r);
+  if ((n.k || 1) === 1) return pre + 'PARALELO · basta 1 de ' + n.c.length + ' · R ' + rbdPct(r);
+  return pre + 'k-DE-N · ' + n.k + ' de ' + n.c.length + ' · R ' + rbdPct(r);
 }
 
 function rbdLayout(n, isRoot, ctx) {
   // medidas de desenho ficam numa propriedade não-enumerável: não vão para o JSON salvo
   Object.defineProperty(n, '_L', { value: {}, writable: true, configurable: true, enumerable: false });
-  if (n.t === 'item') { n._L.w = RB.bw; n._L.h = RB.bh; n._L.m = RB.bh / 2; return; }
+  if (n.t === 'item' || (n.fechado && !isRoot)) { n._L.w = RB.bw; n._L.h = RB.bh; n._L.m = RB.bh / 2; return; }
   n.c.forEach(function(ch) { rbdLayout(ch, false, ctx); });
   n._L.lbl = isRoot ? '' : rbdLabel(n, ctx);
   var lblW = isRoot ? 0 : n._L.lbl.length * 6.7 + 24;
@@ -3502,13 +3679,14 @@ function rbdLine(o, x1, y1, x2, y2) {
 
 function rbdDraw(n, x, y, o, ctx, isRoot) {
   if (n.t === 'item') return rbdDrawItem(n, x, y, o, ctx);
+  if (n.fechado && !isRoot) return rbdDrawFechado(n, x, y, o, ctx);
   var sel = !!ctx.sel[n.id], isPar = n.t === 'par';
   if (!isRoot) {
-    o.push('<g class="rbd-grp" onclick="rbdClick(event,\'' + n.id + '\')">');
+    o.push('<g class="rbd-grp" onclick="rbdClick(event,\'' + n.id + '\')"' + (n.nome ? ' ondblclick="rbdAlternar(\'' + n.id + '\',event)"' : '') + '>');
     o.push('<rect x="' + x + '" y="' + y + '" width="' + n._L.w + '" height="' + n._L.h + '" rx="10" class="rbd-frame ' +
       (isPar ? 'par' : 'ser') + (sel ? ' sel' : '') + '"/>');
-    o.push('<text x="' + (x + 10) + '" y="' + (y + 17) + '" class="rbd-glbl ' + (isPar ? 'par' : 'ser') + '">' + esc(n._L.lbl) + '</text>');
-    o.push('<title>' + (isPar ? 'Clique para selecionar o grupo paralelo' : 'Clique para selecionar a série inteira') + '</title></g>');
+    o.push('<text x="' + (x + 10) + '" y="' + (y + 17) + '" class="rbd-glbl ' + (isPar ? 'par' : 'ser') + (n.nome ? ' nomeado' : '') + '">' + (n.nome ? '▾ ' : '') + esc(n._L.lbl) + '</text>');
+    o.push('<title>' + (n.nome ? esc(n.nome) + ' — duplo clique para recolher' : isPar ? 'Clique para selecionar o grupo paralelo' : 'Clique para selecionar a série inteira') + '</title></g>');
   }
   var my = y + n._L.m;
   if (!isPar) {
@@ -3534,6 +3712,23 @@ function rbdDraw(n, x, y, o, ctx, isRoot) {
     });
   }
   n.c.forEach(function(ch) { rbdDraw(ch, x + ch._L.dx, y + ch._L.dy, o, ctx, false); });
+}
+
+// Grupo recolhido: um bloco só com o resumo do grupo
+function rbdDrawFechado(n, x, y, o, ctx) {
+  var r = rbdR(ctx.t, ctx.pm, n), a = rbdA(ctx.pm, n), sel = !!ctx.sel[n.id];
+  var nb = rbdLeaves(n).length, isPar = n.t === 'par';
+  var tipo = isPar ? ((n.k || 1) === 1 ? 'paralelo' : n.k + ' de ' + n.c.length) : 'série';
+  var semDados = rbdLeaves(n).some(function(L) { return ctx.pm[L.id].src === 'padrao'; });
+  o.push('<g class="rbd-node" onclick="rbdClick(event,\'' + n.id + '\')" ondblclick="rbdAlternar(\'' + n.id + '\',event)">');
+  o.push('<rect x="' + (x + 4) + '" y="' + (y + 4) + '" width="' + RB.bw + '" height="' + RB.bh + '" rx="8" class="rbd-box rbd-stack"/>');
+  o.push('<rect x="' + x + '" y="' + y + '" width="' + RB.bw + '" height="' + RB.bh + '" rx="8" class="rbd-box rbd-fechado' +
+    (sel ? ' sel' : '') + (semDados ? ' nodata' : '') + '" style="stroke:' + (sel ? 'var(--accent)' : rbdCor(r)) + '"/>');
+  o.push('<text x="' + (x + 12) + '" y="' + (y + 20) + '" class="rbd-t-grp">▸ ' + esc(rbdCorte(n.nome, 19)) + '</text>');
+  o.push('<text x="' + (x + 12) + '" y="' + (y + 38) + '" class="rbd-t-sub">' + nb + ' bloco' + (nb === 1 ? '' : 's') + ' · ' + tipo + (semDados ? ' ⚠' : '') + '</text>');
+  o.push('<text x="' + (x + 12) + '" y="' + (y + 55) + '" class="rbd-t-r" style="fill:' + rbdCor(r) + '">R(' + ctx.t + 'h) = ' + rbdPct(r) + '</text>');
+  o.push('<text x="' + (x + 12) + '" y="' + (y + 72) + '" class="rbd-t-sub">A = ' + rbdPct(a, 2) + '</text>');
+  o.push('<title>' + esc(n.nome) + ' (grupo recolhido)\nDuplo clique para abrir</title></g>');
 }
 
 function rbdDrawItem(n, x, y, o, ctx) {
@@ -3572,6 +3767,7 @@ function rbdSyncControls() {
   dis('rbd-b-esq', !um || sel.i === 0);
   dis('rbd-b-dir', !um || sel.i === sel.P.c.length - 1);
   dis('rbd-b-del', !temSel);
+  dis('rbd-b-agrupar', !temSel);
 
   var hint = document.getElementById('rbd-hint');
   if (hint) {
@@ -3603,19 +3799,46 @@ function renderRbd() {
   rbdLeaves(root).forEach(function(L) { ctx.dup[L.ref] = (ctx.dup[L.ref] || 0) + 1; });
   rbdLayout(root, true, ctx);
 
-  var M = 84, T = 14;
-  var W = root._L.w + 2 * M, H = root._L.h + 2 * T, my = T + root._L.m;
-  var avail = area.clientWidth - 26;
-  var z = rbdZoom || (avail > 100 ? Math.max(0.35, Math.min(1, avail / W)) : 1);
+  // Quebra a linha principal em várias linhas quando não cabe na largura da área
+  var M = 84, T = 14, RG = 50;
+  var avail = Math.max(area.clientWidth - 26, 300);
+  var maxW = Math.max((rbdZoom ? avail / rbdZoom : avail) - 2 * M, RB.bw * 2 + RB.gx);
+  var linhas = [], lin = null;
+  root.c.forEach(function(ch) {
+    var w = ch._L.w;
+    if (!lin || (lin.w + RB.gx + w > maxW && lin.itens.length)) { lin = { itens: [], w: -RB.gx }; linhas.push(lin); }
+    lin.itens.push(ch); lin.w += RB.gx + w;
+  });
+  var largura = 0, yAt = T;
+  linhas.forEach(function(L) {
+    L.top = 0; L.bot = 0;
+    L.itens.forEach(function(ch) { L.top = Math.max(L.top, ch._L.m); L.bot = Math.max(L.bot, ch._L.h - ch._L.m); });
+    L.y = yAt; L.my = yAt + L.top; yAt += L.top + L.bot + RG;
+    largura = Math.max(largura, L.w);
+  });
+  var W = largura + 2 * M, H = yAt - RG + T;
+  var z = rbdZoom || Math.max(0.35, Math.min(1, avail / W));
   rbdZoomAtual = z;
   var zf = document.getElementById('rbd-zoom-fit'); if (zf) zf.textContent = rbdZoom ? 'Ajustar (' + Math.round(z * 100) + '%)' : 'Ajustado ' + Math.round(z * 100) + '%';
   var o = [];
   o.push('<svg class="rbd-svg" xmlns="http://www.w3.org/2000/svg" width="' + Math.round(W * z) + '" height="' + Math.round(H * z) + '" viewBox="0 0 ' + W + ' ' + H + '" onclick="rbdClick(null,null)">');
-  rbdLine(o, 40, my, M, my);
-  rbdLine(o, M + root._L.w, my, W - 40, my);
-  o.push('<circle cx="32" cy="' + my + '" r="8" class="rbd-term"/><text x="32" y="' + (my - 14) + '" class="rbd-t-term" text-anchor="middle">ENTRADA</text>');
-  o.push('<circle cx="' + (W - 32) + '" cy="' + my + '" r="8" class="rbd-term"/><text x="' + (W - 32) + '" y="' + (my - 14) + '" class="rbd-t-term" text-anchor="middle">SAÍDA</text>');
-  rbdDraw(root, M, T, o, ctx, true);
+  var y0 = linhas[0].my, yN = linhas[linhas.length - 1].my, xFim = M + linhas[linhas.length - 1].w;
+  rbdLine(o, 40, y0, M, y0);
+  rbdLine(o, xFim, yN, W - 40, yN);
+  o.push('<circle cx="32" cy="' + y0 + '" r="8" class="rbd-term"/><text x="32" y="' + (y0 - 14) + '" class="rbd-t-term" text-anchor="middle">ENTRADA</text>');
+  o.push('<circle cx="' + (W - 32) + '" cy="' + yN + '" r="8" class="rbd-term"/><text x="' + (W - 32) + '" y="' + (yN - 14) + '" class="rbd-t-term" text-anchor="middle">SAÍDA</text>');
+  linhas.forEach(function(L, li) {
+    var x = M;
+    L.itens.forEach(function(ch, i) {
+      if (i) rbdLine(o, x - RB.gx, L.my, x, L.my);
+      rbdDraw(ch, x, L.my - ch._L.m, o, ctx, false);
+      x += ch._L.w + RB.gx;
+    });
+    if (li < linhas.length - 1) { // retorno para o início da próxima linha
+      var prox = linhas[li + 1], xr = M + L.w, yMeio = L.my + L.bot + RG / 2;
+      o.push('<path d="M' + xr + ' ' + L.my + ' H' + (M + largura + 24) + ' V' + yMeio + ' H' + (M - 24) + ' V' + prox.my + ' H' + M + '" class="rbd-wire" fill="none"/>');
+    }
+  });
   o.push('</svg>');
   area.innerHTML = o.join('');
   renderRbdInspector(ctx);
@@ -3673,6 +3896,10 @@ function renderRbdInspector(ctx) {
     var rs = n.c.map(function(ch) { return rbdR(t, pm, ch); });
     var rg = rbdR(t, pm, n), ag = rbdA(pm, n), isPar = n.t === 'par';
     h += '<div class="rbd-insp-title">' + (isPar ? '⇅ ' : '→ ') + esc(rbdNomeNo(n)) + '</div>';
+    h += '<div class="rbd-insp-sub" style="margin-top:0">Nome do grupo</div><div style="display:flex;gap:6px;margin-bottom:8px">' +
+      '<input id="rbd-nome-grupo" value="' + escA(n.nome || '') + '" placeholder="sem nome" style="flex:1" onkeydown="if(event.key===\'Enter\')rbdRenomear(\'' + n.id + '\',this.value)">' +
+      '<button class="btn btn-sm" onclick="rbdRenomear(\'' + n.id + '\',document.getElementById(\'rbd-nome-grupo\').value)">OK</button></div>';
+    if (n.nome) h += '<button class="btn btn-sm" style="width:100%;margin-bottom:8px" onclick="rbdAlternar(\'' + n.id + '\')">' + (n.fechado ? '▸ Abrir grupo' : '▾ Recolher grupo') + '</button>';
     h += '<div class="rbd-insp-txt">' + (isPar ? ((n.k || 1) === 1 ? 'Basta <b>um</b> ramo funcionar.' : 'Pelo menos <b>' + n.k + '</b> dos ' + n.c.length + ' ramos precisam funcionar.') :
       'Todos os elementos precisam funcionar.') + '</div>';
     h += '<table class="rbd-insp-tb">';
