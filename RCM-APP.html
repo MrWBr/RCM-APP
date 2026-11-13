@@ -195,6 +195,63 @@ textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
 
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
 .overlay.open { display: flex !important; }
+.sp-toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+.sp-toolbar input[type=search], .sp-toolbar select, #dd-busca { background: var(--bg3); color: var(--text); border: 1px solid var(--border2); border-radius: 6px; padding: 6px 9px; font-size: 12px; min-width: 0; }
+.sp-toolbar input[type=search] { flex: 1 1 220px; }
+.sp-toolbar select { flex: 0 1 200px; max-width: 240px; }
+.sp-chk { font-size: 12px; color: var(--text2); display: flex; align-items: center; gap: 5px; cursor: pointer; white-space: nowrap; }
+.sp-pend-n { color: var(--amber); }
+.sp-total { margin-left: auto; font-size: 12px; color: var(--text3); white-space: nowrap; }
+.sp-total b { color: var(--amber); font-size: 14px; margin-left: 4px; }
+.sp-wrap { overflow-x: auto; }
+.sp-tb { width: 100%; font-size: 12px; table-layout: fixed; }
+.sp-tb th:nth-child(1) { width: 38%; } .sp-tb th:nth-child(2) { width: 6%; } .sp-tb th:nth-child(3), .sp-tb th:nth-child(4) { width: 11%; }
+.sp-tb th:nth-child(5) { width: 26%; } .sp-tb th:nth-child(6) { width: 92px; }
+.sp-tb td, .sp-tb th { vertical-align: top; }
+.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sp-tot { color: var(--amber); font-weight: 600; }
+.sp-peca { color: var(--accent); word-break: break-word; }
+.sp-grupo td { background: var(--bg3); border-top: 1px solid var(--border2); padding: 7px 10px !important; }
+.sp-g-ativo { color: var(--teal); font-weight: 700; margin-right: 10px; }
+.sp-g-cam { color: var(--text3); font-size: 11px; }
+.sp-g-sub { float: right; color: var(--text2); font-size: 11px; }
+.sp-badge-pend { font-size: 10px; color: var(--amber); border: 1px solid rgba(251,191,36,.35); border-radius: 4px; padding: 0 5px; margin-left: 4px; white-space: nowrap; }
+.sp-obs { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text2); font-size: 11px; cursor: pointer; }
+.sp-obs.aberta { white-space: normal; }
+.sp-acoes { white-space: nowrap; text-align: right; }
+.dd-layout { display: grid; grid-template-columns: minmax(260px, 360px) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 1100px) { .dd-layout { grid-template-columns: minmax(0, 1fr); } }
+.dd-lista-card { position: sticky; top: 12px; }
+#dd-busca { width: 100%; box-sizing: border-box; }
+.dd-filtros { display: flex; gap: 4px; margin: 8px 0; }
+.dd-fbtn { flex: 1; background: var(--bg3); border: 1px solid var(--border); color: var(--text2); border-radius: 5px; padding: 4px; font-size: 11px; cursor: pointer; }
+.dd-fbtn.ativo { border-color: var(--accent); color: var(--accent); }
+.dd-lista { max-height: 62vh; overflow-y: auto; margin: 0 -6px; }
+.dd-l-ativo { font-size: 11px; font-weight: 700; color: var(--teal); padding: 8px 6px 3px; position: sticky; top: 0; background: var(--bg2); }
+.dd-l-ativo span { color: var(--text3); font-weight: 400; }
+.dd-l-item { display: flex; gap: 8px; align-items: flex-start; padding: 6px; border-radius: 5px; cursor: pointer; font-size: 12px; }
+.dd-l-item:hover { background: var(--bg3); }
+.dd-l-item.sel { background: rgba(74,124,247,.15); outline: 1px solid rgba(74,124,247,.4); }
+.dd-l-rpn { font-family: var(--mono); font-size: 11px; min-width: 26px; font-weight: 700; }
+.dd-l-modo { flex: 1; color: var(--text2); line-height: 1.35; }
+.dd-l-st { font-size: 10px; white-space: nowrap; }
+.dd-l-st.dec { color: var(--green); font-size: 13px; }
+.dd-l-st.pend { color: var(--amber); }
+.dd-vazio { color: var(--text3); font-size: 12px; padding: 16px 6px; }
+.dd-ctx { background: var(--bg3); border-radius: 6px; padding: 10px 12px; margin-bottom: 10px; font-size: 12px; }
+.dd-ctx-tit { color: var(--teal); font-weight: 700; }
+.dd-ctx-modo { color: var(--red); margin: 2px 0 6px; }
+.dd-ctx-txt { color: var(--text3); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; cursor: pointer; }
+.dd-ctx-txt.aberto { -webkit-line-clamp: unset; display: block; }
+.dd-prog { font-size: 11px; color: var(--text3); margin-bottom: 8px; }
+.dd-node.dd-feito { display: flex; align-items: baseline; gap: 8px; padding: 7px 12px; cursor: pointer; opacity: .85; }
+.dd-node.dd-feito:hover { opacity: 1; border-color: var(--border2); }
+.dd-f-label { font-family: var(--mono); color: var(--accent); font-size: 11px; white-space: nowrap; }
+.dd-f-txt { flex: 1; font-size: 12px; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dd-f-resp { font-weight: 700; font-size: 12px; }
+.dd-f-resp.sim { color: var(--green); } .dd-f-resp.nao { color: var(--red); }
+.dd-f-edit { color: var(--text3); font-size: 11px; }
+.dd-res-tb { width: 100%; font-size: 12px; }
 .dd-hist-btn { margin-top: 4px; font-size: 10px !important; padding: 2px 6px !important; white-space: nowrap; }
 .dd-hist-ctx { font-size: 12px; color: var(--text2); background: var(--bg3); border-radius: 6px; padding: 8px 10px; margin-bottom: 12px; line-height: 1.6; }
 .dd-hist-bloco { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; font-size: 12.5px; }
@@ -519,21 +576,28 @@ textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
     <div id="pg-dd" class="page">
       <div class="page-title">Diagrama Decisional RCM</div>
       <div class="page-sub">Arvore logica SAE JA1011 para consolidacao das diretrizes de manutencao</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-        <div>
-          <div class="card">
-            <div class="card-title">Modo de Falha Alvo</div>
-            <div class="form-group"><select id="dd-select" onchange="startDD()"><option value="">- selecionar do FMEA -</option></select></div>
-            <div id="dd-context" style="font-size:12px;color:var(--text3);display:none;background:var(--bg3);border-radius:6px;padding:10px;margin-top:12px;"></div>
+      <div class="dd-layout">
+        <div class="card dd-lista-card">
+          <div class="card-title" style="margin-bottom:8px">Modos de falha do FMEA</div>
+          <input id="dd-busca" type="search" placeholder="Buscar ativo ou modo…" oninput="renderDDLista()">
+          <div class="dd-filtros">
+            <button class="dd-fbtn ativo" data-f="todos" onclick="ddFiltro(this)">Todos</button>
+            <button class="dd-fbtn" data-f="pend" onclick="ddFiltro(this)">Pendentes</button>
+            <button class="dd-fbtn" data-f="dec" onclick="ddFiltro(this)">Decididos</button>
           </div>
-          <div class="card"><div class="card-title">Interrogatorio Progressivo</div><div id="dd-flow" class="dd-flow"></div></div>
+          <div id="dd-lista" class="dd-lista"></div>
+          <select id="dd-select" onchange="startDD()" style="display:none"><option value="">- selecionar do FMEA -</option></select>
         </div>
-        <div class="card">
-          <div class="card-title">Resultados Consolidados</div>
-          <div class="tbl-wrap">
-            <table><thead><tr><th>Ativo</th><th>Modo de Falha</th><th>Estrategia Adotada</th><th>Categoria</th></tr></thead><tbody id="tbody-dd"></tbody></table>
-          </div>
+        <div class="card dd-main-card">
+          <div class="card-title" style="margin-bottom:8px">Interrogatório progressivo</div>
+          <div id="dd-context" class="dd-ctx" style="display:none"></div>
+          <div id="dd-progresso"></div>
+          <div id="dd-flow" class="dd-flow"><div class="dd-vazio">Escolha um modo de falha na lista ao lado para iniciar.</div></div>
         </div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:10px">Resultados consolidados</div>
+        <div style="overflow-x:auto"><table class="dd-res-tb"><thead><tr><th>Modo de falha</th><th>Estratégia adotada</th><th>Categoria</th><th>Origem</th><th></th></tr></thead><tbody id="tbody-dd"></tbody></table></div>
       </div>
     </div>
 
@@ -690,27 +754,21 @@ textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
     <div class="page" id="pg-spare">
       <div class="page-title">Spare Parts</div>
       <div class="page-sub">Dimensionamento de pecas criticas derivado da FMEA</div>
-      <div style="display:grid;grid-template-columns:minmax(280px, 400px) 1fr;gap:16px;max-width:1200px;">
-        <div class="card" style="max-height:500px;overflow-y:auto;">
-          <div class="card-title">Arvore de Pecas</div>
-          <div id="spare-tree-zone"></div>
+      <div class="card">
+        <div class="sp-toolbar">
+          <input id="sp-busca" type="search" placeholder="Buscar peça ou código…" oninput="renderSpare()">
+          <select id="sp-f-sis" onchange="spFiltroSis()"><option value="">Todos os sistemas</option></select>
+          <select id="sp-f-sub" onchange="spFiltroSub()"><option value="">Todos os subsistemas</option></select>
+          <select id="sp-f-item" onchange="renderSpare()"><option value="">Todos os ativos</option></select>
+          <label class="sp-chk"><input type="checkbox" id="sp-pend" onchange="renderSpare()"> Só pendentes <span id="sp-n-pend" class="sp-pend-n"></span></label>
+          <div class="sp-total">Total <b id="spare-custo-total">R$ 0,00</b><span id="sp-contagem"></span></div>
+          <button class="btn btn-primary btn-sm" onclick="openSpareModal()">+ Peça</button>
         </div>
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-            <div>
-              <div class="card-title" style="margin:0">Pecas Cadastradas</div>
-              <div style="font-size:12px;color:var(--text3);margin-top:4px;">Total: <strong id="spare-custo-total" style="color:var(--amber)">R$ 0.00</strong></div>
-            </div>
-            <button class="btn btn-primary btn-sm" onclick="openSpareModal()">+ Peca</button>
-          </div>
-          <div style="overflow-x:auto;max-height:400px;overflow-y:auto;">
-            <table style="font-size:11px;">
-              <thead>
-                <tr><th>Sistema</th><th>Sub</th><th>Ativo</th><th>Peca</th><th>Qtd</th><th>V.Unit</th><th>Total</th><th>Obs</th><th>Acoes</th></tr>
-              </thead>
-              <tbody id="tbody-spare"></tbody>
-            </table>
-          </div>
+        <div class="sp-wrap">
+          <table class="sp-tb">
+            <thead><tr><th>Peça</th><th class="num">Qtd</th><th class="num">V. unit.</th><th class="num">Total</th><th>Obs</th><th></th></tr></thead>
+            <tbody id="tbody-spare"></tbody>
+          </table>
         </div>
       </div>
       <div style="position:fixed;bottom:4px;right:8px;font-size:9px;color:var(--text3);opacity:0.6;">
@@ -2111,7 +2169,8 @@ function abrirNovidades() {
       '<li><b>Agrupar por subsistema</b> monta os grupos automaticamente a partir da Estrutura de Ativos.</li>' +
       '<li>Diagramas longos quebram em várias linhas para caber na tela.</li>' +
       '<li><b>FMEA:</b> o botão <b>🧭 DD</b> mostra a estratégia anterior, a adotada e o caminho de perguntas e respostas do Diagrama Decisional.</li>' +
-      '<li>O Diagrama Decisional não mistura mais o resultado com as diretrizes marcadas no FMEA.</li></ul>' +
+      '<li>O Diagrama Decisional não mistura mais o resultado com as diretrizes marcadas no FMEA.</li>' +
+      '<li><b>Spare Parts</b> e <b>Diagrama Decisional</b> com novo layout: busca, filtros, agrupamento por ativo e perguntas em passo a passo.</li></ul>' +
       '<h4>Atualização anterior (12/11)</h4>' +
       '<h4>Diagrama de Blocos (RBD) refeito</h4><ul>' +
       '<li>Desenho da ENTRADA à SAÍDA: mesmo caminho = série; caminhos que se dividem = paralelo.</li>' +
@@ -2977,6 +3036,56 @@ var DD_TREE = {
 // ============================================================
 // FUNÇÕES DO DD
 // ============================================================
+var ddFiltroAtual = 'todos';
+function ddFiltro(btn) {
+  ddFiltroAtual = btn.getAttribute('data-f');
+  document.querySelectorAll('.dd-fbtn').forEach(function(b) { b.classList.toggle('ativo', b === btn); });
+  renderDDLista();
+}
+function ddDecidido(f) { return !!f.dd || (S.dd_results || []).some(function(r) { return r && r.fmea_id === f.id; }); }
+function renderDDLista() {
+  var box = document.getElementById('dd-lista');
+  if (!box) return;
+  var busca = normTxt((document.getElementById('dd-busca') || {}).value || '').trim();
+  var grupos = {}, ordem = [], nPend = 0;
+  S.fmea.forEach(function(f, i) {
+    var dec = ddDecidido(f);
+    if (!dec) nPend++;
+    if (ddFiltroAtual === 'pend' && dec) return;
+    if (ddFiltroAtual === 'dec' && !dec) return;
+    if (busca && normTxt(f.item + ' ' + f.modo).indexOf(busca) < 0) return;
+    if (!grupos[f.item]) { grupos[f.item] = []; ordem.push(f.item); }
+    grupos[f.item].push({ f: f, i: i, dec: dec });
+  });
+  var h = '';
+  ordem.forEach(function(item) {
+    var lst = grupos[item].sort(function(a, b) { return (+b.f.rpn || 0) - (+a.f.rpn || 0); });
+    h += '<div class="dd-l-ativo">' + esc(item) + ' <span>' + lst.length + '</span></div>';
+    lst.forEach(function(x) {
+      var rpn = +x.f.rpn || 0, cor = rpn >= 150 ? 'var(--red)' : rpn >= 60 ? 'var(--amber)' : 'var(--text3)';
+      h += '<div class="dd-l-item' + (String(ddFmIdx) === String(x.i) ? ' sel' : '') + '" onclick="ddEscolher(' + x.i + ')">' +
+        '<span class="dd-l-rpn" style="color:' + cor + '">' + rpn + '</span>' +
+        '<span class="dd-l-modo">' + esc(x.f.modo) + '</span>' +
+        (x.dec ? '<span class="dd-l-st dec" title="' + escA(x.f.dd || 'decidido') + '">✓</span>' : '<span class="dd-l-st pend">pendente</span>') + '</div>';
+    });
+  });
+  box.innerHTML = h || '<div class="dd-vazio">Nenhum modo de falha' + (S.fmea.length ? ' com esse filtro.' : ' cadastrado no FMEA.') + '</div>';
+  var b = document.querySelector('.dd-fbtn[data-f="pend"]'); if (b) b.textContent = 'Pendentes' + (nPend ? ' (' + nPend + ')' : '');
+}
+function ddEscolher(i) {
+  var sel = document.getElementById('dd-select');
+  if (sel) sel.value = String(i);
+  startDD();
+  renderDDLista();
+  var main = document.querySelector('.dd-main-card');
+  if (main && window.innerWidth < 1100) main.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function ddReabrir(key) {
+  var keys = Object.keys(ddAnswers), idx = keys.indexOf(key);
+  if (idx >= 0) keys.slice(idx).forEach(function(k) { delete ddAnswers[k]; });
+  renderDDFlow();
+}
+
 function populateDDSelect() {
   var sel = document.getElementById('dd-select');
   if (!sel) return;
@@ -2987,6 +3096,7 @@ function populateDDSelect() {
   });
   sel.innerHTML = opts;
   if (v && +v < S.fmea.length) sel.value = v;
+  renderDDLista();
 }
 
 function startDD() {
@@ -2995,11 +3105,13 @@ function startDD() {
   var ctx = document.getElementById('dd-context');
   if (ddFmIdx === '') {
     ctx.style.display = 'none';
-    document.getElementById('dd-flow').innerHTML = '';
+    document.getElementById('dd-flow').innerHTML = '<div class="dd-vazio">Escolha um modo de falha na lista ao lado para iniciar.</div>';
+    var pg0 = document.getElementById('dd-progresso'); if (pg0) pg0.innerHTML = '';
     return;
   }
   var f = S.fmea[+ddFmIdx];
-  ctx.innerHTML = '<strong>Ativo:</strong> ' + esc(f.item) + ' | <strong>Modo:</strong> ' + esc(f.modo) + '<br><strong>Efeito:</strong> ' + esc(f.efeito) + ' | <strong>Falha:</strong> ' + esc(f.falha);
+  ctx.innerHTML = '<div class="dd-ctx-tit">' + esc(f.item) + '</div><div class="dd-ctx-modo">' + esc(f.modo) + ' <span class="dd-l-rpn">RPN ' + esc(f.rpn) + '</span></div>' +
+    '<div class="dd-ctx-txt" onclick="this.classList.toggle(\'aberto\')" title="Clique para ver tudo"><b>Efeito:</b> ' + esc(f.efeito || '—') + '<br><b>Falha funcional:</b> ' + esc(f.falha || '—') + '</div>';
   ctx.style.display = 'block';
   renderDDFlow();
 }
@@ -3022,11 +3134,20 @@ function renderDDFlow() {
         '<div style="font-size:11px;color:var(--text3);margin-bottom:10px;">Caminho: ' + path.join(' → ') + '</div>' +
         '<button class="btn btn-primary btn-sm" onclick="saveDDResult(\'' + node.tarefa.replace(/'/g, "\\'") + '\',\'' + node.tipo.replace(/'/g, "\\'") + '\',\'' + node.origem + '\')">✓ Vincular ao FMEA</button>' +
         '</div>';
+      ddProgresso(path.length, true);
       break;
     }
 
     var answered = ddAnswers[current];
     var subText = node.sub ? '<div style="font-size:10px;color:var(--text3);margin-top:4px;font-style:italic;">' + node.sub + '</div>' : '';
+    if (answered) {
+      flow.innerHTML += '<div class="dd-node dd-feito" onclick="ddReabrir(\'' + current + '\')" title="Clique para mudar esta resposta">' +
+        '<span class="dd-f-label">' + node.label + '</span><span class="dd-f-txt">' + node.text + '</span>' +
+        '<span class="dd-f-resp ' + (answered === 'S' ? 'sim' : 'nao') + '">' + (answered === 'S' ? 'Sim' : 'Não') + '</span><span class="dd-f-edit">✎</span></div>';
+      path.push(current + (answered === 'S' ? '→S' : '→N'));
+      current = answered === 'S' ? node.yes : node.no;
+      continue;
+    }
 
     flow.innerHTML += '<div class="dd-node">' +
       '<div class="dd-q"><strong>' + node.label + '</strong> ' + node.text + subText + '</div>' +
@@ -3035,10 +3156,15 @@ function renderDDFlow() {
       '<button class="dd-btn dd-btn-nao" style="opacity:' + (answered === 'N' ? 1 : 0.5) + '" onclick="answerDD(\'' + current + '\',\'N\')">✗ Nao</button>' +
       '</div></div>';
 
-    if (!answered) break;
+    if (!answered) { ddProgresso(path.length, false); break; }
     path.push(current + (answered === 'S' ? '→S' : '→N'));
     current = answered === 'S' ? node.yes : node.no;
   }
+}
+
+function ddProgresso(n, fim) {
+  var el = document.getElementById('dd-progresso');
+  if (el) el.innerHTML = '<div class="dd-prog">' + (fim ? '✓ Diretriz definida após ' + n + ' resposta' + (n === 1 ? '' : 's') : 'Pergunta ' + (n + 1)) + '</div>';
 }
 
 function answerDD(key, ans) {
@@ -3142,25 +3268,36 @@ function abrirHistoricoDD(fmeaIdx) {
 }
 function refazerDD(fmeaIdx) {
   navigate('dd');
-  var sel = document.getElementById('dd-select');
-  if (sel) { populateDDSelect(); sel.value = String(fmeaIdx); startDD(); }
+  populateDDSelect();
+  ddEscolher(fmeaIdx);
 }
 
 function renderDD() {
   var tb = document.getElementById('tbody-dd');
   if (!tb) return;
-  var html = '';
+  var idxPorId = {}; S.fmea.forEach(function(f, i) { idxPorId[f.id] = i; });
+  var grupos = {}, ordem = [];
   S.dd_results.forEach(function(r) {
-    var badgeClass = r.origem === 'Adotadas' ? 'badge-green' : 'badge-amber';
-    html += '<tr>' +
-      '<td>' + esc(r.item) + '</td>' +
-      '<td style="color:var(--red)">' + esc(r.modo) + '</td>' +
-      '<td>' + esc(r.tarefa) + '</td>' +
-      '<td><span class="badge ' + badgeClass + '">' + esc(r.tipo) + '</span></td>' +
-      '<td><span class="badge badge-blue">' + esc(r.origem) + '</span></td>' +
-      '</tr>';
+    if (!r) return;
+    if (!grupos[r.item]) { grupos[r.item] = []; ordem.push(r.item); }
+    grupos[r.item].push(r);
   });
-  tb.innerHTML = html || '<tr><td colspan="5" style="text-align:center;padding:12px">Nenhuma amarracao.</td></tr>';
+  var html = '';
+  ordem.forEach(function(item) {
+    html += '<tr class="sp-grupo"><td colspan="5"><span class="sp-g-ativo">' + esc(item) + '</span><span class="sp-g-sub">' + grupos[item].length + ' decisão(ões)</span></td></tr>';
+    grupos[item].forEach(function(r) {
+      var badgeClass = r.origem === 'Adotadas' ? 'badge-green' : 'badge-amber', fi = idxPorId[r.fmea_id];
+      html += '<tr>' +
+        '<td style="color:var(--red)">' + esc(r.modo) + '</td>' +
+        '<td>' + esc(r.tarefa) + '</td>' +
+        '<td><span class="badge ' + badgeClass + '">' + esc(r.tipo) + '</span></td>' +
+        '<td><span class="badge badge-blue">' + esc(r.origem) + '</span></td>' +
+        '<td style="white-space:nowrap">' + (fi !== undefined ? '<button class="btn btn-sm" onclick="abrirHistoricoDD(' + fi + ')" title="Ver histórico da decisão">🧭</button> <button class="btn btn-sm" onclick="ddEscolher(' + fi + ')" title="Refazer">↻</button>' : '') + '</td>' +
+        '</tr>';
+    });
+  });
+  tb.innerHTML = html || '<tr><td colspan="5" style="text-align:center;padding:12px">Nenhuma amarração.</td></tr>';
+  renderDDLista();
 }
 
 // ============================================================
@@ -4723,37 +4860,70 @@ function delSpare(idx) {
   }
 }
 
+function spBRL(v) { return 'R$ ' + (+v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function spPendente(sp) { return !(+sp.qtd > 0) || !(+sp.valor > 0); }
+function spOpcoes(id, valores, rotulo) {
+  var el = document.getElementById(id); if (!el) return;
+  var atual = el.value;
+  el.innerHTML = '<option value="">' + rotulo + '</option>' + valores.map(function(v) { return '<option value="' + escA(v) + '">' + esc(v) + '</option>'; }).join('');
+  el.value = valores.indexOf(atual) >= 0 ? atual : '';
+}
+function spFiltroSis() { var e = document.getElementById('sp-f-sub'); if (e) e.value = ''; var i = document.getElementById('sp-f-item'); if (i) i.value = ''; renderSpare(); }
+function spFiltroSub() { var i = document.getElementById('sp-f-item'); if (i) i.value = ''; renderSpare(); }
+function spObs(el) { el.classList.toggle('aberta'); }
+
 function renderSpare() {
   var tb = document.getElementById('tbody-spare');
   if (!tb) return;
+  function val(id) { var e = document.getElementById(id); return e ? e.value : ''; }
+  var uniq = function(a) { return a.filter(function(v, i) { return v && a.indexOf(v) === i; }).sort(); };
+  var fSis = val('sp-f-sis'), fSub = val('sp-f-sub');
+  spOpcoes('sp-f-sis', uniq(S.spare.map(function(x) { return x.sistema; })), 'Todos os sistemas');
+  spOpcoes('sp-f-sub', uniq(S.spare.filter(function(x) { return !fSis || x.sistema === fSis; }).map(function(x) { return x.sub; })), 'Todos os subsistemas');
+  spOpcoes('sp-f-item', uniq(S.spare.filter(function(x) { return (!fSis || x.sistema === fSis) && (!fSub || x.sub === fSub); }).map(function(x) { return x.item; })), 'Todos os ativos');
+  fSis = val('sp-f-sis'); fSub = val('sp-f-sub');
+  var fItem = val('sp-f-item'), busca = normTxt(val('sp-busca')).trim();
+  var soPend = !!(document.getElementById('sp-pend') || {}).checked;
 
-  var custoTotal = 0;
-  var html = '';
-
+  var custoTotal = 0, nPend = 0, nVis = 0, grupos = {}, ordem = [];
   S.spare.forEach(function(sp, i) {
-    var total = (sp.qtd || 0) * (sp.valor || 0);
+    var total = (+sp.qtd || 0) * (+sp.valor || 0);
     custoTotal += total;
-    html += '<tr>' +
-      '<td>' + esc(sp.sistema) + '</td>' +
-      '<td>' + esc(sp.sub) + '</td>' +
-      '<td style="font-weight:600;color:var(--teal)">' + esc(sp.item) + '</td>' +
-      '<td style="color:var(--accent)">' + esc(sp.peca) + '</td>' +
-      '<td style="text-align:center">' + sp.qtd + '</td>' +
-      '<td>R$ ' + (sp.valor || 0).toFixed(2) + '</td>' +
-      '<td style="font-weight:600;color:var(--amber)">R$ ' + total.toFixed(2) + '</td>' +
-      '<td style="font-size:11px">' + esc(sp.obs) + '</td>' +
-      '<td>' +
-      '<button class="btn btn-sm" onclick="openSpareModal(' + i + ')">✏️</button> ' +
-      '<button class="btn btn-sm btn-danger" onclick="delSpare(' + i + ')">🗑</button>' +
-      '</td>' +
-      '</tr>';
+    if (spPendente(sp)) nPend++;
+    if (fSis && sp.sistema !== fSis) return;
+    if (fSub && sp.sub !== fSub) return;
+    if (fItem && sp.item !== fItem) return;
+    if (soPend && !spPendente(sp)) return;
+    if (busca && normTxt([sp.peca, sp.item, sp.obs].join(' ')).indexOf(busca) < 0) return;
+    var k = (sp.sistema || '') + '\u0001' + (sp.sub || '') + '\u0001' + (sp.item || '');
+    if (!grupos[k]) { grupos[k] = { sp: sp, linhas: [], total: 0 }; ordem.push(k); }
+    grupos[k].linhas.push({ sp: sp, i: i, total: total });
+    grupos[k].total += total; nVis++;
   });
-
-  tb.innerHTML = html || '<tr><td colspan="9" style="text-align:center;padding:12px">Nenhuma peca cadastrada.</td></tr>';
-
-  var totalEl = document.getElementById('spare-custo-total');
-  if (totalEl) totalEl.textContent = 'R$ ' + custoTotal.toFixed(2);
-
+  ordem.sort();
+  var html = '';
+  ordem.forEach(function(k) {
+    var g = grupos[k];
+    html += '<tr class="sp-grupo"><td colspan="6"><span class="sp-g-ativo">' + esc(g.sp.item) + '</span>' +
+      '<span class="sp-g-cam">' + esc(g.sp.sistema) + ' › ' + esc(g.sp.sub) + '</span>' +
+      '<span class="sp-g-sub">' + g.linhas.length + ' peça' + (g.linhas.length === 1 ? '' : 's') + ' · ' + spBRL(g.total) + '</span></td></tr>';
+    g.linhas.forEach(function(l) {
+      var sp = l.sp, pend = spPendente(sp);
+      html += '<tr>' +
+        '<td class="sp-peca">' + esc(sp.peca) + (pend ? ' <span class="sp-badge-pend" title="Falta quantidade e/ou valor">pendente</span>' : '') + '</td>' +
+        '<td class="num">' + (+sp.qtd > 0 ? esc(sp.qtd) : '—') + '</td>' +
+        '<td class="num">' + (+sp.valor > 0 ? spBRL(sp.valor) : '—') + '</td>' +
+        '<td class="num sp-tot">' + (l.total > 0 ? spBRL(l.total) : '—') + '</td>' +
+        '<td><div class="sp-obs" title="' + escA(sp.obs || '') + '" onclick="spObs(this)">' + esc(sp.obs || '') + '</div></td>' +
+        '<td class="sp-acoes"><button class="btn btn-sm" onclick="openSpareModal(' + l.i + ')" title="Editar">✏️</button> ' +
+        '<button class="btn btn-sm btn-danger" onclick="delSpare(' + l.i + ')" title="Apagar">🗑</button></td></tr>';
+    });
+  });
+  tb.innerHTML = html || '<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--text3)">' +
+    (S.spare.length ? 'Nenhuma peça com esses filtros.' : 'Nenhuma peça cadastrada.') + '</td></tr>';
+  var totalEl = document.getElementById('spare-custo-total'); if (totalEl) totalEl.textContent = spBRL(custoTotal);
+  var c = document.getElementById('sp-contagem'); if (c) c.textContent = ' · ' + nVis + ' de ' + S.spare.length + ' peças';
+  var np = document.getElementById('sp-n-pend'); if (np) np.textContent = nPend ? '(' + nPend + ')' : '';
   renderSpareTree();
 }
 
