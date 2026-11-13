@@ -71,10 +71,10 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); font
 
 /* ── CARDS & BLOCKS ── */
 .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
-.card-title { font-size: 13px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+.card-title { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: 0; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
 .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
 .kpi { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
-.kpi-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kpi-label { font-size: 12px; color: var(--text3); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .kpi-value { font-size: 24px; font-weight: 700; font-family: var(--mono); }
 .kpi-value.accent { color: var(--accent); }
 .kpi-value.green { color: var(--green); }
@@ -146,7 +146,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); font
 /* ── TABLES & FORMS ── */
 .tbl-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
 table { width: 100%; border-collapse: collapse; }
-th { background: var(--bg3); color: var(--text3); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .7px; padding: 10px 12px; text-align: left; white-space: nowrap; border-bottom: 1px solid var(--border); }
+th { background: var(--bg3); color: var(--text3); font-size: 11.5px; font-weight: 600; padding: 10px 12px; text-align: left; white-space: nowrap; border-bottom: 1px solid var(--border); }
 td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: rgba(255,255,255,.02); }
@@ -159,7 +159,7 @@ tr:hover td { background: rgba(255,255,255,.02); }
 
 .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 16px; }
 .form-group { display: flex; flex-direction: column; gap: 5px; }
-.form-group label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .6px; font-weight: 600; }
+.form-group label { font-size: 12px; color: var(--text2); font-weight: 600; }
 .form-group input, .form-group select, .form-group textarea { background: var(--bg3); border: 1px solid var(--border); color: var(--text); padding: 8px 10px; border-radius: 6px; font-size: 13px; outline: none; font-family: var(--font); }
 textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
 #pg-confiab input[type=number], #pg-confiab select { background: var(--bg3); color: var(--text); border: 1px solid var(--border2); border-radius: 5px; padding: 5px 7px; }
@@ -186,15 +186,48 @@ textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
 .dd-btn-sim { background: rgba(52,211,153,.1); border-color: rgba(52,211,153,.3); color: var(--green); }
 .dd-btn-nao { background: rgba(248,113,113,.1); border-color: rgba(248,113,113,.3); color: var(--red); }
 .dd-result { background: rgba(74,124,247,.08); border: 1px solid rgba(74,124,247,.25); border-radius: 8px; padding: 14px 16px; }
-.dd-result-label { font-size: 11px; color: var(--accent); text-transform: uppercase; margin-bottom: 4px; font-weight:600;}
+.dd-result-label { font-size: 12px; color: var(--accent); margin-bottom: 4px; font-weight:600;}
 .chart-wrap { height: 220px; position: relative; }
 .mtbf-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 16px; }
 .mtbf-cell { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; }
-.mtbf-cell label { font-size: 10px; color: var(--text3); text-transform: uppercase; display: block; margin-bottom: 4px; }
+.mtbf-cell label { font-size: 11px; color: var(--text3); display: block; margin-bottom: 4px; }
 .mtbf-cell .val { font-size: 18px; font-weight: 700; font-family: var(--mono); color: var(--teal); }
 
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
 .overlay.open { display: flex !important; }
+.ic { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: -2px; flex-shrink: 0; }
+.nav-icon .ic { width: 16px; height: 16px; opacity: .85; }
+.btn .ic { width: 14px; height: 14px; }
+.nav-st { font-size: 10px; color: var(--teal); margin-left: 4px; }
+.trava-banner { position: relative; display: flex; gap: 12px; align-items: center; justify-content: space-between; background: #1d2a24; border-bottom: 1px solid rgba(52,211,153,.35); color: var(--text2); font-size: 12px; padding: 8px 24px; margin: -24px -24px 18px; }
+.trava-banner b { color: var(--green); }
+.trava-banner a { color: var(--green); white-space: nowrap; }
+.estudo-travado #pg-sistemas .btn, .estudo-travado #pg-fmea .btn:not(.dd-hist-btn), .estudo-travado #pg-spare .btn, .estudo-travado .rbd-toolbar .btn { opacity: .45; }
+.conc-status { display: flex; justify-content: space-between; align-items: center; gap: 16px; border-left: 3px solid var(--border2); border-radius: 0 10px 10px 0; }
+.conc-status.fechado { border-left-color: var(--green); }
+.conc-st-tit { font-size: 16px; font-weight: 700; color: var(--text); }
+.conc-st-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.conc-tag { font-size: 10px; font-weight: 400; color: var(--text3); border: 1px solid var(--border2); border-radius: 4px; padding: 1px 6px; margin-left: 8px; text-transform: none; letter-spacing: 0; vertical-align: middle; }
+.conc-tag.vivo { color: var(--amber); }
+.conc-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin: 6px 0 16px; }
+.conc-k { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; }
+.conc-k label { font-size: 11px; color: var(--text3); display: block; }
+.conc-k div { font-size: 18px; font-weight: 700; color: var(--text); margin-top: 2px; }
+.conc-k span { font-size: 11px; color: var(--text3); }
+.conc-sub { font-size: 12px; font-weight: 700; color: var(--teal); margin: 14px 0 6px; }
+.conc-tb { width: 100%; font-size: 12px; }
+.conc-tb .up { color: var(--green); } .conc-tb .down { color: var(--red); }
+.conc-nota { font-size: 11px; color: var(--text3); margin-top: 6px; line-height: 1.5; }
+.conc-ver-sis { border-left: 3px solid var(--border2); background: var(--bg3); padding: 10px 14px; font-size: 13px; color: var(--text2); }
+.conc-ver-sis.ok { border-left-color: var(--green); } .conc-ver-sis.bad { border-left-color: var(--red); } .conc-ver-sis.inc { border-left-color: var(--amber); }
+.conc-ver-num { font-size: 12px; color: var(--text3); margin-top: 4px; }
+.conc-ver-mon { font-size: 12px; margin-top: 6px; color: var(--text2); }
+.conc-st { font-size: 11px; font-weight: 600; white-space: nowrap; cursor: help; }
+.conc-st.ok { color: var(--green); } .conc-st.bad { color: var(--red); } .conc-st.inc { color: var(--amber); } .conc-st.nd { color: var(--text3); }
+.conc-modal-txt { font-size: 12px; color: var(--text2); line-height: 1.5; margin: -8px 0 14px; }
+.conc-erro { color: var(--red); font-size: 12px; min-height: 16px; }
+.impl-btn { font-size: 10px !important; padding: 2px 7px !important; }
+.impl-btn.feita { color: var(--green); border-color: rgba(52,211,153,.4); }
 .sp-toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
 .sp-toolbar input[type=search], .sp-toolbar select, #dd-busca { background: var(--bg3); color: var(--text); border: 1px solid var(--border2); border-radius: 6px; padding: 6px 9px; font-size: 12px; min-width: 0; }
 .sp-toolbar input[type=search] { flex: 1 1 220px; }
@@ -235,7 +268,7 @@ textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
 .dd-l-rpn { font-family: var(--mono); font-size: 11px; min-width: 26px; font-weight: 700; }
 .dd-l-modo { flex: 1; color: var(--text2); line-height: 1.35; }
 .dd-l-st { font-size: 10px; white-space: nowrap; }
-.dd-l-st.dec { color: var(--green); font-size: 13px; }
+.dd-l-st.dec { color: var(--green); }
 .dd-l-st.pend { color: var(--amber); }
 .dd-vazio { color: var(--text3); font-size: 12px; padding: 16px 6px; }
 .dd-ctx { background: var(--bg3); border-radius: 6px; padding: 10px 12px; margin-bottom: 10px; font-size: 12px; }
@@ -256,7 +289,7 @@ textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
 .dd-hist-ctx { font-size: 12px; color: var(--text2); background: var(--bg3); border-radius: 6px; padding: 8px 10px; margin-bottom: 12px; line-height: 1.6; }
 .dd-hist-bloco { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; font-size: 12.5px; }
 .dd-hist-bloco.atual { border-color: var(--teal); }
-.dd-hist-tit { font-size: 11px; text-transform: uppercase; letter-spacing: .4px; color: var(--text3); margin-bottom: 6px; }
+.dd-hist-tit { font-size: 12px; font-weight: 600; color: var(--text3); margin-bottom: 6px; }
 .dd-hist-tit span { text-transform: none; letter-spacing: 0; margin-left: 6px; }
 .dd-hist-caminho { margin: 8px 0 0; padding-left: 20px; }
 .dd-hist-caminho li { margin: 4px 0; line-height: 1.45; }
@@ -337,7 +370,7 @@ textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
   <span class="logo">RCM</span>
   <span class="session-name" id="session-label">Sessão Padrão</span>
   <button onclick="showNewSession()" style="margin-left: 10px;">+ Nova Sessão</button>
-  <button class="btn" onclick="loadSession()" style="margin-right:8px">📂 Abrir Sessão</button>
+  <button class="btn" onclick="loadSession()" style="margin-right:8px">Abrir sessão</button>
   <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadSession(event)">
   <div class="spacer"></div>
   <div class="progress-wrap">
@@ -352,22 +385,30 @@ textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
 <div id="layout">
   <div id="sidebar">
     <div class="nav-group">
-      <div class="nav-item active" onclick="navigate('dash')"><span class="nav-icon">&#9632;</span> Dashboard</div>
-      <div class="nav-item" onclick="navigate('acoes')"><span class="nav-icon">&#10004;</span> Plano de Acoes</div>
+      <div class="nav-item active" onclick="navigate('dash')"><span class="nav-icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg></span> Dashboard</div>
+      <div class="nav-item" onclick="navigate('acoes')"><span class="nav-icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg></span> Plano de Acoes</div>
       <div class="nav-sep"></div>
-      <div class="nav-item" onclick="navigate('contexto')"><span class="nav-icon">&#128203;</span> Contexto Operacional</div>
-      <div class="nav-item" onclick="navigate('sistemas')"><span class="nav-icon">&#128295;</span> Estrutura de Ativos</div>
-      <div class="nav-item" onclick="navigate('rbd')"><span class="nav-icon">&#9939;</span> Diagrama RBD</div>
-      <div class="nav-item" onclick="navigate('fmea')"><span class="nav-icon">&#9888;</span> FMEA / RPN</div>
-      <div class="nav-item" onclick="navigate('dd')"><span class="nav-icon">&#127807;</span> Diagrama Decisional</div>
-      <div class="nav-item" onclick="navigate('historico')"><span class="nav-icon">&#128197;</span> Historico de Falhas</div>
-      <div class="nav-item" onclick="navigate('confiab')"><span class="nav-icon">&#128200;</span> Confiabilidade</div>
-      <div class="nav-item" onclick="navigate('spare')"><span class="nav-icon">&#128297;</span> Spare Parts</div>
+      <div class="nav-item" onclick="navigate('contexto')"><span class="nav-icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg></span> Contexto Operacional</div>
+      <div class="nav-item" onclick="navigate('sistemas')"><span class="nav-icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg></span> Estrutura de Ativos</div>
+      <div class="nav-item" onclick="navigate('rbd')"><span class="nav-icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/></svg></span> Diagrama RBD</div>
+      <div class="nav-item" onclick="navigate('fmea')"><span class="nav-icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span> FMEA / RPN</div>
+      <div class="nav-item" onclick="navigate('dd')"><span class="nav-icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg></span> Diagrama Decisional</div>
+      <div class="nav-item" onclick="navigate('historico')"><span class="nav-icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg></span> Historico de Falhas</div>
+      <div class="nav-item" onclick="navigate('confiab')"><span class="nav-icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span> Confiabilidade</div>
+      <div class="nav-item" onclick="navigate('spare')"><span class="nav-icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span> Spare Parts</div>
+      <div class="nav-item" onclick="navigate('conclusao')"><span class="nav-icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span> Conclusão <span id="nav-conclusao-st" class="nav-st"></span></div>
     </div>
     <div class="lwb-watermark"><a href="#" onclick="abrirNovidades();return false;" style="color:inherit">Novidades</a> · Created by LWB</div>
   </div>
 
   <div id="main">
+    <div id="trava-banner" class="trava-banner" style="display:none"></div>
+
+    <div class="page" id="pg-conclusao">
+      <div class="page-title">Conclusão do Estudo</div>
+      <div class="page-sub">Resultado do estudo, linha de base congelada e verificação depois da implantação</div>
+      <div id="conclusao-zona"></div>
+    </div>
 
     <!-- ========== DASHBOARD ========== -->
     <div id="pg-dash" class="page active">
@@ -597,7 +638,7 @@ textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
       </div>
       <div class="card">
         <div class="card-title" style="margin-bottom:10px">Resultados consolidados</div>
-        <div style="overflow-x:auto"><table class="dd-res-tb"><thead><tr><th>Modo de falha</th><th>Estratégia adotada</th><th>Categoria</th><th>Origem</th><th></th></tr></thead><tbody id="tbody-dd"></tbody></table></div>
+        <div style="overflow-x:auto"><table class="dd-res-tb"><thead><tr><th>Modo de falha</th><th>Estratégia adotada</th><th>Categoria</th><th>Origem</th><th>Implantação</th><th></th></tr></thead><tbody id="tbody-dd"></tbody></table></div>
       </div>
     </div>
 
@@ -608,20 +649,20 @@ textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
       <div class="card rbd-controls">
         <div class="rbd-toolbar">
           <select id="rbd-item-picker" onchange="rbdSyncControls()" title="Ativo a inserir"></select>
-          <button class="btn btn-primary" onclick="rbdAdd('depois')" title="Novo bloco depois do selecionado, no mesmo caminho">→ Em série</button>
-          <button class="btn" onclick="rbdAdd('antes')" title="Novo bloco antes do selecionado, no mesmo caminho">← Série antes</button>
-          <button class="btn" id="rbd-b-par" onclick="rbdAdd('paralelo')" title="Novo bloco num caminho alternativo ao selecionado">⇅ Em paralelo</button>
+          <button class="btn btn-primary" onclick="rbdAdd('depois')" title="Novo bloco depois do selecionado, no mesmo caminho">Em série</button>
+          <button class="btn" onclick="rbdAdd('antes')" title="Novo bloco antes do selecionado, no mesmo caminho">Série antes</button>
+          <button class="btn" id="rbd-b-par" onclick="rbdAdd('paralelo')" title="Novo bloco num caminho alternativo ao selecionado">Em paralelo</button>
           <button class="btn" id="rbd-b-ramo" onclick="rbdAdd('ramo')" title="Novo ramo no grupo paralelo selecionado">+ Ramo no grupo</button>
-          <button class="btn" id="rbd-b-agrupar" onclick="rbdAgrupar()" title="Agrupar o bloco ou trecho selecionado num grupo com nome">▣ Agrupar</button>
+          <button class="btn" id="rbd-b-agrupar" onclick="rbdAgrupar()" title="Agrupar o bloco ou trecho selecionado num grupo com nome">Agrupar</button>
           <span class="sep"></span>
-          <button class="btn" id="rbd-b-trocar" onclick="rbdTrocar()" title="Trocar o ativo do bloco selecionado pelo da lista">⇄ Trocar ativo</button>
-          <button class="btn" id="rbd-b-esq" onclick="rbdMover(-1)" title="Mover para trás/cima">◀</button>
-          <button class="btn" id="rbd-b-dir" onclick="rbdMover(1)" title="Mover para frente/baixo">▶</button>
-          <button class="btn btn-danger" id="rbd-b-del" onclick="rbdRemover()" title="Remover o selecionado (tecla Delete)">🗑 Remover</button>
+          <button class="btn" id="rbd-b-trocar" onclick="rbdTrocar()" title="Trocar o ativo do bloco selecionado pelo da lista">Trocar ativo</button>
+          <button class="btn" id="rbd-b-esq" onclick="rbdMover(-1)" title="Mover para trás/cima"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+          <button class="btn" id="rbd-b-dir" onclick="rbdMover(1)" title="Mover para frente/baixo"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+          <button class="btn btn-danger" id="rbd-b-del" onclick="rbdRemover()" title="Remover o selecionado (tecla Delete)">Remover</button>
           <span class="sep"></span>
           <button class="btn" onclick="rbdAgruparPorSubsistema()" title="Cria um grupo para cada subsistema da estrutura, com os blocos soltos da linha principal">Agrupar por subsistema</button>
-          <button class="btn" onclick="rbdTodos(true)" title="Recolher todos os grupos com nome">▸ Recolher</button>
-          <button class="btn" onclick="rbdTodos(false)" title="Abrir todos os grupos com nome">▾ Abrir</button>
+          <button class="btn" onclick="rbdTodos(true)" title="Recolher todos os grupos com nome">Recolher grupos</button>
+          <button class="btn" onclick="rbdTodos(false)" title="Abrir todos os grupos com nome">Abrir grupos</button>
           <button class="btn btn-danger" onclick="rbdLimpar()" style="margin-left:auto">Limpar tudo</button>
         </div>
         <div class="rbd-hint" id="rbd-hint"></div>
@@ -824,7 +865,7 @@ if (!localStorage.getItem('rcm_aceite')) {
   if (!ok) {
     document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1a2e;">' +
       '<div style="text-align:center;color:#f87171;font-family:Arial,sans-serif;">' +
-      '<h1 style="font-size:28px;">⛔ VIOLACAO DETECTADA</h1>' +
+      '<h1 style="font-size:28px;">VIOLACAO DETECTADA</h1>' +
       '<p style="color:#9ba3bc;font-size:14px;">Este arquivo deve ser executado a partir da pasta autorizada.</p>' +
       '<p style="color:#555;font-size:10px;margin-top:20px;">Contate o administrador.</p>' +
       '</div></div>';
@@ -876,6 +917,8 @@ window.addEventListener('load', function() {
 });
 // Texto dentro de string JS num atributo onclick: escapa para JS e depois para HTML
 function jsAttr(t) { return esc(String(t == null ? '' : t).replace(/\\/g, '\\\\').replace(/'/g, "\\'")); }
+var ICONES = {"dash": "<rect width=\"7\" height=\"9\" x=\"3\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"5\" x=\"14\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"9\" x=\"14\" y=\"12\" rx=\"1\"/><rect width=\"7\" height=\"5\" x=\"3\" y=\"16\" rx=\"1\"/>", "acoes": "<path d=\"m3 17 2 2 4-4\"/><path d=\"m3 7 2 2 4-4\"/><path d=\"M13 6h8\"/><path d=\"M13 12h8\"/><path d=\"M13 18h8\"/>", "contexto": "<rect width=\"8\" height=\"4\" x=\"8\" y=\"2\" rx=\"1\"/><path d=\"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2\"/><path d=\"M12 11h4\"/><path d=\"M12 16h4\"/><path d=\"M8 11h.01\"/><path d=\"M8 16h.01\"/>", "sistemas": "<rect x=\"16\" y=\"16\" width=\"6\" height=\"6\" rx=\"1\"/><rect x=\"2\" y=\"16\" width=\"6\" height=\"6\" rx=\"1\"/><rect x=\"9\" y=\"2\" width=\"6\" height=\"6\" rx=\"1\"/><path d=\"M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3\"/><path d=\"M12 12V8\"/>", "rbd": "<rect width=\"8\" height=\"8\" x=\"3\" y=\"3\" rx=\"2\"/><path d=\"M7 11v4a2 2 0 0 0 2 2h4\"/><rect width=\"8\" height=\"8\" x=\"13\" y=\"13\" rx=\"2\"/>", "fmea": "<path d=\"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3\"/><path d=\"M12 9v4\"/><path d=\"M12 17h.01\"/>", "dd": "<line x1=\"6\" x2=\"6\" y1=\"3\" y2=\"15\"/><circle cx=\"18\" cy=\"6\" r=\"3\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><path d=\"M18 9a9 9 0 0 1-9 9\"/>", "historico": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M16 2v4\"/><path d=\"M8 2v4\"/><path d=\"M3 10h18\"/>", "confiab": "<path d=\"M22 12h-4l-3 9L9 3l-3 9H2\"/>", "spare": "<path d=\"m7.5 4.27 9 5.15\"/><path d=\"M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z\"/><path d=\"m3.3 7 8.7 5 8.7-5\"/><path d=\"M12 22V12\"/>", "conclusao": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"m9 12 2 2 4-4\"/>", "editar": "<path d=\"M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z\"/>", "excluir": "<path d=\"M3 6h18\"/><path d=\"M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6\"/><path d=\"M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2\"/>", "mover": "<path d=\"m18 8 4 4-4 4\"/><path d=\"m6 8-4 4 4 4\"/><path d=\"M2 12h20\"/>", "historia": "<path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/><path d=\"M12 7v5l4 2\"/>", "refazer": "<path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/>", "esq": "<path d=\"m15 18-6-6 6-6\"/>", "dir": "<path d=\"m9 18 6-6-6-6\"/>", "abrir": "<path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"/>"};
+function ic(n) { return '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">' + (ICONES[n] || '') + '</svg>'; }
 function acaoConcluida(a) { return /^conclu/i.test(String((a && a.status) || '').trim()); }
 function uid() { return Math.random().toString(36).substring(2,9).toUpperCase(); }
 function esc(t) { return String(t || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
@@ -909,15 +952,15 @@ function mostrarNotificacaoAtrasos() {
   md.style.cssText = 'background:#1e1e2e;border-radius:14px;padding:24px;max-width:480px;width:90%;max-height:80vh;overflow-y:auto;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 60px rgba(0,0,0,0.5)';
   var h = '';
   if (atrasadas.length > 0) {
-    h += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><span style="font-size:2em">🚨</span><div><div style="font-size:1.05em;font-weight:700;color:#f87171">' + atrasadas.length + ' Ação(ões) Atrasada(s)!</div><div style="font-size:.72em;color:#888;margin-top:2px">Atenção imediata</div></div></div>';
+    h += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div><div style="font-size:1.05em;font-weight:700;color:#f87171">' + atrasadas.length + ' Ação(ões) Atrasada(s)!</div><div style="font-size:.72em;color:#888;margin-top:2px">Atenção imediata</div></div></div>';
     atrasadas.forEach(function(x) {
-      h += '<div style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);border-radius:8px;padding:10px 12px;margin-bottom:8px"><div style="font-size:.78em;font-weight:600;color:#f87171">🔴 ' + esc(x.a.resp || '') + '</div><div style="font-size:.72em;color:#ccc;margin-top:3px">' + esc(x.a.acao || '') + '</div><div style="font-size:.68em;color:#f87171;margin-top:3px;font-weight:600">' + x.d + ' dia(s) de atraso</div></div>';
+      h += '<div style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);border-radius:8px;padding:10px 12px;margin-bottom:8px"><div style="font-size:.78em;font-weight:600;color:#f87171">' + esc(x.a.resp || '') + '</div><div style="font-size:.72em;color:#ccc;margin-top:3px">' + esc(x.a.acao || '') + '</div><div style="font-size:.68em;color:#f87171;margin-top:3px;font-weight:600">' + x.d + ' dia(s) de atraso</div></div>';
     });
   }
   if (proximas.length > 0) {
-    h += '<div style="display:flex;align-items:center;gap:10px;margin:' + (atrasadas.length ? '14px' : '0') + ' 0 10px"><span style="font-size:1.5em">⚠️</span><div style="font-size:.88em;font-weight:600;color:#fbbf24">' + proximas.length + ' Próxima(s) do Vencimento</div></div>';
+    h += '<div style="display:flex;align-items:center;gap:10px;margin:' + (atrasadas.length ? '14px' : '0') + ' 0 10px"><div style="font-size:.88em;font-weight:600;color:#fbbf24">' + proximas.length + ' Próxima(s) do Vencimento</div></div>';
     proximas.forEach(function(x) {
-      h += '<div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-radius:8px;padding:10px 12px;margin-bottom:8px"><div style="font-size:.78em;font-weight:600;color:#fbbf24">🟡 ' + esc(x.a.resp || '') + '</div><div style="font-size:.72em;color:#ccc;margin-top:3px">' + esc(x.a.acao || '') + '</div><div style="font-size:.68em;color:#fbbf24;margin-top:3px">' + (x.d === 0 ? 'Vence HOJE!' : 'Faltam ' + x.d + ' dia(s)') + '</div></div>';
+      h += '<div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-radius:8px;padding:10px 12px;margin-bottom:8px"><div style="font-size:.78em;font-weight:600;color:#fbbf24">' + esc(x.a.resp || '') + '</div><div style="font-size:.72em;color:#ccc;margin-top:3px">' + esc(x.a.acao || '') + '</div><div style="font-size:.68em;color:#fbbf24;margin-top:3px">' + (x.d === 0 ? 'Vence HOJE!' : 'Faltam ' + x.d + ' dia(s)') + '</div></div>';
     });
   }
   h += '<div style="display:flex;gap:8px;margin-top:16px"><button onclick="document.getElementById(\'ov-atrasos\').remove()" style="flex:1;padding:11px;background:linear-gradient(135deg,#7c6aff,#a78bfa);color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:.82em">OK, Entendi</button></div>';
@@ -943,11 +986,11 @@ function renderAcoes() {
   function colAtraso(a) {
     var info = calcAtraso(a);
     var h = '';
-    if (info.s === 'ok' && !info.dl) h = '<span style="color:#34d399;font-size:.75em">✅ Concluída</span>';
+    if (info.s === 'ok' && !info.dl) h = '<span style="color:#34d399;font-size:.75em">Concluída</span>';
     else if (info.s === 'nd') h = '<span style="color:#888;font-size:.75em">—</span>';
-    else if (info.s === 'late') h = '<span style="color:#f87171;font-weight:700;font-size:.75em">🔴 ' + info.d + 'd atraso</span>';
-    else if (info.s === 'soon') h = '<span style="color:#fbbf24;font-weight:600;font-size:.75em">🟡 ' + (info.d === 0 ? 'HOJE!' : info.d + 'd rest.') + '</span>';
-    else h = '<span style="color:#34d399;font-size:.75em">🟢 ' + info.d + 'd rest.</span>';
+    else if (info.s === 'late') h = '<span style="color:#f87171;font-weight:700;font-size:.75em">' + info.d + 'd atraso</span>';
+    else if (info.s === 'soon') h = '<span style="color:#fbbf24;font-weight:600;font-size:.75em">' + (info.d === 0 ? 'vence hoje' : info.d + 'd rest.') + '</span>';
+    else h = '<span style="color:#34d399;font-size:.75em">' + info.d + 'd rest.</span>';
     if (info.dl) {
       var d = info.dl;
       h += '<br><span style="font-size:.65em;color:#666">' + String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear() + '</span>';
@@ -955,7 +998,7 @@ function renderAcoes() {
     return h;
   }
   // --- Render tabela ---
-  document.getElementById('tbody-acoes').innerHTML = S.acoes.map((a,i)=>`<tr><td style="font-weight:600">${esc(a.resp)}</td><td>${esc(a.acao)}</td><td><span class="badge ${a.status==='Concluído'?'badge-green':a.status==='Em andamento'?'badge-amber':'badge-gray'}">${a.status}</span></td><td>${a.dt}</td><td>${a.dias}</td><td>${colAtraso(a)}</td><td><button class="btn btn-sm" onclick="openAcaoModal(${i})">✏️</button> <button class="btn btn-sm btn-danger" onclick="delAcao(${i})">🗑</button></td></tr>`).join('') || '<tr><td colspan="7" style="text-align:center;padding:12px">Nenhuma ação cadastrada.</td></tr>';
+  document.getElementById('tbody-acoes').innerHTML = S.acoes.map((a,i)=>`<tr><td style="font-weight:600">${esc(a.resp)}</td><td>${esc(a.acao)}</td><td><span class="badge ${a.status==='Concluído'?'badge-green':a.status==='Em andamento'?'badge-amber':'badge-gray'}">${a.status}</span></td><td>${a.dt}</td><td>${a.dias}</td><td>${colAtraso(a)}</td><td><button class="btn btn-sm" onclick="openAcaoModal(${i})" title="Editar">' + ic('editar') + '</button> <button class="btn btn-sm btn-danger" onclick="delAcao(${i})" title="Apagar">' + ic('excluir') + '</button></td></tr>`).join('') || '<tr><td colspan="7" style="text-align:center;padding:12px">Nenhuma ação cadastrada.</td></tr>';
   // --- Badge no menu ---
   var nAtrasadas = S.acoes.filter(function(a){ return calcAtraso(a).s === 'late'; }).length;
   document.querySelectorAll('.nav-item').forEach(function(btn) {
@@ -1032,7 +1075,7 @@ function modeloAtivo(nome) {
   var fal = [];
   for (var i = 1; i < n; i++) fal.push(Math.max((datas[i] - datas[i - 1]) / 3600000, 12)); // datas têm resolução de dia
   var cens = [];
-  if (cfg.censura) { var c = (Date.now() - datas[n - 1]) / 3600000; if (c > 1) cens.push(c); }
+  if (cfg.censura) { var c = ((CONF_AGORA || Date.now()) - datas[n - 1]) / 3600000; if (c > 1) cens.push(c); }
   var beta = 1, eta, tipo = 'exp';
   if (cfg.modelo !== 'exp' && fal.length >= MODELO_MIN_INTERVALOS) {
     var w = weibullMLE(fal, cens);
@@ -1116,7 +1159,7 @@ function bootApp() {
   
   document.getElementById('session-label').textContent = S.meta.nome || 'Nenhuma sessão ativa';
   
-  [loadContexto,atualizarNivel0Display, renderSistemas,renderSistemas, carregarContexto, renderFmea, renderHistorico, renderAcoes, renderSpare, renderDD, renderRbd, renderDash, renderConfiab, updateProgress].forEach(fn => {
+  [loadContexto,atualizarNivel0Display, renderSistemas,renderSistemas, carregarContexto, renderFmea, renderHistorico, renderAcoes, renderSpare, renderDD, renderRbd, renderDash, renderConfiab, updateProgress, aplicarTrava, renderConclusao].forEach(fn => {
     try { fn(); } catch(e) { console.error('[boot]', fn.name, e); }
   });
 }
@@ -1189,9 +1232,9 @@ async function loadSession(event) {
     var reader = new FileReader();
     reader.onload = function(e) {
       try {
-        var data = JSON.parse(e.target.result);
+        var data = rcmLerArquivo(e.target.result);
         processLoadedSession(data);
-      } catch(err) { console.error('Erro:', err); alert('Arquivo JSON inválido: ' + err.message); }
+      } catch(err) { console.error('Erro:', err); alert('Arquivo inválido ou corrompido: ' + err.message); }
     };
     reader.readAsText(file);
     event.target.value = '';
@@ -1208,7 +1251,7 @@ async function loadSession(event) {
       fileHandle = handles[0];
       var f = await fileHandle.getFile();
       var text = await f.text();
-      var data = JSON.parse(text);
+      var data = rcmLerArquivo(text);
       processLoadedSession(data);
       atualizarNomeArquivo();
     } catch (err) {
@@ -1243,7 +1286,7 @@ function processLoadedSession(data) {
 async function saveToFile() {
   if (!sessionActive) return;
 
-  var json = JSON.stringify(S, null, 2);
+  var json = rcmSerializar(S);
 
   // Se tem fileHandle, salva direto no mesmo arquivo
   if (fileHandle) {
@@ -1286,7 +1329,7 @@ async function saveToFile() {
 function mostrarToastSalvo() {
   var toast = document.createElement('div');
   toast.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#22c55e;color:#fff;padding:10px 20px;border-radius:8px;font-size:.85em;font-weight:600;z-index:9999;opacity:0;transition:opacity .3s;box-shadow:0 4px 12px rgba(0,0,0,0.3)';
-  toast.textContent = '💾 Salvo em ' + (fileHandle ? fileHandle.name : 'arquivo');
+  toast.textContent = 'Salvo em ' + (fileHandle ? fileHandle.name : 'arquivo');
   document.body.appendChild(toast);
   setTimeout(function() { toast.style.opacity = '1'; }, 10);
   setTimeout(function() { toast.style.opacity = '0'; setTimeout(function() { toast.remove(); }, 300); }, 2000);
@@ -1295,7 +1338,7 @@ function mostrarToastSalvo() {
 function atualizarNomeArquivo() {
   var el = document.getElementById('file-name-display');
   if (el && fileHandle) {
-    el.textContent = '📁 ' + fileHandle.name;
+    el.textContent = fileHandle.name;
     el.style.display = 'inline-block';
   }
 }
@@ -1322,42 +1365,27 @@ function confirmPin() {
 // ============================================================
 // RECUPERAÇÃO DE PIN — Requer senha master
 // ============================================================
-var MASTER_KEY = 'ZERO1337'; // Altere para sua senha master
-
 function openRecuperarPin() {
-  var html = '<div class="modal-title">Recuperar PIN da Sessao</div>' +
-    '<div class="form-grid">' +
-    '<div class="form-group" style="grid-column:1/-1"><label>Senha Master</label><input id="rec-master" type="password" placeholder="Digite a senha master"></div>' +
-    '<div id="rec-err" style="display:none;color:var(--red);font-size:11px;grid-column:1/-1;">Senha master incorreta.</div>' +
-    '</div>' +
-    '<div class="modal-btns">' +
-    '<button class="btn" onclick="closeModal(\'modal-item\')">Cancelar</button>' +
-    '<button class="btn btn-primary" onclick="executarRecuperacao()">Desbloquear</button>' +
-    '</div>';
+  var resp = (pendingData && pendingData.meta && pendingData.meta.responsavel) || (S.meta && S.meta.responsavel) || '';
+  var html = '<div class="modal-title">PIN esquecido</div>' +
+    '<div style="font-size:13px;color:var(--text2);line-height:1.6">O app não guarda uma senha mestra, então o PIN não pode ser recuperado por aqui.' +
+    (resp ? ' Fale com o responsável pelo estudo (<b>' + esc(resp) + '</b>).' : ' Fale com o responsável pelo estudo.') + '</div>' +
+    '<div class="modal-btns"><button class="btn" onclick="closeModal(\'modal-item\')">Fechar</button></div>';
   document.getElementById('modal-item-content').innerHTML = html;
   document.getElementById('modal-item').classList.add('open');
 }
 
-function executarRecuperacao() {
-  var master = document.getElementById('rec-master').value;
-  if (master !== MASTER_KEY) {
-    document.getElementById('rec-err').style.display = 'block';
-    return;
-  }
-  // Mostra o PIN atual
-  var pin = S.meta.pin || pendingData.meta.pin || '(nenhum)';
-  alert('PIN da sessao: ' + pin);
-  closeModal('modal-item');
-}
 // ============================================================
-// TROCAR PIN DA SESSÃO — Requer senha master
+// TROCAR PIN DA SESSÃO — pede o PIN atual
 // ============================================================
 function openTrocarPin() {
-  var html = '<div class="modal-title">Trocar PIN da Sessao</div>' +
+  if (!sessionActive) { alert('Nenhuma sessão ativa.'); return; }
+  var temPin = !!(S.meta && S.meta.pin);
+  var html = '<div class="modal-title">' + (temPin ? 'Trocar PIN' : 'Definir PIN') + '</div>' +
     '<div class="form-grid">' +
-    '<div class="form-group" style="grid-column:1/-1"><label>Senha Master</label><input id="troca-master" type="password" placeholder="Senha master"></div>' +
-    '<div class="form-group" style="grid-column:1/-1"><label>Novo PIN</label><input id="troca-novo" type="password" placeholder="Novo PIN"></div>' +
-    '<div class="form-group" style="grid-column:1/-1"><label>Confirmar Novo PIN</label><input id="troca-conf" type="password" placeholder="Repita o novo PIN"></div>' +
+    (temPin ? '<div class="form-group" style="grid-column:1/-1"><label>PIN atual</label><input id="troca-atual" type="password"></div>' : '') +
+    '<div class="form-group" style="grid-column:1/-1"><label>Novo PIN</label><input id="troca-novo" type="password"></div>' +
+    '<div class="form-group" style="grid-column:1/-1"><label>Confirmar novo PIN</label><input id="troca-conf" type="password"></div>' +
     '<div id="troca-err" style="display:none;color:var(--red);font-size:11px;grid-column:1/-1;"></div>' +
     '</div>' +
     '<div class="modal-btns">' +
@@ -1369,31 +1397,18 @@ function openTrocarPin() {
 }
 
 function executarTrocaPin() {
-  var master = document.getElementById('troca-master').value;
+  var atual = (document.getElementById('troca-atual') || {}).value;
   var novo = document.getElementById('troca-novo').value;
   var conf = document.getElementById('troca-conf').value;
   var errEl = document.getElementById('troca-err');
-
-  if (master !== MASTER_KEY) {
-    errEl.textContent = 'Senha master incorreta.';
-    errEl.style.display = 'block';
-    return;
-  }
-  if (!novo || novo.length < 3) {
-    errEl.textContent = 'PIN deve ter pelo menos 3 caracteres.';
-    errEl.style.display = 'block';
-    return;
-  }
-  if (novo !== conf) {
-    errEl.textContent = 'PINs nao conferem.';
-    errEl.style.display = 'block';
-    return;
-  }
-
+  function erro(t) { errEl.textContent = t; errEl.style.display = 'block'; }
+  if (S.meta && S.meta.pin && atual !== S.meta.pin) return erro('PIN atual incorreto.');
+  if (!novo || novo.length < 3) return erro('O PIN deve ter pelo menos 3 caracteres.');
+  if (novo !== conf) return erro('Os PINs não conferem.');
   S.meta.pin = novo;
   autoSave();
   closeModal('modal-item');
-  alert('PIN alterado com sucesso!');
+  alert('PIN alterado.');
 }
 
 
@@ -1403,7 +1418,7 @@ function executarTrocaPin() {
 function saveSession() {
   if (!sessionActive) { alert('Nenhuma sessão ativa para exportar.'); return; }
   autoSave();
-  const blob = new Blob([JSON.stringify(S, null, 2)], { type: 'application/json' });
+  const blob = new Blob([rcmSerializar(S)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'RCM_' + S.meta.nome.replace(/\s+/g, '_') + '.json';
@@ -1447,10 +1462,13 @@ function navigate(page) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const targetPage = document.getElementById(`pg-${page}`);
   if(targetPage) targetPage.classList.add('active');
-  event.currentTarget.classList.add('active');
+  var origem = (typeof event !== 'undefined' && event && event.currentTarget && event.currentTarget.classList) ? event.currentTarget : null;
+  if (!origem || !origem.classList.contains('nav-item')) origem = document.querySelector('.nav-item[onclick*="\'' + page + '\'"]');
+  if (origem) origem.classList.add('active');
   if(page === 'dash') renderDash();
   if(page === 'confiab') renderConfiab();
   if(page === 'rbd') renderRbd();
+  if(page === 'conclusao') renderConclusao();
   requestAnimationFrame(function() { autoGrowAll(targetPage); });
 }
 
@@ -1514,7 +1532,7 @@ function renderDash() {
   if (stepsGrid) {
     var stepsHtml = '';
     flowSteps.forEach(function(st) {
-      var badge = st.e ? '<span class="badge badge-green">✓ OK</span>' : '<span class="badge badge-gray">⚠️ Pendente</span>';
+      var badge = st.e ? '<span class="badge badge-green">OK</span>' : '<span class="badge badge-gray">Pendente</span>';
       stepsHtml += '<div style="background:var(--bg3);border:1px solid var(--border);padding:10px;border-radius:6px;display:flex;justify-content:space-between;align-items:center;">' +
         '<span style="font-size:12px;color:var(--text2)">' + st.n + '</span>' + badge + '</div>';
     });
@@ -1687,6 +1705,7 @@ function getAcoesProximas() {
 
 
 function addTeamMember() {
+  if (bloqueado()) return;
   const nome = document.getElementById('eq-nome').value.trim();
   const funcao = document.getElementById('eq-funcao').value.trim();
   if(!nome || !funcao) return;
@@ -1754,6 +1773,7 @@ function getAllSubsistemas() {
 // MODAL: NOVO SISTEMA
 // ============================================================
 function openNovoSistemaModal() {
+  if (bloqueado()) return;
   var code = nextSisCode();
   var html = '<div class="modal-title">Novo Sistema</div>' +
     '<div class="form-grid">' +
@@ -1769,6 +1789,7 @@ function openNovoSistemaModal() {
 }
 
 function salvarNovoSistema() {
+  if (bloqueado()) return;
   var code = document.getElementById('ns-code').value;
   var name = document.getElementById('ns-name').value.trim();
   if (!name) { alert('Nome obrigatorio.'); return; }
@@ -1784,6 +1805,7 @@ function salvarNovoSistema() {
 // MODAL: NOVO SUBSISTEMA
 // ============================================================
 function openNovoSubModal(codSisPreset) {
+  if (bloqueado()) return;
   var allSis = getAllSistemasRef();
   if (!allSis.length) { alert('Crie um Sistema primeiro.'); return; }
   var opts = '';
@@ -1812,6 +1834,7 @@ function updateSubCode() {
 }
 
 function salvarNovoSub() {
+  if (bloqueado()) return;
   var codSis = document.getElementById('nsub-parent').value;
   var codSub = document.getElementById('nsub-code').value;
   var name = document.getElementById('nsub-name').value.trim();
@@ -1830,6 +1853,7 @@ function salvarNovoSub() {
 // MODAL: NOVO ATIVO / ITEM
 // ============================================================
 function openNovoItemModal(codSisPreset, codSubPreset) {
+  if (bloqueado()) return;
   var allSubs = getAllSubsistemas();
   if (!allSubs.length) { alert('Crie um Subsistema primeiro.'); return; }
   var opts = '';
@@ -1852,6 +1876,7 @@ function openNovoItemModal(codSisPreset, codSubPreset) {
 }
 
 function salvarNovoItem() {
+  if (bloqueado()) return;
   var codSub = document.getElementById('ni-sub').value;
   var item = document.getElementById('ni-item').value.trim();
   var funcao = document.getElementById('ni-funcao').value.trim();
@@ -1890,6 +1915,7 @@ function ctxGeralValor(id) {
   return (novo !== undefined && novo !== null && String(novo) !== '') ? novo : (antigo || '');
 }
 function salvarContextoGeral() {
+  if (bloqueado(true)) return;
   if (!S.contexto) S.contexto = {};
   Object.keys(CTX_GERAIS).forEach(function(id) {
     var el = document.getElementById(id);
@@ -1968,6 +1994,7 @@ function gerarTextoContexto() {
 // APAGAR ATIVO INDIVIDUAL (NAO recalcula)
 // ============================================================
 function delAtivo(idx) {
+  if (bloqueado()) return;
   var ativo = S.sistemas[idx];
   if (!confirm('Apagar ativo "' + ativo.item + '"?')) return;
 
@@ -2025,6 +2052,7 @@ function recalcularCodigos() {
 // MOVER ATIVO PARA OUTRO SISTEMA/SUBSISTEMA
 // ============================================================
 function moverAtivo(idx) {
+  if (bloqueado()) return;
   var ativo = S.sistemas[idx];
 
   // Lista sistemas únicos
@@ -2078,6 +2106,7 @@ function executarMoverAtivo(idx) {
 var CTX_KEYS = ['ctx-q1','ctx-q2','ctx-q3','ctx-q4','ctx-q5','ctx-q6','ctx-q7','ctx-q8','ctx-q9','ctx-q10','ctx-q11','ctx-q12','ctx-q13','ctx-q14'];
 
 function salvarContextoAuto() {
+  if (bloqueado(true)) return;
   if (!S.contexto) S.contexto = {};
   if (!S.contexto.perguntas) S.contexto.perguntas = {};
   CTX_KEYS.forEach(function(id) {
@@ -2124,8 +2153,8 @@ var MSG_PECA = 'Parece uma peça, não um ativo. No RCM, ativo é o equipamento 
 var MSG_DUP = 'Nome repetido: FMEA, histórico e RBD são ligados pelo nome, então os dados de itens com o mesmo nome se misturam. Use um nome único (com posição ou TAG).';
 function badgesAtivo(s, an) {
   var h = '';
-  if (pecaProvavel(s.item)) h += ' <span class="tag-aviso peca" title="' + escA(MSG_PECA) + '">⚠ parece peça</span>';
-  if (an.cont[normTxt(s.item).trim()] > 1) h += ' <span class="tag-aviso dup" title="' + escA(MSG_DUP) + '">⚠ nome repetido</span>';
+  if (pecaProvavel(s.item)) h += ' <span class="tag-aviso peca" title="' + escA(MSG_PECA) + '">parece peça</span>';
+  if (an.cont[normTxt(s.item).trim()] > 1) h += ' <span class="tag-aviso dup" title="' + escA(MSG_DUP) + '">nome repetido</span>';
   return h;
 }
 function renderAvisosEstrutura(an) {
@@ -2134,7 +2163,7 @@ function renderAvisosEstrutura(an) {
   if (!an.pecas.length && !an.dups.length) { box.innerHTML = ''; return; }
   var h = '<div class="rbd-warn" style="margin:0 0 14px 0">';
   if (an.pecas.length) {
-    h += '<b>⚠ ' + an.pecas.length + ' de ' + S.sistemas.length + ' itens parecem peças, não ativos.</b> ' +
+    h += '<b>' + an.pecas.length + ' de ' + S.sistemas.length + ' itens parecem peças, não ativos.</b> ' +
       'No RCM, ativo é o equipamento que cumpre uma função (motor, redutor, bomba, mancal, válvula). Peças como chaveta, rolamento, retentor e parafuso ' +
       'entram como <b>causa</b> no FMEA do equipamento e como item no <b>Spare Parts</b>. Ativos no nível de peça pulverizam o histórico e distorcem o RBD.' +
       '<details style="margin-top:6px"><summary style="cursor:pointer">Ver quais</summary><div style="margin-top:4px;color:var(--text2)">' +
@@ -2142,7 +2171,7 @@ function renderAvisosEstrutura(an) {
   }
   if (an.dups.length) {
     h += (an.pecas.length ? '<div style="margin-top:10px"></div>' : '') +
-      '<b>⚠ ' + an.nomesDup.length + ' nome(s) repetido(s)</b> em ' + an.dups.length + ' itens. FMEA, histórico e RBD são ligados pelo nome: os dados desses itens vão se misturar. Dê um nome único a cada um (com posição ou TAG).' +
+      '<b>' + an.nomesDup.length + ' nome(s) repetido(s)</b> em ' + an.dups.length + ' itens. FMEA, histórico e RBD são ligados pelo nome: os dados desses itens vão se misturar. Dê um nome único a cada um (com posição ou TAG).' +
       '<details style="margin-top:6px"><summary style="cursor:pointer">Ver quais</summary><div style="margin-top:4px;color:var(--text2)">' +
       an.nomesDup.map(esc).join('<br>') + '</div></details>';
   }
@@ -2153,7 +2182,7 @@ function renderAvisosEstrutura(an) {
 // ============================================================
 // NOVIDADES — aparece uma vez por versão ao abrir o app
 // ============================================================
-var NOVIDADES_VERSAO = '2026-11-13';
+var NOVIDADES_VERSAO = '2026-11-13b';
 function abrirNovidades() {
   var ov = document.getElementById('novidades-overlay');
   if (!ov) {
@@ -2161,20 +2190,27 @@ function abrirNovidades() {
     ov.id = 'novidades-overlay';
     ov.className = 'overlay';
     ov.innerHTML = '<div class="modal" style="width:640px">' +
-      '<div class="modal-title">🚀 Novidades desta atualização</div>' +
+      '<div class="modal-title">Novidades desta atualização</div>' +
       '<div class="novidades">' +
       '<p style="color:var(--green)">Seus arquivos .json continuam abrindo normalmente — nada precisa ser feito.</p>' +
-      '<h4>Novo (13/11)</h4><ul>' +
-      '<li><b>RBD em grupos:</b> selecione blocos e use <b>▣ Agrupar</b> para criar grupos com nome (ex.: Acionamento). Duplo clique recolhe ou abre o grupo.</li>' +
+      '<h4>Conclusão do estudo</h4><ul>' +
+      '<li>Nova página <b>Conclusão</b>: resumo do estudo, mudança de estratégia (antes × depois do DD) e projeção de confiabilidade.</li>' +
+      '<li><b>Concluir estudo</b> congela a linha de base e bloqueia a edição. Continuam liberados: falhas novas, Plano de Ações e marcação de tarefas implantadas.</li>' +
+      '<li><b>Verificação</b>: compara as falhas depois da conclusão com a linha de base e a projeção, e indica até quando monitorar.</li>' +
+      '<li>Reabrir exige nome, função, matrícula e motivo, e fica registrado no histórico de revisões.</li>' +
+      '<li>No Histórico, informe o <b>modo de falha (FMEA)</b> de cada falha para saber se a tarefa adotada funcionou.</li>' +
+      '<li>O arquivo salvo agora é codificado, para evitar edição manual. Arquivos antigos continuam abrindo.</li></ul>' +
+      '<h4>Também em 13/11</h4><ul>' +
+      '<li><b>RBD em grupos:</b> selecione blocos e use <b>Agrupar</b> para criar grupos com nome (ex.: Acionamento). Duplo clique recolhe ou abre o grupo.</li>' +
       '<li><b>Agrupar por subsistema</b> monta os grupos automaticamente a partir da Estrutura de Ativos.</li>' +
       '<li>Diagramas longos quebram em várias linhas para caber na tela.</li>' +
-      '<li><b>FMEA:</b> o botão <b>🧭 DD</b> mostra a estratégia anterior, a adotada e o caminho de perguntas e respostas do Diagrama Decisional.</li>' +
+      '<li><b>FMEA:</b> o botão <b>DD</b> mostra a estratégia anterior, a adotada e o caminho de perguntas e respostas do Diagrama Decisional.</li>' +
       '<li>O Diagrama Decisional não mistura mais o resultado com as diretrizes marcadas no FMEA.</li>' +
       '<li><b>Spare Parts</b> e <b>Diagrama Decisional</b> com novo layout: busca, filtros, agrupamento por ativo e perguntas em passo a passo.</li></ul>' +
       '<h4>Atualização anterior (12/11)</h4>' +
       '<h4>Diagrama de Blocos (RBD) refeito</h4><ul>' +
       '<li>Desenho da ENTRADA à SAÍDA: mesmo caminho = série; caminhos que se dividem = paralelo.</li>' +
-      '<li>Selecione um bloco e use <b>→ Em série</b> ou <b>⇅ Em paralelo</b>. Shift+clique seleciona um trecho.</li>' +
+      '<li>Selecione um bloco e use <b>Em série</b> ou <b>Em paralelo</b>. Shift+clique seleciona um trecho.</li>' +
       '<li>Grupos "k de n" (ex.: 2 de 3 precisam funcionar), MTBF manual por bloco e conta mostrada no painel lateral.</li>' +
       '<li>Disponibilidade do sistema, MTTF e ranking dos blocos mais críticos.</li></ul>' +
       '<h4>Confiabilidade mais precisa</h4><ul>' +
@@ -2211,6 +2247,454 @@ window.addEventListener('load', function() {
 });
 
 // ============================================================
+// CONCLUSÃO DO ESTUDO — revisões, linha de base congelada e verificação
+// ------------------------------------------------------------
+// S.revisoes = [{ rev, tipo:'conclusao'|'reabertura', data, corte, por:{nome,funcao,matricula},
+//                 motivo?, obs?, foto? }]
+// Concluir grava uma "foto" dos números calculada só com o histórico até a
+// data de corte. Enquanto o último evento for uma conclusão, o estudo fica
+// bloqueado (só histórico pós-corte, plano de ações e implantação ficam livres).
+// ============================================================
+var CONF_AGORA = null; // quando definido, o modelo usa esta data como "hoje"
+
+function revisoes() { if (!Array.isArray(S.revisoes)) S.revisoes = []; return S.revisoes; }
+function ultimaConclusao() {
+  var r = revisoes();
+  for (var i = r.length - 1; i >= 0; i--) if (r[i] && r[i].tipo === 'conclusao') return r[i];
+  return null;
+}
+function estudoTravado() { var r = revisoes(); return r.length > 0 && r[r.length - 1].tipo === 'conclusao'; }
+function corteMs(c) { return Date.parse(c.corte) + 86399999; } // fim do dia de corte (UTC, igual às datas do histórico)
+function dataBR(iso) { if (!iso) return '—'; var d = new Date(String(iso).length === 10 ? iso + 'T12:00:00' : iso); return isNaN(d) ? '—' : d.toLocaleDateString('pt-BR'); }
+function hojeISO() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+
+// Bloqueio: chamado no início das ações que alteram o estudo
+function bloqueado(silencioso) {
+  if (!estudoTravado()) return false;
+  if (!silencioso) {
+    var c = ultimaConclusao();
+    alert('Estudo concluído (Rev. ' + c.rev + ', em ' + dataBR(c.data) + '). Esta parte está bloqueada.\n\n' +
+      'Continuam liberados: lançar falhas após ' + dataBR(c.corte) + ', o Plano de Ações e a marcação de implantação das tarefas.\n\n' +
+      'Para alterar o estudo, reabra-o na página Conclusão.');
+  }
+  return true;
+}
+
+function aplicarTrava() {
+  var trav = estudoTravado(), c = ultimaConclusao();
+  document.body.classList.toggle('estudo-travado', trav);
+  document.querySelectorAll('#pg-contexto input, #pg-contexto textarea, #pg-contexto select').forEach(function(el) { el.disabled = trav; });
+  var b = document.getElementById('trava-banner');
+  if (b) {
+    b.style.display = trav ? 'flex' : 'none';
+    if (trav) b.innerHTML = '<span><b>Estudo concluído — Rev. ' + c.rev + '</b> em ' + dataBR(c.data) + ' por ' + esc(c.por.nome) +
+      '. Somente leitura; continuam liberados o histórico de falhas após ' + dataBR(c.corte) + ', o Plano de Ações e a marcação de implantação.</span>' +
+      '<a href="#" onclick="irPara(\'conclusao\');return false;">Ver conclusão</a>';
+  }
+  var nav = document.getElementById('nav-conclusao-st');
+  if (nav) nav.textContent = trav ? 'Rev. ' + c.rev : (revisoes().length ? 'reaberto' : '');
+}
+
+function irPara(page) {
+  var item = document.querySelector('.nav-item[onclick*="\'' + page + '\'"]');
+  if (item) item.click();
+}
+
+// ---------- assinatura do histórico usado na linha de base ----------
+function hashTexto(t) {
+  var h = 0x811c9dc5;
+  for (var i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+  return ('00000000' + h.toString(16)).slice(-8);
+}
+function historicoAte(ms) {
+  return (S.historico || []).filter(function(h) { var t = Date.parse(h && h.dt); return !isNaN(t) && t <= ms; });
+}
+function assinaturaHistorico(ms) {
+  var lst = historicoAte(ms).map(function(h) { return [h.item, h.dt, +h.ttr || 0, +h.custo || 0].join('|'); }).sort();
+  return { n: lst.length, hash: hashTexto(lst.join('\n')) };
+}
+
+// Executa fn como se o histórico terminasse na data de corte
+function comHistoricoAte(ms, fn) {
+  var bak = S.historico, bakA = CONF_AGORA;
+  S.historico = historicoAte(ms);
+  CONF_AGORA = ms;
+  try { return fn(); } finally { S.historico = bak; CONF_AGORA = bakA; }
+}
+
+// ---------- números do estudo (vivos ou para congelar) ----------
+function diretrizesAntesDe(f) {
+  var r = (S.dd_results || []).filter(function(x) { return x && x.fmea_id === f.id; })[0];
+  if (r && Array.isArray(r.diretrizesAntes)) return { lista: r.diretrizesAntes, reconstruida: false };
+  var l = (Array.isArray(f.tarefa) ? f.tarefa : (f.tarefa ? [f.tarefa] : [])).filter(function(t) { return STRATS.indexOf(t) >= 0; });
+  return { lista: l, reconstruida: true };
+}
+
+function resumoEstudo() {
+  var corteRpn = +(document.getElementById('rpn-corte') || {}).value || 150;
+  var res = { modos: S.fmea.length, criticos: 0, criticosDecididos: 0, decididos: 0, reconstruidas: 0,
+              antes: {}, depois: {}, ativos: S.sistemas.length, implantadas: 0,
+              spareItens: S.spare.length, spareValor: 0, sparePend: 0,
+              acoes: S.acoes.length, acoesAbertas: S.acoes.filter(function(a) { return !acaoConcluida(a); }).length };
+  S.fmea.forEach(function(f) {
+    var crit = (+f.rpn || 0) >= corteRpn;
+    if (crit) res.criticos++;
+    var r = (S.dd_results || []).filter(function(x) { return x && x.fmea_id === f.id; })[0];
+    var tipo = (r && r.tipo) || f.dd || '';
+    var a = diretrizesAntesDe(f);
+    if (a.reconstruida && tipo) res.reconstruidas++;
+    a.lista.forEach(function(t) { res.antes[t] = (res.antes[t] || 0) + 1; });
+    if (tipo) {
+      res.decididos++; if (crit) res.criticosDecididos++;
+      res.depois[tipo] = (res.depois[tipo] || 0) + 1;
+      if (r && r.implantada) res.implantadas++;
+    } else res.depois['(sem decisão)'] = (res.depois['(sem decisão)'] || 0) + 1;
+  });
+  S.spare.forEach(function(sp) { res.spareValor += (+sp.qtd || 0) * (+sp.valor || 0); if (spPendente(sp)) res.sparePend++; });
+  return res;
+}
+
+function fotoLinhaBase(corteISO) {
+  var ms = Date.parse(corteISO) + 86399999;
+  return comHistoricoAte(ms, function() {
+    var custos = S.historico.map(function(h) { return +h.custo; }).filter(function(v) { return v > 0; });
+    var custoRef = custos.length ? custos.reduce(function(a, b) { return a + b; }, 0) / custos.length : 0;
+    var vistos = {}, ativos = [];
+    S.sistemas.forEach(function(s) {
+      if (!s || !s.item || vistos[s.item]) return; vistos[s.item] = true;
+      var p = paramsAtivo(s.item), est = estrategiasAtivo(s.item), sim = simAtivo(p, est, getSimCfg(), custoRef);
+      var temBase = p.src === 'historico';
+      ativos.push({ nome: s.item, falhas: p.n, tipo: p.tipo, src: p.src, beta: p.beta, eta: p.eta, mtbf: p.mtbf, mttr: p.mttr, A: p.A,
+        taxa: temBase ? 1 / p.mtbf : null, taxaProj: temBase ? 1 / sim.mtbf : null,
+        custoAno: sim.custoAtual * 8760, custoAnoProj: sim.custoSim * 8760, Aproj: sim.A, diretrizes: est.lista });
+    });
+    var cen = confCenario('GLOBAL'), sis = null;
+    if (!cen.vazio) sis = { mttf: cen.mtbf, mttfProj: cen.mtbfSim, A: cen.dispA, Aproj: cen.dispS,
+      custoAno: cen.custoA * 8760, custoAnoProj: cen.custoS * 8760, usandoRBD: !!cen.usandoRBD, temCusto: cen.temCusto };
+    return { corte: corteISO, geradoEm: new Date().toISOString(), ativos: ativos, sistema: sis,
+             estudo: resumoEstudo(), hist: assinaturaHistorico(ms), cfg: JSON.parse(JSON.stringify(getCfg())) };
+  });
+}
+
+// ---------- estatística: Poisson ----------
+function poisCdf(k, mu) {
+  if (k < 0) return 0;
+  var t = Math.exp(-mu), s = t;
+  for (var i = 1; i <= k; i++) { t *= mu / i; s += t; }
+  return Math.min(1, s);
+}
+var CONF_ALFA = 0.10;
+// Tempo (h) até que o ganho projetado, se acontecer, fique estatisticamente confirmado
+function horasParaConfirmar(l0, lp) {
+  if (!(l0 > 0) || !(lp >= 0) || lp >= l0 * 0.95) return null;
+  for (var dias = 30; dias <= 3650; dias += 15) {
+    var T = dias * 24, n = Math.floor(lp * T);
+    if (poisCdf(n, l0 * T) < CONF_ALFA) return T;
+  }
+  return Infinity;
+}
+function avaliarTaxa(l0, lp, n1, T1) {
+  var o = { l0: l0, lp: lp, n1: n1, T1: T1 };
+  if (!(l0 > 0)) { o.st = 'sembase'; return o; }
+  var mu0 = l0 * T1;
+  o.pMenor = poisCdf(n1, mu0);
+  o.pMaior = 1 - poisCdf(n1 - 1, mu0);
+  o.pMaiorProj = lp > 0 ? 1 - poisCdf(n1 - 1, lp * T1) : 1;
+  o.hConf = horasParaConfirmar(l0, lp);
+  if (T1 < 24 * 30) o.st = 'inicio';
+  else if (o.pMaior < CONF_ALFA) o.st = 'piorou';
+  else if (lp < l0 * 0.95 && o.pMaiorProj < CONF_ALFA) o.st = 'abaixo';
+  else if (lp < l0 * 0.95 && o.pMenor < CONF_ALFA) o.st = 'confirmado';
+  else if (!(lp < l0 * 0.95)) o.st = o.pMenor < CONF_ALFA ? 'confirmado' : 'estavel';
+  else o.st = 'inconclusivo';
+  return o;
+}
+var ST_TXT = {
+  sembase: ['Sem base', 'Histórico insuficiente antes da conclusão para comparar.', 'nd'],
+  naoimpl: ['Não implantado', 'Nenhuma tarefa deste ativo foi marcada como implantada; o resultado não avalia o estudo.', 'nd'],
+  inicio: ['Em acompanhamento', 'Menos de 1 mês desde o corte.', 'inc'],
+  inconclusivo: ['Inconclusivo', 'Ainda não há dados suficientes para confirmar nem descartar o ganho projetado.', 'inc'],
+  estavel: ['Estável', 'Sem ganho projetado; a taxa de falhas não piorou.', 'ok'],
+  confirmado: ['Confirmado', 'A taxa de falhas caiu de forma estatisticamente significativa.', 'ok'],
+  abaixo: ['Divergente', 'A taxa de falhas ficou acima do projetado. Revisar as decisões deste ativo.', 'bad'],
+  piorou: ['Divergente', 'A taxa de falhas aumentou em relação à linha de base. Revisar o estudo.', 'bad']
+};
+
+function verificacao() {
+  var c = ultimaConclusao();
+  if (!c || !c.foto) return null;
+  var ms = corteMs(c), agora = Date.now(), T1 = Math.max(0, (agora - ms) / 3600000);
+  var depois = (S.historico || []).filter(function(h) { var t = Date.parse(h && h.dt); return !isNaN(t) && t > ms; });
+  var v = { c: c, T1: T1, ativos: [], recorrencias: [], avisos: [] };
+  var somaL0 = 0, somaLp = 0, nTot = 0;
+  c.foto.ativos.forEach(function(a) {
+    var n1 = depois.filter(function(h) { return h.item === a.nome; }).length;
+    var dec = (S.dd_results || []).filter(function(r) { return r && r.item === a.nome; });
+    var impl = dec.filter(function(r) { return r.implantada; }).length;
+    var o = avaliarTaxa(a.taxa, a.taxaProj, n1, T1);
+    if (o.st !== 'sembase' && dec.length && !impl) o.st = 'naoimpl';
+    if (a.taxa > 0 && o.st !== 'naoimpl') { somaL0 += a.taxa; somaLp += a.taxaProj; nTot += n1; }
+    var ttr = depois.filter(function(h) { return h.item === a.nome; }).map(function(h) { return +h.ttr; }).filter(function(x) { return x > 0; });
+    v.ativos.push({ a: a, o: o, n1: n1, dec: dec.length, impl: impl, mttr1: ttr.length ? ttr.reduce(function(x, y) { return x + y; }, 0) / ttr.length : null });
+  });
+  v.sistema = avaliarTaxa(somaL0, somaLp, nTot, T1);
+  v.nDepois = depois.length;
+  // recorrência de modo de falha cuja tarefa já estava implantada
+  depois.forEach(function(h) {
+    if (!h.fmea_id) return;
+    var r = (S.dd_results || []).filter(function(x) { return x && x.fmea_id === h.fmea_id; })[0];
+    var f = S.fmea.filter(function(x) { return x.id === h.fmea_id; })[0];
+    if (r && r.implantada && Date.parse(h.dt) >= Date.parse(r.implantada))
+      v.recorrencias.push({ item: h.item, modo: f ? f.modo : r.modo, dt: h.dt, tipo: r.tipo, implantada: r.implantada, fi: S.fmea.indexOf(f) });
+  });
+  var sig = assinaturaHistorico(ms);
+  if (c.foto.hist && (sig.n !== c.foto.hist.n || sig.hash !== c.foto.hist.hash))
+    v.avisos.push('O histórico de falhas anterior a ' + dataBR(c.corte) + ' foi alterado depois da conclusão (' + c.foto.hist.n + ' → ' + sig.n + ' registros). A linha de base congelada não muda, mas a base usada foi mexida.');
+  var datas = (S.historico || []).map(function(h) { return Date.parse(h.dt); }).filter(function(t) { return !isNaN(t); });
+  var ult = datas.length ? Math.max.apply(null, datas) : null;
+  if (T1 > 24 * 90 && (!ult || (agora - ult) > 90 * 864e5))
+    v.avisos.push('Nenhuma falha lançada nos últimos 90 dias' + (ult ? ' (última em ' + dataBR(new Date(ult).toISOString()) + ')' : '') +
+      '. Confirme que o histórico está sendo alimentado: sem lançamentos, a verificação mostra uma melhora que pode não existir.');
+  v.ultimaFalha = ult;
+  return v;
+}
+
+// ---------- modais de concluir / reabrir ----------
+function modalIdentificacao(tipo) {
+  var conclui = tipo === 'conclusao';
+  if (conclui && estudoTravado()) return;
+  if (!conclui && !estudoTravado()) return;
+  var h = '<div class="modal-title">' + (conclui ? 'Concluir estudo' : 'Reabrir estudo') + '</div>' +
+    '<div class="conc-modal-txt">' + (conclui
+      ? 'Grava a linha de base (números calculados só com as falhas até a data de corte) e bloqueia o estudo para edição. Depois da conclusão continuam liberados: lançar falhas novas, o Plano de Ações e a marcação de implantação das tarefas.'
+      : 'O estudo volta a ficar editável. A conclusão anterior e sua linha de base continuam guardadas, e esta reabertura fica registrada no histórico de revisões.') + '</div>' +
+    '<div class="form-grid">' +
+    '<div class="form-group"><label>Nome</label><input id="ci-nome"></div>' +
+    '<div class="form-group"><label>Função</label><input id="ci-funcao"></div>' +
+    '<div class="form-group"><label>Matrícula</label><input id="ci-mat"></div>' +
+    (conclui ? '<div class="form-group"><label>Data de corte</label><input id="ci-corte" type="date" value="' + hojeISO() + '"></div>' +
+      '<div class="form-group" style="grid-column:1/-1"><label>Observações (opcional)</label><textarea id="ci-txt" rows="2" class="autogrow"></textarea></div>'
+      : '<div class="form-group" style="grid-column:1/-1"><label>Motivo da reabertura</label><textarea id="ci-txt" rows="2" class="autogrow"></textarea></div>') +
+    '</div><div id="ci-erro" class="conc-erro"></div>' +
+    '<div class="modal-btns"><button class="btn" onclick="closeModal(\'modal-item\')">Cancelar</button>' +
+    '<button class="btn btn-primary" onclick="confirmarIdentificacao(\'' + tipo + '\')">' + (conclui ? 'Concluir' : 'Reabrir') + '</button></div>';
+  document.getElementById('modal-item-content').innerHTML = h;
+  document.getElementById('modal-item').classList.add('open');
+}
+function confirmarIdentificacao(tipo) {
+  function v(id) { var e = document.getElementById(id); return e ? e.value.trim() : ''; }
+  var por = { nome: v('ci-nome'), funcao: v('ci-funcao'), matricula: v('ci-mat') }, txt = v('ci-txt');
+  var err = document.getElementById('ci-erro');
+  if (!por.nome || !por.funcao || !por.matricula) { err.textContent = 'Preencha nome, função e matrícula.'; return; }
+  var ev = { tipo: tipo, data: new Date().toISOString(), por: por };
+  if (tipo === 'conclusao') {
+    var corte = v('ci-corte');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(corte)) { err.textContent = 'Informe a data de corte.'; return; }
+    if (Date.parse(corte) > Date.now()) { err.textContent = 'A data de corte não pode estar no futuro.'; return; }
+    ev.rev = revisoes().filter(function(r) { return r.tipo === 'conclusao'; }).length;
+    ev.corte = corte; if (txt) ev.obs = txt;
+    ev.foto = fotoLinhaBase(corte);
+  } else {
+    if (!txt) { err.textContent = 'Informe o motivo da reabertura.'; return; }
+    ev.motivo = txt;
+    ev.daRev = ultimaConclusao().rev;
+  }
+  revisoes().push(ev);
+  closeModal('modal-item');
+  aplicarTrava();
+  renderConclusao();
+  autoSave();
+}
+
+// ---------- marcação de implantação (liberada após conclusão) ----------
+function marcarImplantada(fmeaId) {
+  var r = (S.dd_results || []).filter(function(x) { return x && x.fmea_id === fmeaId; })[0];
+  if (!r) return;
+  if (r.implantada) {
+    if (!confirm('Desmarcar a implantação registrada em ' + dataBR(r.implantada) + '?')) return;
+    delete r.implantada;
+  } else {
+    var d = prompt('Data em que a tarefa foi implantada (AAAA-MM-DD):', hojeISO());
+    if (d === null) return;
+    d = d.trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(d) || isNaN(Date.parse(d))) { alert('Data inválida. Use o formato AAAA-MM-DD.'); return; }
+    r.implantada = d;
+  }
+  renderDD();
+  renderConclusao();
+  autoSave();
+}
+
+// ---------- página ----------
+function fmtTaxaAno(l) { return l > 0 ? (l * 8760).toLocaleString('pt-BR', { maximumFractionDigits: 2 }) : '—'; }
+function tabelaEstrategia(e) {
+  var tipos = [];
+  Object.keys(e.antes).concat(Object.keys(e.depois)).forEach(function(t) { if (t !== '(sem decisão)' && tipos.indexOf(t) < 0) tipos.push(t); });
+  tipos.sort(function(a, b) { return a.localeCompare(b); });
+  var h = '<table class="conc-tb"><thead><tr><th>Diretriz</th><th class="num">Modos com a diretriz antes do DD</th><th class="num">Modos com a diretriz adotada</th><th class="num">Diferença</th></tr></thead><tbody>';
+  tipos.forEach(function(t) {
+    var a = e.antes[t] || 0, d = e.depois[t] || 0, dv = d - a;
+    h += '<tr><td>' + esc(t) + '</td><td class="num">' + a + '</td><td class="num">' + d + '</td><td class="num">' + (dv > 0 ? '+' : '') + dv + '</td></tr>';
+  });
+  h += '</tbody></table>';
+  var semDec = e.depois['(sem decisão)'] || 0;
+  if (semDec) h += '<div class="conc-nota">' + semDec + ' modo(s) de falha ainda sem decisão no Diagrama Decisional.</div>';
+  h += '<div class="conc-nota">"Antes" conta as diretrizes marcadas no FMEA antes do Diagrama Decisional (um modo de falha pode ter várias); "Depois" conta a diretriz adotada no DD (uma por modo de falha).' +
+    (e.reconstruidas ? ' Em ' + e.reconstruidas + ' decisão(ões) feitas antes do registro de histórico, o "antes" foi reconstruído a partir das diretrizes atuais do FMEA.' : '') + '</div>';
+  return h;
+}
+function cardsResumo(e) {
+  function k(l, v, s) { return '<div class="conc-k"><label>' + l + '</label><div>' + v + '</div>' + (s ? '<span>' + s + '</span>' : '') + '</div>'; }
+  return '<div class="conc-kpis">' +
+    k('Ativos analisados', e.ativos) +
+    k('Modos de falha', e.modos, e.decididos + ' com decisão no DD') +
+    k('Críticos com decisão', e.criticosDecididos + ' de ' + e.criticos, 'RPN acima do corte') +
+    k('Tarefas implantadas', e.implantadas + ' de ' + e.decididos) +
+    k('Spare Parts', e.spareItens + ' itens', spBRL(e.spareValor) + (e.sparePend ? ' · ' + e.sparePend + ' pendentes' : '')) +
+    k('Plano de Ações', (e.acoes - e.acoesAbertas) + ' de ' + e.acoes + ' concluídas') + '</div>';
+}
+function tabelaProjecao(s, rotulo) {
+  if (!s) return '<div class="conc-nota">Sem dados de confiabilidade para projetar.</div>';
+  function lin(n, a, b, f) { return '<tr><td>' + n + '</td><td class="num">' + f(a) + '</td><td class="num">' + f(b) + '</td></tr>'; }
+  var h = '<table class="conc-tb"><thead><tr><th>' + rotulo + '</th><th class="num">Atual</th><th class="num">Com o plano (projeção)</th></tr></thead><tbody>' +
+    lin('MTTF do sistema', s.mttf, s.mttfProj, function(x) { return rbdNum(x) + ' h'; }) +
+    lin('Disponibilidade', s.A, s.Aproj, function(x) { return rbdPct(x, 2); }) +
+    (s.temCusto ? lin('Custo de falhas por ano', s.custoAno, s.custoAnoProj, spBRL) : '') + '</tbody></table>';
+  return h;
+}
+
+function renderConclusao() {
+  var box = document.getElementById('conclusao-zona');
+  if (!box) return;
+  var c = ultimaConclusao(), trav = estudoTravado();
+  var h = '';
+  // status e ações
+  h += '<div class="card conc-status ' + (trav ? 'fechado' : '') + '"><div>';
+  if (trav) h += '<div class="conc-st-tit">Concluído — Rev. ' + c.rev + '</div><div class="conc-st-sub">Em ' + dataBR(c.data) + ' por ' + esc(c.por.nome) + ' (' + esc(c.por.funcao) + ', mat. ' + esc(c.por.matricula) + ') · data de corte ' + dataBR(c.corte) + '</div>';
+  else if (c) h += '<div class="conc-st-tit">Em revisão</div><div class="conc-st-sub">Reaberto após a Rev. ' + c.rev + '. Conclua novamente para gerar a Rev. ' + (c.rev + 1) + '.</div>';
+  else h += '<div class="conc-st-tit">Estudo em andamento</div><div class="conc-st-sub">Ao concluir, os números de hoje viram a linha de base e o estudo fica bloqueado para edição.</div>';
+  h += '</div><div class="conc-st-btns">' + (trav
+    ? '<button class="btn" onclick="modalIdentificacao(\'reabertura\')">Reabrir estudo</button>'
+    : '<button class="btn btn-primary" onclick="modalIdentificacao(\'conclusao\')">Concluir estudo</button>') + '</div></div>';
+
+  // parte 1: conclusão do estudo (congelada se concluído)
+  var e = trav ? JSON.parse(JSON.stringify(c.foto.estudo)) : resumoEstudo();
+  if (trav) e.implantadas = resumoEstudo().implantadas;
+  h += '<div class="card"><div class="card-title">Conclusão do estudo' + (trav ? ' <span class="conc-tag">congelado em ' + dataBR(c.corte) + '</span>' : ' <span class="conc-tag vivo">ao vivo</span>') + '</div>';
+  h += cardsResumo(e);
+  h += '<div class="conc-sub">Mudança de estratégia</div>' + tabelaEstrategia(e);
+  var sis = trav ? c.foto.sistema : (function() { var f = fotoLinhaBase(hojeISO()); return f.sistema; })();
+  var nAtivosBase = trav ? c.foto.ativos.filter(function(a) { return a.taxa > 0; }).length : S.sistemas.filter(function(s) { return modeloAtivo(s.item).ok; }).length;
+  h += '<div class="conc-sub">Projeção de confiabilidade</div>' + tabelaProjecao(sis, 'Sistema' + (sis && !sis.usandoRBD ? ' (ativos em série, sem RBD)' : ''));
+  h += '<div class="conc-nota">Projeção calculada pelo modelo, não é resultado medido. Base: ' + nAtivosBase + ' de ' + S.sistemas.length + ' ativos com histórico suficiente (2 ou mais falhas); os demais usam o MTBF padrão. O resultado real aparece na Verificação, depois da conclusão.</div></div>';
+
+  // parte 2: verificação
+  if (c) {
+    var v = verificacao();
+    h += '<div class="card"><div class="card-title">Verificação pós-conclusão <span class="conc-tag">Rev. ' + c.rev + ' · desde ' + dataBR(c.corte) + '</span></div>';
+    v.avisos.forEach(function(a) { h += '<div class="rbd-warn" style="margin:0 0 10px">' + esc(a) + '</div>'; });
+    var meses = v.T1 / 730;
+    var s = v.sistema, stS = ST_TXT[s.st] || ST_TXT.inconclusivo;
+    h += '<div class="conc-ver-sis ' + stS[2] + '"><div><b>' + stS[0] + '</b> — ' + stS[1] + '</div><div class="conc-ver-num">' +
+      'Linha de base: ' + fmtTaxaAno(s.l0) + ' falhas/ano · Projeção: ' + fmtTaxaAno(s.lp) + ' falhas/ano · Observado: ' + s.n1 + ' falha(s) em ' +
+      meses.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mês(es)' + (s.T1 > 0 ? ' (' + fmtTaxaAno(s.n1 / s.T1) + '/ano)' : '') + '</div>';
+    if ((s.st === 'inconclusivo' || s.st === 'inicio') && s.hConf) {
+      h += '<div class="conc-ver-mon">' + (isFinite(s.hConf)
+        ? 'Se o ganho projetado se confirmar, ele será estatisticamente comprovado por volta de <b>' + dataBR(new Date(corteMs(c) + s.hConf * 3600000).toISOString()) + '</b>. Continue lançando todas as falhas até lá.'
+        : 'O ganho projetado é pequeno demais para ser comprovado estatisticamente com a taxa de falhas atual em menos de 10 anos.') + '</div>';
+    }
+    h += '</div>';
+    h += '<div class="conc-sub">Por ativo</div><div style="overflow-x:auto"><table class="conc-tb"><thead><tr><th>Ativo</th><th class="num">Falhas/ano antes</th><th class="num">Projeção</th><th class="num">Depois do corte</th><th class="num">MTTR antes → depois</th><th class="num">Tarefas implantadas</th><th>Situação</th></tr></thead><tbody>';
+    v.ativos.forEach(function(x) {
+      var st = ST_TXT[x.o.st] || ST_TXT.inconclusivo, a = x.a;
+      h += '<tr><td>' + esc(a.nome) + '</td><td class="num">' + fmtTaxaAno(a.taxa) + '</td><td class="num">' + fmtTaxaAno(a.taxaProj) + '</td>' +
+        '<td class="num">' + x.n1 + '</td><td class="num">' + (a.mttr ? rbdNum(a.mttr, 1) : '—') + ' → ' + (x.mttr1 ? rbdNum(x.mttr1, 1) : '—') + ' h</td>' +
+        '<td class="num">' + (x.dec ? x.impl + ' de ' + x.dec : '—') + '</td><td><span class="conc-st ' + st[2] + '" title="' + escA(st[1]) + '">' + st[0] + '</span></td></tr>';
+    });
+    h += '</tbody></table></div>';
+    if (v.recorrencias.length) {
+      h += '<div class="conc-sub">Modos de falha que voltaram a ocorrer depois da tarefa implantada</div><table class="conc-tb"><thead><tr><th>Ativo</th><th>Modo de falha</th><th>Tarefa</th><th>Implantada</th><th>Falha</th><th></th></tr></thead><tbody>';
+      v.recorrencias.forEach(function(r) {
+        h += '<tr><td>' + esc(r.item) + '</td><td style="color:var(--red)">' + esc(r.modo) + '</td><td>' + esc(r.tipo) + '</td><td>' + dataBR(r.implantada) + '</td><td>' + dataBR(r.dt) + '</td>' +
+          '<td>' + (r.fi >= 0 ? '<button class="btn btn-sm" onclick="abrirHistoricoDD(' + r.fi + ')">Decisão</button>' : '') + '</td></tr>';
+      });
+      h += '</tbody></table><div class="conc-nota">Recorrência após tarefa implantada indica que a decisão desse modo de falha deve ser revisada (reabrir o estudo).</div>';
+    } else {
+      h += '<div class="conc-nota">Para identificar quais decisões revisar, informe o "Modo de falha (FMEA)" ao lançar cada falha no Histórico.</div>';
+    }
+    h += '<div class="conc-nota">A verificação compara taxas de falha antes e depois da data de corte (teste de Poisson, 90% de confiança). Mudanças de produção, receita ou operação no período também afetam o resultado e devem ser consideradas pela equipe.</div></div>';
+  }
+
+  // histórico de revisões
+  if (revisoes().length) {
+    h += '<div class="card"><div class="card-title">Histórico de revisões</div><table class="conc-tb"><thead><tr><th>Evento</th><th>Data</th><th>Responsável</th><th>Função</th><th>Matrícula</th><th>Detalhe</th></tr></thead><tbody>';
+    revisoes().slice().reverse().forEach(function(r) {
+      h += '<tr><td><b>' + (r.tipo === 'conclusao' ? 'Conclusão — Rev. ' + r.rev : 'Reabertura da Rev. ' + r.daRev) + '</b></td><td>' + dataBR(r.data) + '</td>' +
+        '<td>' + esc(r.por && r.por.nome) + '</td><td>' + esc(r.por && r.por.funcao) + '</td><td>' + esc(r.por && r.por.matricula) + '</td>' +
+        '<td>' + (r.tipo === 'conclusao' ? 'Corte em ' + dataBR(r.corte) + (r.obs ? ' · ' + esc(r.obs) : '') : esc(r.motivo)) + '</td></tr>';
+    });
+    h += '</tbody></table></div>';
+  }
+  box.innerHTML = h;
+}
+
+// ---------- capítulo do relatório PDF ----------
+function conclusaoPdf() {
+  var c = ultimaConclusao(), trav = estudoTravado();
+  var e = trav ? JSON.parse(JSON.stringify(c.foto.estudo)) : resumoEstudo();
+  if (trav) e.implantadas = resumoEstudo().implantadas;
+  var h = '<div class="pb"></div><h1>9. Conclusao e Verificacao</h1><div class="section">';
+  h += '<p><strong>Situacao:</strong> ' + (trav ? 'Concluido — Rev. ' + c.rev + ' em ' + dataBR(c.data) + ' por ' + esc(c.por.nome) + ' (' + esc(c.por.funcao) + ', mat. ' + esc(c.por.matricula) + '), data de corte ' + dataBR(c.corte) : c ? 'Em revisao (reaberto apos a Rev. ' + c.rev + ')' : 'Em andamento (nao concluido)') + '</p>';
+  h += '<p>Ativos: <b>' + e.ativos + '</b> · Modos de falha: <b>' + e.modos + '</b> (' + e.decididos + ' com decisao) · Criticos com decisao: <b>' + e.criticosDecididos + ' de ' + e.criticos + '</b> · Tarefas implantadas: <b>' + e.implantadas + ' de ' + e.decididos + '</b></p>';
+  h += '<h3>Mudanca de estrategia</h3>' + tabelaEstrategia(e).replace(/class="conc-nota"/g, 'style="font-size:9px;color:#666"');
+  var sis = trav ? c.foto.sistema : fotoLinhaBase(hojeISO()).sistema;
+  h += '<h3>Projecao de confiabilidade</h3>' + tabelaProjecao(sis, 'Sistema').replace(/class="conc-nota"/g, 'style="font-size:9px;color:#666"');
+  h += '<p style="font-size:9px;color:#666">Projecao calculada pelo modelo; nao e resultado medido.</p>';
+  if (c) {
+    var v = verificacao();
+    if (v.T1 < 24 * 90 && v.nDepois === 0) h += '<h3>Verificacao</h3><p>Em acompanhamento desde ' + dataBR(c.corte) + '.</p>';
+    else {
+      var st = ST_TXT[v.sistema.st] || ST_TXT.inconclusivo;
+      h += '<h3>Verificacao</h3><p><b>' + st[0] + '</b> — ' + st[1] + ' Linha de base ' + fmtTaxaAno(v.sistema.l0) + ' falhas/ano; projecao ' + fmtTaxaAno(v.sistema.lp) + '; observado ' + v.sistema.n1 + ' falha(s) em ' + (v.T1 / 730).toFixed(1) + ' mes(es).</p>';
+      h += '<table><thead><tr><th>Ativo</th><th>Antes (falhas/ano)</th><th>Projecao</th><th>Falhas apos corte</th><th>Implantadas</th><th>Situacao</th></tr></thead><tbody>';
+      v.ativos.forEach(function(x) { var s = ST_TXT[x.o.st] || ST_TXT.inconclusivo; h += '<tr><td>' + esc(x.a.nome) + '</td><td>' + fmtTaxaAno(x.a.taxa) + '</td><td>' + fmtTaxaAno(x.a.taxaProj) + '</td><td>' + x.n1 + '</td><td>' + (x.dec ? x.impl + '/' + x.dec : '—') + '</td><td>' + s[0] + '</td></tr>'; });
+      h += '</tbody></table>';
+      v.avisos.forEach(function(a) { h += '<p style="color:#b45309">' + esc(a) + '</p>'; });
+    }
+  }
+  if (revisoes().length) {
+    h += '<h3>Historico de revisoes</h3><table><thead><tr><th>Evento</th><th>Data</th><th>Responsavel</th><th>Matricula</th><th>Detalhe</th></tr></thead><tbody>';
+    revisoes().forEach(function(r) { h += '<tr><td>' + (r.tipo === 'conclusao' ? 'Conclusao Rev. ' + r.rev : 'Reabertura Rev. ' + r.daRev) + '</td><td>' + dataBR(r.data) + '</td><td>' + esc(r.por && r.por.nome) + ' (' + esc(r.por && r.por.funcao) + ')</td><td>' + esc(r.por && r.por.matricula) + '</td><td>' + (r.tipo === 'conclusao' ? 'Corte ' + dataBR(r.corte) : esc(r.motivo)) + '</td></tr>'; });
+    h += '</tbody></table>';
+  }
+  return h + '</div>';
+}
+
+// ============================================================
+// ARQUIVO OFUSCADO — dificulta edição manual do .json
+// (não é criptografia: a chave está no próprio app)
+// ============================================================
+var RCMX_PREFIXO = 'RCMX1:';
+function rcmxChave(i) { var k = 'RCM-APP|LWB|concha|2026'; return (k.charCodeAt(i % k.length) ^ ((i * 131 + 7) & 255)) & 255; }
+function rcmSerializar(obj) {
+  var bytes = new TextEncoder().encode(JSON.stringify(obj));
+  var out = '', bloco = '';
+  for (var i = 0; i < bytes.length; i++) {
+    bloco += String.fromCharCode(bytes[i] ^ rcmxChave(i));
+    if (bloco.length >= 8192) { out += bloco; bloco = ''; }
+  }
+  return RCMX_PREFIXO + btoa(out + bloco);
+}
+function rcmLerArquivo(texto) {
+  var t = String(texto || '').replace(/^﻿/, '').trim();
+  if (t.indexOf(RCMX_PREFIXO) !== 0) return JSON.parse(t); // arquivo antigo (JSON puro)
+  var bin = atob(t.slice(RCMX_PREFIXO.length).replace(/\s+/g, ''));
+  var bytes = new Uint8Array(bin.length);
+  for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i) ^ rcmxChave(i);
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+
+// ============================================================
 // RENDER — Tabela + Arvore
 // ============================================================
 function renderSistemas() {
@@ -2228,9 +2712,9 @@ function renderSistemas() {
       '<td style="color:var(--teal)">' + esc(s.item) + badgesAtivo(s, an) + '</td>' +
       '<td style="font-size:11px">' + esc(s.funcao) + (s.funcao2 ? '<br><span style="color:var(--text3);font-size:10px;">2a: ' + esc(s.funcao2) + '</span>' : '') + '</td>' +
       '<td>' +
-      '<button class="btn btn-sm" onclick="openEditItemModal(' + i + ')" title="Editar">✏️</button> ' +
-      '<button class="btn btn-sm" onclick="moverAtivo(' + i + ')" title="Mover">↔️</button> ' +
-      '<button class="btn btn-sm btn-danger" onclick="delAtivo(' + i + ')" title="Apagar">🗑</button>' +
+      '<button class="btn btn-sm" onclick="openEditItemModal(' + i + ')" title="Editar">' + ic('editar') + '</button> ' +
+      '<button class="btn btn-sm" onclick="moverAtivo(' + i + ')" title="Mover">' + ic('mover') + '</button> ' +
+      '<button class="btn btn-sm btn-danger" onclick="delAtivo(' + i + ')" title="Apagar">' + ic('excluir') + '</button>' +
       '</td></tr>';
   });
   tb.innerHTML = html || '<tr><td colspan="7" style="text-align:center;padding:12px">Nenhum ativo cadastrado.</td></tr>';
@@ -2244,6 +2728,7 @@ function renderSistemas() {
 // APAGAR E EDITAR SISTEMAS / SUBSISTEMAS
 // ============================================================
 function delSistema(nomeSistema) {
+  if (bloqueado()) return;
   if (!confirm('Apagar sistema "' + nomeSistema + '" e todos seus subsistemas e ativos?')) return;
   // Remove todos os ativos desse sistema
   var itensSis = S.sistemas.filter(function(s) { return s.sistema === nomeSistema; }).map(function(s) { return s.item; });
@@ -2270,6 +2755,7 @@ function delSistema(nomeSistema) {
 
 // Chamada pela árvore como (sistema, subsistema). Aceita (subsistema) por compatibilidade.
 function delSubsistema(nomeSis, nomeSub) {
+  if (bloqueado()) return;
   if (nomeSub === undefined) { nomeSub = nomeSis; nomeSis = null; }
   function doSub(s) { return s.sub === nomeSub && (nomeSis === null || s.sistema === nomeSis); }
   if (!confirm('Apagar subsistema "' + nomeSub + '" e todos seus ativos?')) return;
@@ -2292,6 +2778,7 @@ function delSubsistema(nomeSis, nomeSub) {
 }
 
 function editSistema(nomeAntigo) {
+  if (bloqueado()) return;
   var novoNome = prompt('Novo nome para o sistema:', nomeAntigo);
   if (!novoNome || novoNome.trim() === '' || novoNome === nomeAntigo) return;
   novoNome = novoNome.trim();
@@ -2309,6 +2796,7 @@ function editSistema(nomeAntigo) {
 
 // Chamada pela árvore como (sistema, subsistema). Aceita (subsistema) por compatibilidade.
 function editSubsistema(nomeSis, nomeAntigo) {
+  if (bloqueado()) return;
   if (nomeAntigo === undefined) { nomeAntigo = nomeSis; nomeSis = null; }
   function doSub(x) { return x.sub === nomeAntigo && (nomeSis === null || !x.sistema || x.sistema === nomeSis); }
   var novoNome = prompt('Novo nome para o subsistema:', nomeAntigo);
@@ -2331,6 +2819,7 @@ function editSubsistema(nomeSis, nomeAntigo) {
 // NÍVEL 0 — NOME DO EQUIPAMENTO
 // ============================================================
 function editarNivel0() {
+  if (bloqueado()) return;
   var nomeAtual = S.nomeEquipamento || '';
   var html = '<div class="modal-title">Nível 0 — Equipamento Principal</div>' +
     '<div class="form-grid">' +
@@ -2348,6 +2837,7 @@ function editarNivel0() {
 }
 
 function salvarNivel0() {
+  if (bloqueado()) return;
   var nome = document.getElementById('nivel0-input').value.trim();
   S.nomeEquipamento = nome;
   atualizarNivel0Display();
@@ -2398,10 +2888,10 @@ function renderTreeView() {
     var sisEsc = jsAttr(nomeSis);
     html += '<div class="tree-branch">';
     html += '<div class="tree-header" style="display:flex;align-items:center;justify-content:space-between;">';
-    html += '<span>🔹 <code>' + esc(sys.codSis) + '</code> ' + esc(nomeSis) + '</span>';
+    html += '<span><code>' + esc(sys.codSis) + '</code> ' + esc(nomeSis) + '</span>';
     html += '<span>';
-    html += '<button class="btn btn-sm" onclick="editSistema(\'' + sisEsc + '\')" title="Editar" style="font-size:10px;padding:2px 5px;">✏️</button> ';
-    html += '<button class="btn btn-sm btn-danger" onclick="delSistema(\'' + sisEsc + '\')" title="Apagar" style="font-size:10px;padding:2px 5px;">🗑</button>';
+    html += '<button class="btn btn-sm" onclick="editSistema(\'' + sisEsc + '\')" title="Editar" style="font-size:10px;padding:2px 5px;">' + ic('editar') + '</button> ';
+    html += '<button class="btn btn-sm btn-danger" onclick="delSistema(\'' + sisEsc + '\')" title="Apagar" style="font-size:10px;padding:2px 5px;">' + ic('excluir') + '</button>';
     html += '</span></div>';
     html += '<div class="tree-subs">';
 
@@ -2412,10 +2902,10 @@ function renderTreeView() {
         var subEsc = jsAttr(nomeSub);
         html += '<div class="tree-sub-card">';
         html += '<div class="tree-sub-title" style="display:flex;align-items:center;justify-content:space-between;">';
-        html += '<span>🔸 <code>' + esc(sub.codSub) + '</code> ' + esc(nomeSub) + '</span>';
+        html += '<span><code>' + esc(sub.codSub) + '</code> ' + esc(nomeSub) + '</span>';
         html += '<span>';
-        html += '<button class="btn btn-sm" onclick="editSubsistema(\'' + sisEsc + '\',\'' + subEsc + '\')" title="Editar" style="font-size:10px;padding:2px 5px;">✏️</button> ';
-        html += '<button class="btn btn-sm btn-danger" onclick="delSubsistema(\'' + sisEsc + '\',\'' + subEsc + '\')" title="Apagar" style="font-size:10px;padding:2px 5px;">🗑</button>';
+        html += '<button class="btn btn-sm" onclick="editSubsistema(\'' + sisEsc + '\',\'' + subEsc + '\')" title="Editar" style="font-size:10px;padding:2px 5px;">' + ic('editar') + '</button> ';
+        html += '<button class="btn btn-sm btn-danger" onclick="delSubsistema(\'' + sisEsc + '\',\'' + subEsc + '\')" title="Apagar" style="font-size:10px;padding:2px 5px;">' + ic('excluir') + '</button>';
         html += '</span></div>';
         html += '<div>';
         if (sub.items.length) {
@@ -2423,7 +2913,7 @@ function renderTreeView() {
             var pk = pecaProvavel(it);
             var dp = S.sistemas.filter(function(x) { return normTxt(x.item).trim() === normTxt(it).trim(); }).length > 1;
             var tt = [pk ? MSG_PECA : '', dp ? MSG_DUP : ''].filter(Boolean).join('\n\n');
-            html += '<span class="tree-item-tag' + (pk ? ' tree-item-peca' : '') + (dp ? ' tree-item-dup' : '') + '"' + (tt ? ' title="' + escA(tt) + '"' : '') + '>' + (pk || dp ? '⚠ ' : '⚙️ ') + esc(it) + '</span>';
+            html += '<span class="tree-item-tag' + (pk ? ' tree-item-peca' : '') + (dp ? ' tree-item-dup' : '') + '"' + (tt ? ' title="' + escA(tt) + '"' : '') + '>' + esc(it) + '</span>';
           });
         } else {
           html += '<span style="font-size:11px;color:var(--text3)">Sem ativos</span>';
@@ -2439,6 +2929,7 @@ function renderTreeView() {
 }
 
 function openEditItemModal(idx) {
+  if (bloqueado()) return;
   var s = S.sistemas[idx];
   var html = '<div class="modal-title">Editar Ativo</div>' +
     '<div class="form-grid">' +
@@ -2502,6 +2993,7 @@ var STRATS = [
 
 
 function openFmeaModal(idx) {
+  if (bloqueado()) return;
   var f = idx !== undefined ? S.fmea[idx] : {};
 
   // Garante que tarefa seja array
@@ -2680,6 +3172,7 @@ function calcRPN() {
 
 
 function saveFmea(idx) {
+  if (bloqueado()) return;
   var codSis = document.getElementById('f-sis').value;
   var codSub = document.getElementById('f-sub').value;
   var item   = document.getElementById('f-item').value;
@@ -2759,9 +3252,9 @@ function renderFmea() {
       '<td style="font-weight:700;color:' + rpnColor + '">' + f.rpn + '</td>' +
       '<td><span class="badge ' + badgeClass + '">' + (f.origem || 'Criada') + '</span>' +
         (f.dd || (S.dd_results || []).some(function(r) { return r && r.fmea_id === f.id; })
-          ? '<br><button class="btn btn-sm dd-hist-btn" onclick="abrirHistoricoDD(' + i + ')" title="Ver como essa estratégia foi decidida">🧭 DD: ' + esc(f.dd || 'ver') + '</button>' : '') + '</td>' +
+          ? '<br><button class="btn btn-sm dd-hist-btn" onclick="abrirHistoricoDD(' + i + ')" title="Ver como essa estratégia foi decidida">DD: ' + esc(f.dd || 'ver') + '</button>' : '') + '</td>' +
       '<td style="font-size:11px;color:var(--accent)">' + (Array.isArray(f.tarefa) ? f.tarefa.map(function(t){ return '<span style="display:inline-block;background:rgba(124,106,255,0.12);border:1px solid rgba(124,106,255,0.25);border-radius:4px;padding:1px 6px;margin:1px;font-size:.85em' + (t==='Sem diretriz aplicável'?';color:#f87171;border-color:rgba(248,113,113,0.3);background:rgba(248,113,113,0.08)':'') + '">' + esc(t) + '</span>'; }).join('') : esc(f.tarefa || '')) + '</td>' +
-      '<td><button class="btn btn-sm" onclick="openFmeaModal(' + i + ')">✏️</button> <button class="btn btn-sm btn-danger" onclick="delFmea(' + i + ')">🗑</button></td>' +
+      '<td><button class="btn btn-sm" onclick="openFmeaModal(' + i + ')" title="Editar">' + ic('editar') + '</button> <button class="btn btn-sm btn-danger" onclick="delFmea(' + i + ')" title="Apagar">' + ic('excluir') + '</button></td>' +
       '</tr>';
   });
 
@@ -2779,6 +3272,7 @@ function renderFmea() {
 // FMEA
 // ============================================================
 function delFmea(idx) {
+  if (bloqueado()) return;
   if (!confirm('Excluir este modo de falha?')) return;
   var fmeaId = S.fmea[idx].id;
   S.fmea.splice(idx, 1);
@@ -3066,7 +3560,7 @@ function renderDDLista() {
       h += '<div class="dd-l-item' + (String(ddFmIdx) === String(x.i) ? ' sel' : '') + '" onclick="ddEscolher(' + x.i + ')">' +
         '<span class="dd-l-rpn" style="color:' + cor + '">' + rpn + '</span>' +
         '<span class="dd-l-modo">' + esc(x.f.modo) + '</span>' +
-        (x.dec ? '<span class="dd-l-st dec" title="' + escA(x.f.dd || 'decidido') + '">✓</span>' : '<span class="dd-l-st pend">pendente</span>') + '</div>';
+        (x.dec ? '<span class="dd-l-st dec" title="' + escA(x.f.dd || 'decidido') + '">decidido</span>' : '<span class="dd-l-st pend">pendente</span>') + '</div>';
     });
   });
   box.innerHTML = h || '<div class="dd-vazio">Nenhum modo de falha' + (S.fmea.length ? ' com esse filtro.' : ' cadastrado no FMEA.') + '</div>';
@@ -3127,12 +3621,12 @@ function renderDDFlow() {
 
     if (node.terminal) {
       flow.innerHTML += '<div class="dd-result">' +
-        '<div class="dd-result-label">✅ DIRETRIZ SAE JA1011</div>' +
+        '<div class="dd-result-label">Diretriz (SAE JA1011)</div>' +
         '<div style="font-size:14px;margin:10px 0;font-weight:600;color:var(--teal)">' + node.text + '</div>' +
         '<div style="font-size:12px;margin:5px 0;"><strong>Tarefa:</strong> ' + node.tarefa + '</div>' +
         '<div style="font-size:12px;margin:5px 0;"><strong>Tipo:</strong> ' + node.tipo + '</div>' +
         '<div style="font-size:11px;color:var(--text3);margin-bottom:10px;">Caminho: ' + path.join(' → ') + '</div>' +
-        '<button class="btn btn-primary btn-sm" onclick="saveDDResult(\'' + node.tarefa.replace(/'/g, "\\'") + '\',\'' + node.tipo.replace(/'/g, "\\'") + '\',\'' + node.origem + '\')">✓ Vincular ao FMEA</button>' +
+        '<button class="btn btn-primary btn-sm" onclick="saveDDResult(\'' + node.tarefa.replace(/'/g, "\\'") + '\',\'' + node.tipo.replace(/'/g, "\\'") + '\',\'' + node.origem + '\')">Vincular ao FMEA</button>' +
         '</div>';
       ddProgresso(path.length, true);
       break;
@@ -3143,7 +3637,7 @@ function renderDDFlow() {
     if (answered) {
       flow.innerHTML += '<div class="dd-node dd-feito" onclick="ddReabrir(\'' + current + '\')" title="Clique para mudar esta resposta">' +
         '<span class="dd-f-label">' + node.label + '</span><span class="dd-f-txt">' + node.text + '</span>' +
-        '<span class="dd-f-resp ' + (answered === 'S' ? 'sim' : 'nao') + '">' + (answered === 'S' ? 'Sim' : 'Não') + '</span><span class="dd-f-edit">✎</span></div>';
+        '<span class="dd-f-resp ' + (answered === 'S' ? 'sim' : 'nao') + '">' + (answered === 'S' ? 'Sim' : 'Não') + '</span><span class="dd-f-edit">alterar</span></div>';
       path.push(current + (answered === 'S' ? '→S' : '→N'));
       current = answered === 'S' ? node.yes : node.no;
       continue;
@@ -3152,8 +3646,8 @@ function renderDDFlow() {
     flow.innerHTML += '<div class="dd-node">' +
       '<div class="dd-q"><strong>' + node.label + '</strong> ' + node.text + subText + '</div>' +
       '<div class="dd-btns">' +
-      '<button class="dd-btn dd-btn-sim" style="opacity:' + (answered === 'S' ? 1 : 0.5) + '" onclick="answerDD(\'' + current + '\',\'S\')">✓ Sim</button>' +
-      '<button class="dd-btn dd-btn-nao" style="opacity:' + (answered === 'N' ? 1 : 0.5) + '" onclick="answerDD(\'' + current + '\',\'N\')">✗ Nao</button>' +
+      '<button class="dd-btn dd-btn-sim" style="opacity:' + (answered === 'S' ? 1 : 0.5) + '" onclick="answerDD(\'' + current + '\',\'S\')">Sim</button>' +
+      '<button class="dd-btn dd-btn-nao" style="opacity:' + (answered === 'N' ? 1 : 0.5) + '" onclick="answerDD(\'' + current + '\',\'N\')">Não</button>' +
       '</div></div>';
 
     if (!answered) { ddProgresso(path.length, false); break; }
@@ -3164,7 +3658,7 @@ function renderDDFlow() {
 
 function ddProgresso(n, fim) {
   var el = document.getElementById('dd-progresso');
-  if (el) el.innerHTML = '<div class="dd-prog">' + (fim ? '✓ Diretriz definida após ' + n + ' resposta' + (n === 1 ? '' : 's') : 'Pergunta ' + (n + 1)) + '</div>';
+  if (el) el.innerHTML = '<div class="dd-prog">' + (fim ? 'Diretriz definida após ' + n + ' resposta' + (n === 1 ? '' : 's') : 'Pergunta ' + (n + 1)) + '</div>';
 }
 
 function answerDD(key, ans) {
@@ -3190,6 +3684,7 @@ function ddCaminhoAtual() {
 }
 
 function saveDDResult(tarefa, tipo, origem) {
+  if (bloqueado()) return;
   if (ddFmIdx === null || ddFmIdx === '' || ddFmIdx === undefined) return;
   var f = S.fmea[+ddFmIdx];
   if (!f) return;
@@ -3217,7 +3712,7 @@ function saveDDResult(tarefa, tipo, origem) {
   renderFmea();
   renderDD();
   autoSave();
-  document.getElementById('dd-flow').innerHTML += '<div style="margin-top:15px;padding:10px;background:rgba(52,211,153,0.1);border-radius:6px;color:var(--green);font-weight:600;">✓ Vinculado com sucesso!</div>';
+  document.getElementById('dd-flow').innerHTML += '<div style="margin-top:15px;padding:10px;background:rgba(52,211,153,0.1);border-radius:6px;color:var(--green);font-weight:600;">Vinculado ao FMEA.</div>';
 }
 
 // ---------- Histórico da decisão (aberto pelo FMEA) ----------
@@ -3246,7 +3741,7 @@ function abrirHistoricoDD(fmeaIdx) {
   var f = S.fmea[fmeaIdx];
   if (!f) return;
   var r = (S.dd_results || []).filter(function(x) { return x && x.fmea_id === f.id; })[0];
-  var h = '<div class="modal-title">🧭 Decisão de manutenção</div>';
+  var h = '<div class="modal-title">Decisão de manutenção</div>';
   h += '<div class="dd-hist-ctx"><b>' + esc(f.item) + '</b><br>Modo de falha: <span style="color:var(--red)">' + esc(f.modo) + '</span><br>Efeito: ' + esc(f.efeito || '—') + ' · RPN ' + esc(f.rpn) + '</div>';
   if (!r && !f.dd) {
     h += '<div class="dd-hist-aviso">Este modo de falha ainda não passou pelo Diagrama Decisional.</div>';
@@ -3284,7 +3779,7 @@ function renderDD() {
   });
   var html = '';
   ordem.forEach(function(item) {
-    html += '<tr class="sp-grupo"><td colspan="5"><span class="sp-g-ativo">' + esc(item) + '</span><span class="sp-g-sub">' + grupos[item].length + ' decisão(ões)</span></td></tr>';
+    html += '<tr class="sp-grupo"><td colspan="6"><span class="sp-g-ativo">' + esc(item) + '</span><span class="sp-g-sub">' + grupos[item].length + ' decisão(ões)</span></td></tr>';
     grupos[item].forEach(function(r) {
       var badgeClass = r.origem === 'Adotadas' ? 'badge-green' : 'badge-amber', fi = idxPorId[r.fmea_id];
       html += '<tr>' +
@@ -3292,11 +3787,12 @@ function renderDD() {
         '<td>' + esc(r.tarefa) + '</td>' +
         '<td><span class="badge ' + badgeClass + '">' + esc(r.tipo) + '</span></td>' +
         '<td><span class="badge badge-blue">' + esc(r.origem) + '</span></td>' +
-        '<td style="white-space:nowrap">' + (fi !== undefined ? '<button class="btn btn-sm" onclick="abrirHistoricoDD(' + fi + ')" title="Ver histórico da decisão">🧭</button> <button class="btn btn-sm" onclick="ddEscolher(' + fi + ')" title="Refazer">↻</button>' : '') + '</td>' +
+        '<td style="white-space:nowrap"><button class="btn btn-sm impl-btn' + (r.implantada ? ' feita' : '') + '" onclick="marcarImplantada(\'' + jsAttr(r.fmea_id) + '\')" title="' + (r.implantada ? 'Clique para desmarcar' : 'Registrar a data em que a tarefa passou a ser executada') + '">' + (r.implantada ? 'Implantada ' + dataBR(r.implantada) : 'Marcar implantada') + '</button></td>' +
+        '<td style="white-space:nowrap">' + (fi !== undefined ? '<button class="btn btn-sm" onclick="abrirHistoricoDD(' + fi + ')" title="Ver histórico da decisão">' + ic('historia') + '</button> <button class="btn btn-sm" onclick="ddEscolher(' + fi + ')" title="Refazer">' + ic('refazer') + '</button>' : '') + '</td>' +
         '</tr>';
     });
   });
-  tb.innerHTML = html || '<tr><td colspan="5" style="text-align:center;padding:12px">Nenhuma amarração.</td></tr>';
+  tb.innerHTML = html || '<tr><td colspan="6" style="text-align:center;padding:12px">Nenhuma amarração.</td></tr>';
   renderDDLista();
 }
 
@@ -3571,6 +4067,7 @@ function rbdNovoBloco() {
 
 // mode: 'depois' | 'antes' (série)  |  'paralelo'  |  'ramo' (novo ramo no grupo paralelo)
 function rbdAdd(mode) {
+  if (bloqueado()) return;
   var root = rbdTree();
   var sel = rbdSelecao();
   if (!sel && root.c.length && (mode === 'paralelo' || mode === 'ramo')) {
@@ -3602,6 +4099,7 @@ function rbdAdd(mode) {
 }
 
 function rbdTrocar() {
+  if (bloqueado()) return;
   var sel = rbdSelecao();
   if (!sel || sel.multi || sel.node.t !== 'item') { alert('Selecione um bloco para trocar o ativo.'); return; }
   var v = document.getElementById('rbd-item-picker').value;
@@ -3612,6 +4110,7 @@ function rbdTrocar() {
 }
 
 function rbdMover(d) {
+  if (bloqueado()) return;
   var sel = rbdSelecao();
   if (!sel || sel.multi) return;
   var j = sel.i + d;
@@ -3621,6 +4120,7 @@ function rbdMover(d) {
 }
 
 function rbdRemover() {
+  if (bloqueado()) return;
   var sel = rbdSelecao();
   if (!sel) return;
   sel.P.c.splice(sel.i, sel.j - sel.i + 1);
@@ -3630,6 +4130,7 @@ function rbdRemover() {
 
 // Agrupa a seleção (um nó ou trecho em série) numa série com nome
 function rbdAgrupar() {
+  if (bloqueado()) return;
   var sel = rbdSelecao();
   if (!sel) { alert('Selecione um bloco ou um trecho (Shift+clique) para agrupar.'); return; }
   var nome = prompt('Nome do grupo (ex.: Acionamento, Caixa de engrenagens):', '');
@@ -3644,12 +4145,14 @@ function rbdAgrupar() {
   rbdCommit();
 }
 function rbdDesagrupar(id) {
+  if (bloqueado()) return;
   var f = rbdFind(id);
   if (!f || !f.node.nome) return;
   delete f.node.nome; delete f.node.fechado;
   rbdCommit();
 }
 function rbdRenomear(id, nome) {
+  if (bloqueado()) return;
   var f = rbdFind(id);
   if (!f || f.node.t === 'item') return;
   nome = String(nome || '').trim().slice(0, 60);
@@ -3674,6 +4177,7 @@ function rbdTodos(fechar) {
 }
 // Agrupa blocos consecutivos da linha principal pelo subsistema cadastrado na estrutura
 function rbdAgruparPorSubsistema() {
+  if (bloqueado()) return;
   var root = rbdTree(), subsDe = {}, usados = {};
   (S.sistemas || []).forEach(function(s) { if (s && s.item && s.sub) (subsDe[s.item] = subsDe[s.item] || []).push(s.sub); });
   var novo = [], atual = null, criados = 0;
@@ -3694,6 +4198,7 @@ function rbdAgruparPorSubsistema() {
 }
 
 function rbdLimpar() {
+  if (bloqueado()) return;
   if (!rbdTemDiagrama()) return;
   if (!confirm('Apagar todo o diagrama de blocos?')) return;
   S.rbd_tree = rbdTreeOk = { id: uid(), t: 'serie', c: [] };
@@ -3702,11 +4207,13 @@ function rbdLimpar() {
 }
 
 function rbdSetK(id, k) {
+  if (bloqueado()) return;
   var f = rbdFind(id);
   if (f && f.node.t === 'par') { f.node.k = +k; rbdCommit(); }
 }
 
 function rbdToggleTipo(id) {
+  if (bloqueado()) return;
   var f = rbdFind(id);
   if (!f || f.node.t === 'item') return;
   if (f.node.t === 'par') f.node.t = 'serie';
@@ -3715,6 +4222,7 @@ function rbdToggleTipo(id) {
 }
 
 function rbdSetMtbf(id) {
+  if (bloqueado()) return;
   var f = rbdFind(id);
   var el = document.getElementById('rbd-mtbf-manual');
   if (!f || !el) return;
@@ -3776,10 +4284,10 @@ function rbdNomeNo(n) {
 var RB = { bw: 178, bh: 82, gx: 40, gy: 18, fx: 12, lbl: 26, fb: 12, rail: 14, rg: 24 };
 
 function rbdLabel(n, ctx) {
-  var r = rbdR(ctx.t, ctx.pm, n), pre = n.nome ? n.nome.toUpperCase() + ' · ' : '';
-  if (n.t === 'serie') return (pre || 'SÉRIE · todos · ') + 'R ' + rbdPct(r);
-  if ((n.k || 1) === 1) return pre + 'PARALELO · basta 1 de ' + n.c.length + ' · R ' + rbdPct(r);
-  return pre + 'k-DE-N · ' + n.k + ' de ' + n.c.length + ' · R ' + rbdPct(r);
+  var r = rbdR(ctx.t, ctx.pm, n), pre = n.nome ? n.nome + ' · ' : '';
+  if (n.t === 'serie') return (pre || 'Série · todos · ') + 'R ' + rbdPct(r);
+  if ((n.k || 1) === 1) return pre + 'Paralelo · basta 1 de ' + n.c.length + ' · R ' + rbdPct(r);
+  return pre + 'k de n · ' + n.k + ' de ' + n.c.length + ' · R ' + rbdPct(r);
 }
 
 function rbdLayout(n, isRoot, ctx) {
@@ -3822,7 +4330,7 @@ function rbdDraw(n, x, y, o, ctx, isRoot) {
     o.push('<g class="rbd-grp" onclick="rbdClick(event,\'' + n.id + '\')"' + (n.nome ? ' ondblclick="rbdAlternar(\'' + n.id + '\',event)"' : '') + '>');
     o.push('<rect x="' + x + '" y="' + y + '" width="' + n._L.w + '" height="' + n._L.h + '" rx="10" class="rbd-frame ' +
       (isPar ? 'par' : 'ser') + (sel ? ' sel' : '') + '"/>');
-    o.push('<text x="' + (x + 10) + '" y="' + (y + 17) + '" class="rbd-glbl ' + (isPar ? 'par' : 'ser') + (n.nome ? ' nomeado' : '') + '">' + (n.nome ? '▾ ' : '') + esc(n._L.lbl) + '</text>');
+    o.push('<text x="' + (x + 10) + '" y="' + (y + 17) + '" class="rbd-glbl ' + (isPar ? 'par' : 'ser') + (n.nome ? ' nomeado' : '') + '">' +  + esc(n._L.lbl) + '</text>');
     o.push('<title>' + (n.nome ? esc(n.nome) + ' — duplo clique para recolher' : isPar ? 'Clique para selecionar o grupo paralelo' : 'Clique para selecionar a série inteira') + '</title></g>');
   }
   var my = y + n._L.m;
@@ -3861,8 +4369,8 @@ function rbdDrawFechado(n, x, y, o, ctx) {
   o.push('<rect x="' + (x + 4) + '" y="' + (y + 4) + '" width="' + RB.bw + '" height="' + RB.bh + '" rx="8" class="rbd-box rbd-stack"/>');
   o.push('<rect x="' + x + '" y="' + y + '" width="' + RB.bw + '" height="' + RB.bh + '" rx="8" class="rbd-box rbd-fechado' +
     (sel ? ' sel' : '') + (semDados ? ' nodata' : '') + '" style="stroke:' + (sel ? 'var(--accent)' : rbdCor(r)) + '"/>');
-  o.push('<text x="' + (x + 12) + '" y="' + (y + 20) + '" class="rbd-t-grp">▸ ' + esc(rbdCorte(n.nome, 19)) + '</text>');
-  o.push('<text x="' + (x + 12) + '" y="' + (y + 38) + '" class="rbd-t-sub">' + nb + ' bloco' + (nb === 1 ? '' : 's') + ' · ' + tipo + (semDados ? ' ⚠' : '') + '</text>');
+  o.push('<text x="' + (x + 12) + '" y="' + (y + 20) + '" class="rbd-t-grp">' + esc(rbdCorte(n.nome, 19)) + '</text>');
+  o.push('<text x="' + (x + 12) + '" y="' + (y + 38) + '" class="rbd-t-sub">' + nb + ' bloco' + (nb === 1 ? '' : 's') + (isPar ? ' · ' + tipo : '') + (semDados ? ' · sem dados' : '') + '</text>');
   o.push('<text x="' + (x + 12) + '" y="' + (y + 55) + '" class="rbd-t-r" style="fill:' + rbdCor(r) + '">R(' + ctx.t + 'h) = ' + rbdPct(r) + '</text>');
   o.push('<text x="' + (x + 12) + '" y="' + (y + 72) + '" class="rbd-t-sub">A = ' + rbdPct(a, 2) + '</text>');
   o.push('<title>' + esc(n.nome) + ' (grupo recolhido)\nDuplo clique para abrir</title></g>');
@@ -3870,7 +4378,7 @@ function rbdDrawFechado(n, x, y, o, ctx) {
 
 function rbdDrawItem(n, x, y, o, ctx) {
   var p = ctx.pm[n.id], r = weibR(p, ctx.t), sel = !!ctx.sel[n.id];
-  var tag = p.src === 'manual' ? ' ✎' : p.src === 'padrao' ? ' ⚠' : '';
+  var tag = p.src === 'manual' ? ' (manual)' : p.src === 'padrao' ? ' (padrão)' : '';
   var dup = ctx.dup[n.ref] > 1;
   o.push('<g class="rbd-node" onclick="rbdClick(event,\'' + n.id + '\')">');
   o.push('<rect x="' + x + '" y="' + y + '" width="' + RB.bw + '" height="' + RB.bh + '" rx="8" class="rbd-box' +
@@ -3909,11 +4417,11 @@ function rbdSyncControls() {
   var hint = document.getElementById('rbd-hint');
   if (hint) {
     var novo = (document.getElementById('rbd-item-picker') || {}).value || 'o ativo escolhido';
-    if (vazio) hint.innerHTML = 'Escolha um ativo e clique <b>→ Em série</b> para colocar o primeiro bloco entre a ENTRADA e a SAÍDA.';
-    else if (temSel && sel.multi) hint.innerHTML = 'Trecho selecionado: <b>' + sel.nodes.length + ' elementos em série</b>. <b>⇅ Em paralelo</b> cria um caminho alternativo a esse trecho inteiro com <b>' + esc(novo) + '</b>.';
-    else if (!temSel) hint.innerHTML = 'Nada selecionado: <b>→ Em série</b> coloca <b>' + esc(novo) + '</b> no fim da linha. Clique num bloco ou na moldura de um grupo para inserir ao lado dele; <b>Shift+clique</b> num segundo bloco da mesma linha seleciona o trecho entre eles.';
-    else hint.innerHTML = 'Selecionado: <b>' + esc(rbdNomeNo(sel.node)) + '</b>. <b>→ / ← Em série</b>: <b>' + esc(novo) +
-      '</b> entra no mesmo caminho (os dois precisam funcionar). <b>⇅ Em paralelo</b>: abre um caminho alternativo (basta um funcionar).';
+    if (vazio) hint.innerHTML = 'Escolha um ativo e clique <b>Em série</b> para colocar o primeiro bloco entre a ENTRADA e a SAÍDA.';
+    else if (temSel && sel.multi) hint.innerHTML = 'Trecho selecionado: <b>' + sel.nodes.length + ' elementos em série</b>. <b>Em paralelo</b> cria um caminho alternativo a esse trecho inteiro com <b>' + esc(novo) + '</b>.';
+    else if (!temSel) hint.innerHTML = 'Nada selecionado: <b>Em série</b> coloca <b>' + esc(novo) + '</b> no fim da linha. Clique num bloco ou na moldura de um grupo para inserir ao lado dele; <b>Shift+clique</b> num segundo bloco da mesma linha seleciona o trecho entre eles.';
+    else hint.innerHTML = 'Selecionado: <b>' + esc(rbdNomeNo(sel.node)) + '</b>. <b>Em série / Série antes</b>: <b>' + esc(novo) +
+      '</b> entra no mesmo caminho (os dois precisam funcionar). <b>Em paralelo</b>: abre um caminho alternativo (basta um funcionar).';
   }
 }
 
@@ -3924,7 +4432,7 @@ function renderRbd() {
   rbdSyncControls();
 
   if (!root.c.length) {
-    area.innerHTML = '<div class="rbd-empty">Diagrama vazio.<br>Comece escolhendo um ativo e clicando em <b>→ Em série</b>.</div>';
+    area.innerHTML = '<div class="rbd-empty">Diagrama vazio.<br>Comece escolhendo um ativo e clicando em <b>Em série</b>.</div>';
     renderRbdInspector(null);
     renderRbdKpi();
     return;
@@ -3990,8 +4498,8 @@ function renderRbdInspector(ctx) {
   if (ctx && sel && sel.multi) {
     var rr = sel.nodes.map(function(nd) { return rbdR(ctx.t, ctx.pm, nd); });
     var prod = rr.reduce(function(a, b) { return a * b; }, 1);
-    box.innerHTML = '<div class="rbd-insp-title">→ Trecho de ' + sel.nodes.length + ' elementos em série</div>' +
-      '<div class="rbd-insp-txt">Todos precisam funcionar. Use <b>⇅ Em paralelo</b> para dar a esse trecho um caminho alternativo, ou <b>🗑 Remover</b> para apagar o trecho.</div>' +
+    box.innerHTML = '<div class="rbd-insp-title">Trecho de ' + sel.nodes.length + ' elementos em série</div>' +
+      '<div class="rbd-insp-txt">Todos precisam funcionar. Use <b>Em paralelo</b> para dar a esse trecho um caminho alternativo, ou <b>Remover</b> para apagar o trecho.</div>' +
       '<div class="rbd-formula">R = ' + rr.map(function(v) { return v.toFixed(4); }).join(' × ') + ' = ' + prod.toFixed(4) + '</div>';
     return;
   }
@@ -4011,7 +4519,7 @@ function renderRbdInspector(ctx) {
     var bi = rbdBirnbaum(t, pm).filter(function(b) { return b.node === n; })[0];
     var fonte = p.src === 'historico' ? 'Histórico (' + p.n + ' falhas)' : p.src === 'manual' ? 'Informado manualmente' :
       '<span style="color:var(--amber)">Padrão — histórico insuficiente (' + p.n + ' falha' + (p.n === 1 ? '' : 's') + ')</span>';
-    h += '<div class="rbd-insp-title">⚙️ ' + esc(n.ref) + '</div>';
+    h += '<div class="rbd-insp-title">' + esc(n.ref) + '</div>';
     h += '<table class="rbd-insp-tb">' +
       '<tr><td>Fonte do MTBF</td><td>' + fonte + '</td></tr>' +
       '<tr><td>MTBF</td><td>' + rbdNum(p.mtbf) + ' h</td></tr>' +
@@ -4032,11 +4540,11 @@ function renderRbdInspector(ctx) {
   } else {
     var rs = n.c.map(function(ch) { return rbdR(t, pm, ch); });
     var rg = rbdR(t, pm, n), ag = rbdA(pm, n), isPar = n.t === 'par';
-    h += '<div class="rbd-insp-title">' + (isPar ? '⇅ ' : '→ ') + esc(rbdNomeNo(n)) + '</div>';
+    h += '<div class="rbd-insp-title">' + esc(rbdNomeNo(n)) + '</div>';
     h += '<div class="rbd-insp-sub" style="margin-top:0">Nome do grupo</div><div style="display:flex;gap:6px;margin-bottom:8px">' +
       '<input id="rbd-nome-grupo" value="' + escA(n.nome || '') + '" placeholder="sem nome" style="flex:1" onkeydown="if(event.key===\'Enter\')rbdRenomear(\'' + n.id + '\',this.value)">' +
       '<button class="btn btn-sm" onclick="rbdRenomear(\'' + n.id + '\',document.getElementById(\'rbd-nome-grupo\').value)">OK</button></div>';
-    if (n.nome) h += '<button class="btn btn-sm" style="width:100%;margin-bottom:8px" onclick="rbdAlternar(\'' + n.id + '\')">' + (n.fechado ? '▸ Abrir grupo' : '▾ Recolher grupo') + '</button>';
+    if (n.nome) h += '<button class="btn btn-sm" style="width:100%;margin-bottom:8px" onclick="rbdAlternar(\'' + n.id + '\')">' + (n.fechado ? 'Abrir grupo' : 'Recolher grupo') + '</button>';
     h += '<div class="rbd-insp-txt">' + (isPar ? ((n.k || 1) === 1 ? 'Basta <b>um</b> ramo funcionar.' : 'Pelo menos <b>' + n.k + '</b> dos ' + n.c.length + ' ramos precisam funcionar.') :
       'Todos os elementos precisam funcionar.') + '</div>';
     h += '<table class="rbd-insp-tb">';
@@ -4086,11 +4594,11 @@ function renderRbdKpi(ctx) {
 
   if (semDados.length || dups.length || orfaos.length) {
     html += '<div class="rbd-warn">';
-    if (orfaos.length) html += '⚠ Bloco(s) com ativo que não existe mais na Estrutura de Ativos (excluído ou renomeado): ' +
-      orfaos.map(function(k) { return '<b>' + esc(k) + '</b>'; }).join(', ') + '. Use ⇄ Trocar ativo ou 🗑 Remover.<br>';
-    if (semDados.length) html += '⚠ ' + semDados.length + ' bloco(s) sem histórico suficiente (menos de 2 falhas) estão usando o MTBF padrão de ' +
+    if (orfaos.length) html += 'Bloco(s) com ativo que não existe mais na Estrutura de Ativos (excluído ou renomeado): ' +
+      orfaos.map(function(k) { return '<b>' + esc(k) + '</b>'; }).join(', ') + '. Use Trocar ativo ou Remover.<br>';
+    if (semDados.length) html += semDados.length + ' bloco(s) sem histórico suficiente (menos de 2 falhas) estão usando o MTBF padrão de ' +
       rbdNum(getCfg().mtbfPadrao) + ' h: ' + semDados.map(function(L) { return '<b>' + esc(L.ref) + '</b>'; }).join(', ') + '. Informe um MTBF manual (catálogo/fabricante) para melhorar o cálculo.<br>';
-    if (dups.length) html += '⚠ Ativo(s) repetido(s) no diagrama: ' + dups.map(function(k) { return '<b>' + esc(k) + '</b>'; }).join(', ') +
+    if (dups.length) html += 'Ativo(s) repetido(s) no diagrama: ' + dups.map(function(k) { return '<b>' + esc(k) + '</b>'; }).join(', ') +
       '. O cálculo trata cada bloco como independente; se for o mesmo equipamento físico, o resultado fica otimista.';
     html += '</div>';
   }
@@ -4377,7 +4885,7 @@ function renderConfiab() {
   if (kpi) kpi.innerHTML = h;
 
   var notas = document.getElementById('conf-notas');
-  if (notas) notas.innerHTML = cen.notas.length ? '<div class="rbd-warn" style="margin-top:0">⚠ ' + cen.notas.join('<br>⚠ ') + '</div>' : '';
+  if (notas) notas.innerHTML = cen.notas.length ? '<div class="rbd-warn" style="margin-top:0">' + cen.notas.join('<br>') + '</div>' : '';
 
   // Curvas
   var steps = 60, labels = [], dRa = [], dRs = [], dFa = [], dCa = [], dCs = [], tb = '';
@@ -4492,6 +5000,7 @@ function loadContexto() {
 }
 
 function salvarContexto() {
+  if (bloqueado(true)) return;
   // Salva dados gerais
   Object.keys(CTX_GERAIS).forEach(function(id) {
     var el = document.getElementById(id);
@@ -4516,12 +5025,13 @@ function renderEquipe() {
   if (!S.contexto.equipe) S.contexto.equipe = [];
   var html = '';
   S.contexto.equipe.forEach(function(m, i) {
-    html += '<tr><td>' + esc(m.nome) + '</td><td>' + esc(m.funcao) + '</td><td><button class="btn btn-sm btn-danger" onclick="delEquipe(' + i + ')">🗑</button></td></tr>';
+    html += '<tr><td>' + esc(m.nome) + '</td><td>' + esc(m.funcao) + '</td><td><button class="btn btn-sm btn-danger" onclick="delEquipe(' + i + ')" title="Apagar">' + ic('excluir') + '</button></td></tr>';
   });
   tb.innerHTML = html || '<tr><td colspan="3" style="text-align:center;padding:8px;">Nenhum membro.</td></tr>';
 }
 
 function addEquipe() {
+  if (bloqueado()) return;
   var nome = document.getElementById('eq-nome');
   var funcao = document.getElementById('eq-funcao');
   if (!nome || !nome.value.trim()) { alert('Nome obrigatorio.'); return; }
@@ -4534,6 +5044,7 @@ function addEquipe() {
 }
 
 function delEquipe(idx) {
+  if (bloqueado()) return;
   S.contexto.equipe.splice(idx, 1);
   renderEquipe();
   autoSave();
@@ -4607,7 +5118,8 @@ function openHistoricoModal(idx) {
     '<div class="form-grid">' +
     '<div class="form-group"><label>Sistema</label><select id="h-sis" onchange="histOnSisChange()">' + optsSis + '</select></div>' +
     '<div class="form-group"><label>Subsistema</label><select id="h-sub" onchange="histOnSubChange()">' + optsSub + '</select></div>' +
-    '<div class="form-group"><label>Ativo</label><select id="h-item">' + optsItem + '</select></div>' +
+    '<div class="form-group"><label>Ativo</label><select id="h-item" onchange="histOnItemChange()">' + optsItem + '</select></div>' +
+    '<div class="form-group" style="grid-column:1/-1"><label>Modo de falha (FMEA) <span style="font-size:.75em;color:var(--text3)">opcional — permite verificar se a tarefa adotada funcionou</span></label><select id="h-fmea">' + histOpcoesFmea(h.item, h.fmea_id) + '</select></div>' +
     '<div class="form-group"><label>Data da Falha</label><input id="h-dt" type="date" value="' + (h.dt || '') + '"></div>' +
     '<div class="form-group"><label>MTTR (h)</label><input id="h-ttr" type="number" step="0.5" value="' + (h.ttr || '') + '"></div>' +
     '<div class="form-group"><label>Custo (R$)</label><input id="h-custo" type="number" step="0.01" value="' + (h.custo || '') + '" placeholder="0.00"></div>' +
@@ -4621,6 +5133,18 @@ function openHistoricoModal(idx) {
 
   document.getElementById('modal-item-content').innerHTML = html;
   document.getElementById('modal-item').classList.add('open');
+}
+
+function histOpcoesFmea(item, sel) {
+  var o = '<option value="">— não informado —</option>';
+  S.fmea.filter(function(f) { return item && f.item === item; }).forEach(function(f) {
+    o += '<option value="' + escA(f.id) + '"' + (f.id === sel ? ' selected' : '') + '>' + esc(f.modo) + (f.dd ? ' [' + esc(f.dd) + ']' : '') + '</option>';
+  });
+  return o;
+}
+function histOnItemChange() {
+  var e = document.getElementById('h-fmea'), it = document.getElementById('h-item');
+  if (e && it) e.innerHTML = histOpcoesFmea(it.value, '');
 }
 
 // Cascata: Sistema → Subsistema
@@ -4659,6 +5183,7 @@ function histOnSubChange() {
     opts += '<option value="' + esc(s.item) + '">' + esc(s.item) + '</option>';
   });
   selItem.innerHTML = opts;
+  histOnItemChange();
 }
 
 function saveHistorico(idx) {
@@ -4669,6 +5194,13 @@ function saveHistorico(idx) {
 
   if (!item) { alert('Selecione um ativo.'); return; }
   if (!dt) { alert('Data obrigatoria.'); return; }
+  if (estudoTravado()) {
+    var cc = ultimaConclusao(), lim = corteMs(cc);
+    if (Date.parse(dt) <= lim || (idx !== undefined && Date.parse(S.historico[idx].dt) <= lim)) {
+      alert('Estudo concluído com data de corte ' + dataBR(cc.corte) + '. Falhas até essa data fazem parte da linha de base e não podem ser lançadas ou alteradas.\n\nLance apenas falhas posteriores ao corte, ou reabra o estudo.');
+      return;
+    }
+  }
 
   // Busca nomes
   var sisRef = getAllSistemasRef().find(function(r) { return r.codSis === codSis; });
@@ -4687,6 +5219,8 @@ function saveHistorico(idx) {
     causa: document.getElementById('h-causa').value,
     desc: document.getElementById('h-desc').value
   };
+  var fsel = document.getElementById('h-fmea');
+  if (fsel && fsel.value) obj.fmea_id = fsel.value;
 
   if (idx !== undefined) S.historico[idx] = obj; else S.historico.push(obj);
   closeModal('modal-item');
@@ -4695,6 +5229,10 @@ function saveHistorico(idx) {
 }
 
 function delHistorico(idx) {
+  if (estudoTravado() && Date.parse(S.historico[idx].dt) <= corteMs(ultimaConclusao())) {
+    alert('Esta falha faz parte da linha de base do estudo concluído e não pode ser removida. Reabra o estudo para alterá-la.');
+    return;
+  }
   if (confirm('Remover?')) {
     S.historico.splice(idx, 1);
     renderHistorico();
@@ -4722,8 +5260,8 @@ function renderHistorico() {
       '<td>' + esc(h.causa) + '</td>' +
       '<td style="font-size:11px">' + esc(h.desc) + '</td>' +
       '<td>' +
-      '<button class="btn btn-sm" onclick="openHistoricoModal(' + i + ')">✏️</button> ' +
-      '<button class="btn btn-sm btn-danger" onclick="delHistorico(' + i + ')">🗑</button>' +
+      '<button class="btn btn-sm" onclick="openHistoricoModal(' + i + ')" title="Editar">' + ic('editar') + '</button> ' +
+      '<button class="btn btn-sm btn-danger" onclick="delHistorico(' + i + ')" title="Apagar">' + ic('excluir') + '</button>' +
       '</td>' +
       '</tr>';
   });
@@ -4739,6 +5277,7 @@ function renderHistorico() {
 // SPARE PARTS — Cascata + Peças + Árvore
 // ============================================================
 function openSpareModal(idx) {
+  if (bloqueado()) return;
   var sp = idx !== undefined ? S.spare[idx] : {};
 
   var allSis = getAllSistemasRef();
@@ -4818,6 +5357,7 @@ function spareOnSubChange() {
 }
 
 function saveSpare(idx) {
+  if (bloqueado()) return;
   var codSis = document.getElementById('sp-sis').value;
   var codSub = document.getElementById('sp-sub').value;
   var item = document.getElementById('sp-item').value;
@@ -4853,6 +5393,7 @@ function saveSpare(idx) {
 }
 
 function delSpare(idx) {
+  if (bloqueado()) return;
   if (confirm('Remover peca?')) {
     S.spare.splice(idx, 1);
     renderSpare();
@@ -4915,8 +5456,8 @@ function renderSpare() {
         '<td class="num">' + (+sp.valor > 0 ? spBRL(sp.valor) : '—') + '</td>' +
         '<td class="num sp-tot">' + (l.total > 0 ? spBRL(l.total) : '—') + '</td>' +
         '<td><div class="sp-obs" title="' + escA(sp.obs || '') + '" onclick="spObs(this)">' + esc(sp.obs || '') + '</div></td>' +
-        '<td class="sp-acoes"><button class="btn btn-sm" onclick="openSpareModal(' + l.i + ')" title="Editar">✏️</button> ' +
-        '<button class="btn btn-sm btn-danger" onclick="delSpare(' + l.i + ')" title="Apagar">🗑</button></td></tr>';
+        '<td class="sp-acoes"><button class="btn btn-sm" onclick="openSpareModal(' + l.i + ')" title="Editar">' + ic('editar') + '</button> ' +
+        '<button class="btn btn-sm btn-danger" onclick="delSpare(' + l.i + ')" title="Apagar">' + ic('excluir') + '</button></td></tr>';
     });
   });
   tb.innerHTML = html || '<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--text3)">' +
@@ -4953,12 +5494,12 @@ function renderSpareTree() {
   Object.keys(tree).forEach(function(sisKey) {
     var sys = tree[sisKey];
     html += '<div style="margin-bottom:16px;padding:12px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);">';
-    html += '<div style="font-weight:700;color:var(--accent);margin-bottom:8px;">🔹 ' + esc(sys.nome) + ' <code style="font-size:10px;color:var(--text3)">' + sisKey + '</code></div>';
+    html += '<div style="font-weight:700;color:var(--accent);margin-bottom:8px;">' + esc(sys.nome) + ' <code style="font-size:10px;color:var(--text3)">' + sisKey + '</code></div>';
 
     Object.keys(sys.subs).forEach(function(subKey) {
       var sub = sys.subs[subKey];
       html += '<div style="margin-left:16px;margin-bottom:8px;">';
-      html += '<div style="font-weight:600;color:var(--amber);margin-bottom:4px;">🔸 ' + esc(sub.nome) + ' <code style="font-size:10px;color:var(--text3)">' + subKey + '</code></div>';
+      html += '<div style="font-weight:600;color:var(--amber);margin-bottom:4px;">' + esc(sub.nome) + ' <code style="font-size:10px;color:var(--text3)">' + subKey + '</code></div>';
 
       Object.keys(sub.items).forEach(function(itemKey) {
         var it = sub.items[itemKey];
@@ -4966,11 +5507,11 @@ function renderSpareTree() {
         it.pecas.forEach(function(p) { totalItem += (p.qtd || 0) * (p.valor || 0); });
 
         html += '<div style="margin-left:16px;margin-bottom:6px;padding:8px;background:var(--bg4);border-radius:6px;border:1px solid var(--border2);">';
-        html += '<div style="font-weight:600;color:var(--teal);margin-bottom:6px;">⚙️ ' + esc(it.nome) + ' <span style="font-size:10px;color:var(--text3);font-weight:400;">(' + it.pecas.length + ' peca' + (it.pecas.length > 1 ? 's' : '') + ' | R$ ' + totalItem.toFixed(2) + ')</span></div>';
+        html += '<div style="font-weight:600;color:var(--teal);margin-bottom:6px;">' + esc(it.nome) + ' <span style="font-size:10px;color:var(--text3);font-weight:400;">(' + it.pecas.length + ' peca' + (it.pecas.length > 1 ? 's' : '') + ' | R$ ' + totalItem.toFixed(2) + ')</span></div>';
 
         it.pecas.forEach(function(p) {
           html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 8px;font-size:11px;border-bottom:1px solid var(--border);">';
-          html += '<span>🔩 ' + esc(p.peca) + '</span>';
+          html += '<span>' + esc(p.peca) + '</span>';
           html += '<span style="color:var(--text3);">Qtd: ' + p.qtd + ' × R$ ' + (p.valor || 0).toFixed(2) + ' = <strong style="color:var(--amber)">R$ ' + ((p.qtd || 0) * (p.valor || 0)).toFixed(2) + '</strong></span>';
           html += '</div>';
         });
@@ -5266,6 +5807,9 @@ function generatePDF() {
     html += '<tr><td>' + esc(a.resp) + '</td><td>' + esc(a.acao) + '</td><td style="font-weight:600;' + corStatus + '">' + a.status + '</td><td>' + a.dt + '</td><td>' + a.dias + '</td></tr>';
   });
   html += '</tbody></table></div>';
+
+  // ===================== 9. CONCLUSÃO =====================
+  try { html += conclusaoPdf(); } catch (e) { console.error('[pdf conclusão]', e); }
 
   // ===================== RODAPÉ =====================
   html += '<div style="margin-top:40px;padding-top:10px;border-top:1px solid #ddd;font-size:9px;color:#aaa;text-align:center;">';
