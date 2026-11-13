@@ -195,6 +195,7 @@ textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
 
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
 .overlay.open { display: flex !important; }
+.tag-sap { font-family: var(--mono); font-size: 10.5px; color: var(--text3); margin-top: 2px; }
 .ic { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: -2px; flex-shrink: 0; }
 .nav-icon .ic { width: 16px; height: 16px; opacity: .85; }
 .btn .ic { width: 14px; height: 14px; }
@@ -919,6 +920,64 @@ window.addEventListener('load', function() {
 function jsAttr(t) { return esc(String(t == null ? '' : t).replace(/\\/g, '\\\\').replace(/'/g, "\\'")); }
 var ICONES = {"dash": "<rect width=\"7\" height=\"9\" x=\"3\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"5\" x=\"14\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"9\" x=\"14\" y=\"12\" rx=\"1\"/><rect width=\"7\" height=\"5\" x=\"3\" y=\"16\" rx=\"1\"/>", "acoes": "<path d=\"m3 17 2 2 4-4\"/><path d=\"m3 7 2 2 4-4\"/><path d=\"M13 6h8\"/><path d=\"M13 12h8\"/><path d=\"M13 18h8\"/>", "contexto": "<rect width=\"8\" height=\"4\" x=\"8\" y=\"2\" rx=\"1\"/><path d=\"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2\"/><path d=\"M12 11h4\"/><path d=\"M12 16h4\"/><path d=\"M8 11h.01\"/><path d=\"M8 16h.01\"/>", "sistemas": "<rect x=\"16\" y=\"16\" width=\"6\" height=\"6\" rx=\"1\"/><rect x=\"2\" y=\"16\" width=\"6\" height=\"6\" rx=\"1\"/><rect x=\"9\" y=\"2\" width=\"6\" height=\"6\" rx=\"1\"/><path d=\"M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3\"/><path d=\"M12 12V8\"/>", "rbd": "<rect width=\"8\" height=\"8\" x=\"3\" y=\"3\" rx=\"2\"/><path d=\"M7 11v4a2 2 0 0 0 2 2h4\"/><rect width=\"8\" height=\"8\" x=\"13\" y=\"13\" rx=\"2\"/>", "fmea": "<path d=\"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3\"/><path d=\"M12 9v4\"/><path d=\"M12 17h.01\"/>", "dd": "<line x1=\"6\" x2=\"6\" y1=\"3\" y2=\"15\"/><circle cx=\"18\" cy=\"6\" r=\"3\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><path d=\"M18 9a9 9 0 0 1-9 9\"/>", "historico": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M16 2v4\"/><path d=\"M8 2v4\"/><path d=\"M3 10h18\"/>", "confiab": "<path d=\"M22 12h-4l-3 9L9 3l-3 9H2\"/>", "spare": "<path d=\"m7.5 4.27 9 5.15\"/><path d=\"M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z\"/><path d=\"m3.3 7 8.7 5 8.7-5\"/><path d=\"M12 22V12\"/>", "conclusao": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"m9 12 2 2 4-4\"/>", "editar": "<path d=\"M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z\"/>", "excluir": "<path d=\"M3 6h18\"/><path d=\"M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6\"/><path d=\"M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2\"/>", "mover": "<path d=\"m18 8 4 4-4 4\"/><path d=\"m6 8-4 4 4 4\"/><path d=\"M2 12h20\"/>", "historia": "<path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/><path d=\"M12 7v5l4 2\"/>", "refazer": "<path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/>", "esq": "<path d=\"m15 18-6-6 6-6\"/>", "dir": "<path d=\"m9 18 6-6-6-6\"/>", "abrir": "<path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"/>"};
 function ic(n) { return '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">' + (ICONES[n] || '') + '</svg>'; }
+// ============================================================
+// IDENTIDADE DOS ATIVOS — registros apontam para o ativo por ID (ativo_id).
+// O nome (item) continua gravado só para leitura e relatórios.
+// ============================================================
+function ativoPorId(id) { return (S.sistemas || []).filter(function(s) { return s && s.id === id; })[0] || null; }
+function nomeAtivo(k) { var a = ativoPorId(k); return a ? a.item : k; }
+// O registro r pertence ao ativo k (k = ID; aceita nome por compatibilidade)
+function doAtivo(r, k) {
+  if (!r) return false;
+  var a = ativoPorId(k);
+  if (!a) return r.item === k;
+  return r.ativo_id ? r.ativo_id === k : r.item === a.item;
+}
+function resolverAtivo(nome, codSub) {
+  var c = (S.sistemas || []).filter(function(s) { return s && s.item === nome; });
+  if (codSub) { var m = c.filter(function(s) { return s.codSub === codSub; }); if (m.length) c = m; }
+  return c.length ? c[0].id : '';
+}
+function rotuloAtivo(s) {
+  var dup = (S.sistemas || []).filter(function(x) { return x && x.item === s.item; }).length > 1;
+  return s.item + (s.tag ? ' [' + s.tag + ']' : '') + (dup ? ' — ' + s.sub : '');
+}
+// Migração: arquivos antigos (ligados por nome) ganham ativo_id. Roda ao abrir.
+function migrarIds() {
+  if (!S || !Array.isArray(S.sistemas)) return;
+  var vistos = {};
+  S.sistemas.forEach(function(s) { if (!s.id || vistos[s.id]) s.id = uid(); vistos[s.id] = true; });
+  function liga(lst) {
+    (lst || []).forEach(function(r) {
+      if (!r) return;
+      var a = r.ativo_id && ativoPorId(r.ativo_id);
+      if (!a) { r.ativo_id = resolverAtivo(r.item, r.codSub); a = ativoPorId(r.ativo_id); }
+      if (a) r.item = a.item;
+    });
+  }
+  liga(S.fmea); liga(S.historico); liga(S.spare);
+  var fm = {}; (S.fmea || []).forEach(function(f) { fm[f.id] = f; });
+  (S.dd_results || []).forEach(function(r) {
+    if (!r) return;
+    var f = fm[r.fmea_id];
+    if (f && f.ativo_id) { r.ativo_id = f.ativo_id; r.item = f.item; }
+    else if (!r.ativo_id) r.ativo_id = resolverAtivo(r.item);
+  });
+  // RBD: blocos com o mesmo nome recebem ativos diferentes na ordem em que aparecem
+  var usados = {};
+  rbdLeaves(rbdTree()).forEach(function(L) {
+    var a = L.aid && ativoPorId(L.aid);
+    if (!a) {
+      var c = S.sistemas.filter(function(s) { return s.item === L.ref; });
+      var k = usados[L.ref] || 0;
+      a = c[Math.min(k, c.length - 1)] || null;
+      usados[L.ref] = k + 1;
+      if (a) L.aid = a.id;
+    }
+    if (a) L.ref = a.item;
+  });
+}
+
 function acaoConcluida(a) { return /^conclu/i.test(String((a && a.status) || '').trim()); }
 function uid() { return Math.random().toString(36).substring(2,9).toUpperCase(); }
 function esc(t) { return String(t || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
@@ -1066,7 +1125,7 @@ function weibullEta(all, r, beta) {
 
 function modeloAtivo(nome) {
   var cfg = getCfg();
-  var datas = (S.historico || []).filter(function(h) { return h && h.item === nome; })
+  var datas = (S.historico || []).filter(function(h) { return doAtivo(h, nome); })
     .map(function(h) { return new Date(h.dt).getTime(); })
     .filter(function(t) { return !isNaN(t); })
     .sort(function(a, b) { return a - b; });
@@ -1105,14 +1164,14 @@ function calcularMTBFreal(nomeAtivo) {
 // Parâmetros completos do ativo, com fallback explícito (manual > histórico > padrão)
 function paramsAtivo(nome, mtbfManual) {
   var m = modeloAtivo(nome);
-  var hs = (S.historico || []).filter(function(h) { return h && h.item === nome; });
+  var hs = (S.historico || []).filter(function(h) { return doAtivo(h, nome); });
   var ttrs = hs.map(function(h) { return +h.ttr; }).filter(function(v) { return v > 0; });
   var custos = hs.map(function(h) { return +h.custo; }).filter(function(v) { return v > 0; });
   var p;
   if (mtbfManual > 0) p = { src: 'manual', tipo: 'exp', beta: 1, eta: +mtbfManual };
   else if (m.ok) p = { src: 'historico', tipo: m.tipo, beta: m.beta, eta: m.eta, betaLo: m.betaLo, betaHi: m.betaHi };
   else p = { src: 'padrao', tipo: 'exp', beta: 1, eta: getCfg().mtbfPadrao };
-  p.nome = nome;
+  p.nome = nomeAtivo(nome); p.chave = nome;
   p.n = m.n; p.nInt = m.nInt || 0;
   p.mtbf = p.eta * gammaFn(1 + 1 / p.beta);
   p.mttr = ttrs.length ? ttrs.reduce(function(a, b) { return a + b; }, 0) / ttrs.length : 0;
@@ -1159,7 +1218,7 @@ function bootApp() {
   
   document.getElementById('session-label').textContent = S.meta.nome || 'Nenhuma sessão ativa';
   
-  [loadContexto,atualizarNivel0Display, renderSistemas,renderSistemas, carregarContexto, renderFmea, renderHistorico, renderAcoes, renderSpare, renderDD, renderRbd, renderDash, renderConfiab, updateProgress, aplicarTrava, renderConclusao].forEach(fn => {
+  [loadContexto,atualizarNivel0Display, migrarIds, renderSistemas, carregarContexto, renderFmea, renderHistorico, renderAcoes, renderSpare, renderDD, renderRbd, renderDash, renderConfiab, updateProgress, aplicarTrava, renderConclusao].forEach(fn => {
     try { fn(); } catch(e) { console.error('[boot]', fn.name, e); }
   });
 }
@@ -1503,11 +1562,11 @@ function renderDash() {
   var ativosComDD = 0;
   var ativosComRBD = 0;
   S.sistemas.forEach(function(s) {
-    if (seen[s.item]) return;
-    seen[s.item] = true;
-    var temFmea = S.fmea.some(function(f) { return f.item === s.item; });
-    var temDD = S.dd_results.some(function(d) { return d.item === s.item; });
-    var temRBD = rbdLeaves(rbdTree()).some(function(L) { return L.ref === s.item; });
+    if (seen[s.id]) return;
+    seen[s.id] = true;
+    var temFmea = S.fmea.some(function(f) { return doAtivo(f, s.id); });
+    var temDD = S.dd_results.some(function(d) { return doAtivo(d, s.id); });
+    var temRBD = rbdLeaves(rbdTree()).some(function(L) { return L.aid ? L.aid === s.id : L.ref === s.item; });
     if (temFmea) ativosComFmea++;
     if (temDD) ativosComDD++;
     if (temRBD) ativosComRBD++;
@@ -1864,6 +1923,7 @@ function openNovoItemModal(codSisPreset, codSubPreset) {
     '<div class="form-grid">' +
     '<div class="form-group" style="grid-column:1/-1"><label>Subsistema (pai)</label><select id="ni-sub">' + opts + '</select></div>' +
     '<div class="form-group" style="grid-column:1/-1"><label>Nome do Ativo</label><input id="ni-item" placeholder="Ex: Motor Eletrico 75kW"></div>' +
+    '<div class="form-group" style="grid-column:1/-1"><label>TAG / código SAP <span style="font-size:.8em;color:var(--text3)">(equipamento ou local de instalação; usado para importar falhas)</span></label><input id="ni-tag" placeholder="Ex: 10091025"></div>' +
     '<div class="form-group" style="grid-column:1/-1"><label>Funcao Primaria</label><textarea id="ni-funcao" rows="1" class="autogrow" placeholder="Ex: Converter energia eletrica em mecanica"></textarea></div>' +
     '</div>' +
     '<div class="form-group" style="grid-column:1/-1"><label>Funcoes Secundarias (opcional)</label><textarea id="ni-funcao2" rows="1" class="autogrow" placeholder="Ex: Dissipar calor; Sinalizar status"></textarea></div>' +
@@ -1898,6 +1958,8 @@ function salvarNovoItem() {
     funcao: funcao,
     funcao2: document.getElementById('ni-funcao2').value.trim()
 });
+  var tagNovo = (document.getElementById('ni-tag') || {}).value;
+  if (tagNovo && tagNovo.trim()) S.sistemas[S.sistemas.length - 1].tag = tagNovo.trim();
   closeModal('modal-item');
   renderSistemas();
   autoSave();
@@ -1996,17 +2058,9 @@ function gerarTextoContexto() {
 function delAtivo(idx) {
   if (bloqueado()) return;
   var ativo = S.sistemas[idx];
-  if (!confirm('Apagar ativo "' + ativo.item + '"?')) return;
-
+  if (!confirm('Apagar ativo "' + ativo.item + '" e os registros ligados a ele (FMEA, histórico, spare, RBD)?')) return;
   S.sistemas.splice(idx, 1);
-  var aindaExiste = S.sistemas.some(function(s) { return s.item === ativo.item; });
-  if (!aindaExiste) {
-    S.fmea = S.fmea.filter(function(f) { return f.item !== ativo.item; });
-    S.dd_results = S.dd_results.filter(function(d) { return d.item !== ativo.item; });
-    S.historico = S.historico.filter(function(h) { return h.item !== ativo.item; });
-    S.spare = S.spare.filter(function(sp) { return sp.item !== ativo.item; });
-  }
-  rbdRemoverAtivos([ativo.item]);
+  removerDadosDosAtivos([ativo.id]);
   renderSistemas();
   autoSave();
 }
@@ -2150,7 +2204,7 @@ function analiseEstrutura() {
   return { pecas: pecas, dups: dups, nomesDup: Object.keys(nomesDup), cont: cont };
 }
 var MSG_PECA = 'Parece uma peça, não um ativo. No RCM, ativo é o equipamento que cumpre uma função (motor, redutor, bomba, mancal). Peças entram como causa no FMEA e como item no Spare Parts.';
-var MSG_DUP = 'Nome repetido: FMEA, histórico e RBD são ligados pelo nome, então os dados de itens com o mesmo nome se misturam. Use um nome único (com posição ou TAG).';
+var MSG_DUP = 'Nome repetido: os dados não se misturam mais, mas nomes iguais confundem a leitura de relatórios e listas. Prefira um nome único (com posição ou TAG).';
 function badgesAtivo(s, an) {
   var h = '';
   if (pecaProvavel(s.item)) h += ' <span class="tag-aviso peca" title="' + escA(MSG_PECA) + '">parece peça</span>';
@@ -2171,7 +2225,7 @@ function renderAvisosEstrutura(an) {
   }
   if (an.dups.length) {
     h += (an.pecas.length ? '<div style="margin-top:10px"></div>' : '') +
-      '<b>' + an.nomesDup.length + ' nome(s) repetido(s)</b> em ' + an.dups.length + ' itens. FMEA, histórico e RBD são ligados pelo nome: os dados desses itens vão se misturar. Dê um nome único a cada um (com posição ou TAG).' +
+      '<b>' + an.nomesDup.length + ' nome(s) repetido(s)</b> em ' + an.dups.length + ' itens. Os dados de cada item ficam separados, mas nomes iguais confundem relatórios e listas. Prefira um nome único (com posição ou TAG).' +
       '<details style="margin-top:6px"><summary style="cursor:pointer">Ver quais</summary><div style="margin-top:4px;color:var(--text2)">' +
       an.nomesDup.map(esc).join('<br>') + '</div></details>';
   }
@@ -2182,7 +2236,7 @@ function renderAvisosEstrutura(an) {
 // ============================================================
 // NOVIDADES — aparece uma vez por versão ao abrir o app
 // ============================================================
-var NOVIDADES_VERSAO = '2026-11-13b';
+var NOVIDADES_VERSAO = '2026-11-13c';
 function abrirNovidades() {
   var ov = document.getElementById('novidades-overlay');
   if (!ov) {
@@ -2193,6 +2247,11 @@ function abrirNovidades() {
       '<div class="modal-title">Novidades desta atualização</div>' +
       '<div class="novidades">' +
       '<p style="color:var(--green)">Seus arquivos .json continuam abrindo normalmente — nada precisa ser feito.</p>' +
+      '<h4>Ativos com identidade própria</h4><ul>' +
+      '<li>FMEA, histórico, spare, Diagrama Decisional e RBD agora se ligam ao ativo por um <b>código interno</b>, não pelo nome. Dois ativos com o mesmo nome em subsistemas diferentes não misturam mais os dados.</li>' +
+      '<li>Renomear um ativo atualiza tudo o que é dele; apagar um ativo leva só os registros dele.</li>' +
+      '<li>Novo campo <b>TAG / código SAP</b> no cadastro e na edição do ativo. Ele vai ser usado para importar o histórico de falhas do SAP.</li>' +
+      '<li>Arquivos antigos são convertidos sozinhos ao abrir.</li></ul>' +
       '<h4>Conclusão do estudo</h4><ul>' +
       '<li>Nova página <b>Conclusão</b>: resumo do estudo, mudança de estratégia (antes × depois do DD) e projeção de confiabilidade.</li>' +
       '<li><b>Concluir estudo</b> congela a linha de base e bloqueia a edição. Continuam liberados: falhas novas, Plano de Ações e marcação de tarefas implantadas.</li>' +
@@ -2361,10 +2420,10 @@ function fotoLinhaBase(corteISO) {
     var custoRef = custos.length ? custos.reduce(function(a, b) { return a + b; }, 0) / custos.length : 0;
     var vistos = {}, ativos = [];
     S.sistemas.forEach(function(s) {
-      if (!s || !s.item || vistos[s.item]) return; vistos[s.item] = true;
-      var p = paramsAtivo(s.item), est = estrategiasAtivo(s.item), sim = simAtivo(p, est, getSimCfg(), custoRef);
+      if (!s || !s.id || vistos[s.id]) return; vistos[s.id] = true;
+      var p = paramsAtivo(s.id), est = estrategiasAtivo(s.id), sim = simAtivo(p, est, getSimCfg(), custoRef);
       var temBase = p.src === 'historico';
-      ativos.push({ nome: s.item, falhas: p.n, tipo: p.tipo, src: p.src, beta: p.beta, eta: p.eta, mtbf: p.mtbf, mttr: p.mttr, A: p.A,
+      ativos.push({ id: s.id, nome: s.item, falhas: p.n, tipo: p.tipo, src: p.src, beta: p.beta, eta: p.eta, mtbf: p.mtbf, mttr: p.mttr, A: p.A,
         taxa: temBase ? 1 / p.mtbf : null, taxaProj: temBase ? 1 / sim.mtbf : null,
         custoAno: sim.custoAtual * 8760, custoAnoProj: sim.custoSim * 8760, Aproj: sim.A, diretrizes: est.lista });
     });
@@ -2428,13 +2487,14 @@ function verificacao() {
   var v = { c: c, T1: T1, ativos: [], recorrencias: [], avisos: [] };
   var somaL0 = 0, somaLp = 0, nTot = 0;
   c.foto.ativos.forEach(function(a) {
-    var n1 = depois.filter(function(h) { return h.item === a.nome; }).length;
-    var dec = (S.dd_results || []).filter(function(r) { return r && r.item === a.nome; });
+    var chave = a.id && ativoPorId(a.id) ? a.id : a.nome;
+    var n1 = depois.filter(function(h) { return doAtivo(h, chave); }).length;
+    var dec = (S.dd_results || []).filter(function(r) { return doAtivo(r, chave); });
     var impl = dec.filter(function(r) { return r.implantada; }).length;
     var o = avaliarTaxa(a.taxa, a.taxaProj, n1, T1);
     if (o.st !== 'sembase' && dec.length && !impl) o.st = 'naoimpl';
     if (a.taxa > 0 && o.st !== 'naoimpl') { somaL0 += a.taxa; somaLp += a.taxaProj; nTot += n1; }
-    var ttr = depois.filter(function(h) { return h.item === a.nome; }).map(function(h) { return +h.ttr; }).filter(function(x) { return x > 0; });
+    var ttr = depois.filter(function(h) { return doAtivo(h, chave); }).map(function(h) { return +h.ttr; }).filter(function(x) { return x > 0; });
     v.ativos.push({ a: a, o: o, n1: n1, dec: dec.length, impl: impl, mttr1: ttr.length ? ttr.reduce(function(x, y) { return x + y; }, 0) / ttr.length : null });
   });
   v.sistema = avaliarTaxa(somaL0, somaLp, nTot, T1);
@@ -2709,7 +2769,7 @@ function renderSistemas() {
       '<td><code style="color:var(--amber)">' + esc(s.codSub) + '</code></td>' +
       '<td style="font-weight:600">' + esc(s.sistema) + '</td>' +
       '<td>' + esc(s.sub) + '</td>' +
-      '<td style="color:var(--teal)">' + esc(s.item) + badgesAtivo(s, an) + '</td>' +
+      '<td style="color:var(--teal)">' + esc(s.item) + badgesAtivo(s, an) + (s.tag ? '<div class="tag-sap">' + esc(s.tag) + '</div>' : '') + '</td>' +
       '<td style="font-size:11px">' + esc(s.funcao) + (s.funcao2 ? '<br><span style="color:var(--text3);font-size:10px;">2a: ' + esc(s.funcao2) + '</span>' : '') + '</td>' +
       '<td>' +
       '<button class="btn btn-sm" onclick="openEditItemModal(' + i + ')" title="Editar">' + ic('editar') + '</button> ' +
@@ -2730,25 +2790,9 @@ function renderSistemas() {
 function delSistema(nomeSistema) {
   if (bloqueado()) return;
   if (!confirm('Apagar sistema "' + nomeSistema + '" e todos seus subsistemas e ativos?')) return;
-  // Remove todos os ativos desse sistema
-  var itensSis = S.sistemas.filter(function(s) { return s.sistema === nomeSistema; }).map(function(s) { return s.item; });
+  var ids = S.sistemas.filter(function(s) { return s.sistema === nomeSistema; }).map(function(s) { return s.id; });
   S.sistemas = S.sistemas.filter(function(s) { return s.sistema !== nomeSistema; });
-  var restantes = {}; S.sistemas.forEach(function(s) { restantes[s.item] = true; });
-  var semAtivo = function(x) { return itensSis.indexOf(x.item) >= 0 && !restantes[x.item]; };
-  // Remove FMEA, DD, Histórico e Spare vinculados
-  S.fmea = S.fmea.filter(function(f) { return f.sistema !== nomeSistema; });
-  S.dd_results = S.dd_results.filter(function(d) {
-    return !S.fmea.every(function(f) { return f.sistema !== nomeSistema; }) || 
-           S.sistemas.some(function(s) { return s.sistema === nomeSistema; });
-  });
-  S.dd_results = S.dd_results.filter(function(r) {
-    return S.fmea.some(function(f) { return f.id === r.fmea_id; });
-  });
-  S.fmea = S.fmea.filter(function(f) { return !semAtivo(f); });
-  S.dd_results = S.dd_results.filter(function(r) { return S.fmea.some(function(f) { return f.id === r.fmea_id; }); });
-  S.historico = S.historico.filter(function(h) { return h.sistema !== nomeSistema && !semAtivo(h); });
-  S.spare = S.spare.filter(function(sp) { return sp.sistema !== nomeSistema && !semAtivo(sp); });
-  rbdRemoverAtivos(itensSis);
+  removerDadosDosAtivos(ids);
   renderSistemas();
   autoSave();
 }
@@ -2759,20 +2803,9 @@ function delSubsistema(nomeSis, nomeSub) {
   if (nomeSub === undefined) { nomeSub = nomeSis; nomeSis = null; }
   function doSub(s) { return s.sub === nomeSub && (nomeSis === null || s.sistema === nomeSis); }
   if (!confirm('Apagar subsistema "' + nomeSub + '" e todos seus ativos?')) return;
-  // Remove ativos desse subsistema
-  var itensRemovidos = S.sistemas.filter(doSub).map(function(s) { return s.item; });
+  var ids = S.sistemas.filter(doSub).map(function(s) { return s.id; });
   S.sistemas = S.sistemas.filter(function(s) { return !doSub(s); });
-  // Limpa referências (só de ativos que não existem mais em outro subsistema)
-  itensRemovidos = itensRemovidos.filter(function(item) { return !S.sistemas.some(function(s) { return s.item === item; }); });
-  rbdRemoverAtivos(itensRemovidos);
-  itensRemovidos.forEach(function(item) {
-    S.fmea = S.fmea.filter(function(f) { return f.item !== item; });
-    S.historico = S.historico.filter(function(h) { return h.item !== item; });
-    S.spare = S.spare.filter(function(sp) { return sp.item !== item; });
-  });
-  S.dd_results = S.dd_results.filter(function(r) {
-    return S.fmea.some(function(f) { return f.id === r.fmea_id; });
-  });
+  removerDadosDosAtivos(ids);
   renderSistemas();
   autoSave();
 }
@@ -2936,6 +2969,7 @@ function openEditItemModal(idx) {
     '<div class="form-group"><label>Sistema</label><input id="ed-sis" value="' + esc(s.sistema) + '"></div>' +
     '<div class="form-group"><label>Subsistema</label><input id="ed-sub" value="' + esc(s.sub) + '"></div>' +
     '<div class="form-group"><label>Ativo</label><input id="ed-item" value="' + esc(s.item) + '"></div>' +
+    '<div class="form-group"><label>TAG / código SAP</label><input id="ed-tag" value="' + esc(s.tag || '') + '"></div>' +
     '<div class="form-group"><label>Funcao</label><textarea id="ed-funcao" rows="1" class="autogrow">' + esc(s.funcao) + '</textarea></div>' +
     '</div>' +
     '<div class="modal-btns">' +
@@ -2956,13 +2990,15 @@ function saveEditItem(idx) {
   if (!newItem || !newSis || !newSub) { alert('Preencha todos os campos.'); return; }
 
   // Atualiza referências no FMEA, DD, Histórico e Spare
+  var aid = S.sistemas[idx].id;
   if (oldItem !== newItem) {
-    S.fmea.forEach(function(f) { if (f.item === oldItem) f.item = newItem; });
-    S.dd_results.forEach(function(d) { if (d.item === oldItem) d.item = newItem; });
-    S.historico.forEach(function(h) { if (h.item === oldItem) h.item = newItem; });
-    S.spare.forEach(function(sp) { if (sp.item === oldItem) sp.item = newItem; });
-    rbdRenomearAtivo(oldItem, newItem);
+    [S.fmea, S.dd_results, S.historico, S.spare].forEach(function(lst) {
+      (lst || []).forEach(function(r) { if (r && r.ativo_id === aid) r.item = newItem; });
+    });
+    rbdRenomearAtivo(aid, newItem);
   }
+  var tagEl = document.getElementById('ed-tag');
+  if (tagEl) { var tg = tagEl.value.trim(); if (tg) S.sistemas[idx].tag = tg; else delete S.sistemas[idx].tag; }
 
   S.sistemas[idx].sistema = newSis;
   S.sistemas[idx].sub = newSub;
@@ -3205,6 +3241,7 @@ function saveFmea(idx) {
     sistema: sisRef ? sisRef.sistema : '',
     sub:     subRef ? subRef.sub     : '',
     item:    item,
+    ativo_id: resolverAtivo(item, codSub),
     funcao:  funcao,
     falha:   falha,
     modo:    modo,
@@ -3705,7 +3742,7 @@ function saveDDResult(tarefa, tipo, origem) {
   f.dd = tipo;
   f.origem = origem;
 
-  var entry = { fmea_id: f.id, item: f.item, modo: f.modo, tarefa: tarefa, tipo: tipo, origem: origem,
+  var entry = { fmea_id: f.id, item: f.item, ativo_id: f.ativo_id || resolverAtivo(f.item, f.codSub), modo: f.modo, tarefa: tarefa, tipo: tipo, origem: origem,
                 data: new Date().toISOString(), respostas: ddCaminhoAtual(), diretrizesAntes: antesFmea, historico: historico };
   if (exist >= 0) S.dd_results[exist] = entry; else S.dd_results.push(entry);
 
@@ -3850,6 +3887,7 @@ function rbdSanitize(n, seen, depth) {
   if (n.t === 'item') {
     if (typeof n.ref !== 'string' || !n.ref) return null;
     var it = { id: id, t: 'item', ref: n.ref };
+    if (typeof n.aid === 'string' && n.aid) it.aid = n.aid;
     if (+n.mtbf > 0) it.mtbf = +n.mtbf;
     return it;
   }
@@ -3895,24 +3933,32 @@ function rbdTree() {
 }
 
 // Mantém o RBD coerente quando ativos são renomeados ou excluídos na estrutura
-function rbdRenomearAtivo(antigo, novo) {
-  if (!antigo || antigo === novo) return;
-  rbdLeaves(rbdTree()).forEach(function(L) { if (L.ref === antigo) L.ref = novo; });
+function rbdRenomearAtivo(id, novo) {
+  rbdLeaves(rbdTree()).forEach(function(L) { if (L.aid === id) L.ref = novo; });
 }
-function rbdRemoverAtivos(nomes) {
-  var existe = {};
-  (S.sistemas || []).forEach(function(s) { if (s && s.item) existe[s.item] = true; });
-  var fora = (nomes || []).filter(function(n) { return n && !existe[n]; });
+function rbdRemoverAtivos(ids) {
+  var fora = (ids || []).filter(Boolean);
   if (!fora.length) return;
   (function poda(n) {
     if (n.t === 'item') return;
-    n.c = n.c.filter(function(ch) { return !(ch.t === 'item' && fora.indexOf(ch.ref) >= 0); });
+    n.c = n.c.filter(function(ch) { return !(ch.t === 'item' && fora.indexOf(ch.aid) >= 0); });
     n.c.forEach(poda);
   })(rbdTree());
   var res = rbdNormalize(S.rbd_tree);
   S.rbd_tree = rbdTreeOk = !res ? { id: uid(), t: 'serie', c: [] } : res.t === 'serie' ? res : { id: uid(), t: 'serie', c: [res] };
   if (rbdSel && !rbdFind(rbdSel)) rbdSel = null;
   if (rbdSel2 && !rbdFind(rbdSel2)) rbdSel2 = null;
+}
+
+// Remove FMEA, DD, histórico, spare e blocos do RBD dos ativos excluídos
+function removerDadosDosAtivos(ids) {
+  var set = {}; ids.forEach(function(i) { set[i] = true; });
+  function fora(r) { return r && r.ativo_id && set[r.ativo_id]; }
+  S.fmea = S.fmea.filter(function(f) { return !fora(f); });
+  S.dd_results = S.dd_results.filter(function(r) { return !fora(r) && S.fmea.some(function(f) { return f.id === r.fmea_id; }); });
+  S.historico = S.historico.filter(function(h) { return !fora(h); });
+  S.spare = S.spare.filter(function(sp) { return !fora(sp); });
+  rbdRemoverAtivos(ids);
 }
 
 function rbdLeaves(n, out) {
@@ -3970,8 +4016,8 @@ function rbdCommit() {
 function rbdParamsMap() {
   var pm = {}, cache = {};
   rbdLeaves(rbdTree()).forEach(function(L) {
-    var key = L.ref + '|' + (L.mtbf || '');
-    pm[L.id] = cache[key] || (cache[key] = paramsAtivo(L.ref, L.mtbf));
+    var key = (L.aid || L.ref) + '|' + (L.mtbf || '');
+    pm[L.id] = cache[key] || (cache[key] = paramsAtivo(L.aid || L.ref, L.mtbf));
   });
   return pm;
 }
@@ -4045,24 +4091,21 @@ function getRbdTempo() {
 function populateRbdPickers() {
   var p = document.getElementById('rbd-item-picker');
   if (!p) return;
-  var atual = p.value, seen = {}, opts = '';
+  var atual = p.value, ids = {}, opts = '';
   (S.sistemas || []).forEach(function(s) {
-    if (!s || !s.item || seen[s.item]) return; seen[s.item] = true;
-    opts += '<option value="' + escA(s.item) + '">' + esc(s.item) + '</option>';
+    if (!s || !s.id) return; ids[s.id] = true;
+    opts += '<option value="' + escA(s.id) + '">' + esc(rotuloAtivo(s)) + '</option>';
   });
   p.innerHTML = opts || '<option value="">Sem ativos cadastrados</option>';
-  if (atual && seen[atual]) p.value = atual;
+  if (atual && ids[atual]) p.value = atual;
 }
 
 function escA(t) { return esc(String(t == null ? '' : t)).replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
 
 function rbdNovoBloco() {
-  var v = (document.getElementById('rbd-item-picker') || {}).value;
-  if (!v || !(S.sistemas || []).some(function(s) { return s && s.item === v; })) {
-    alert('Cadastre ativos na hierarquia estrutural e escolha um na lista.');
-    return null;
-  }
-  return { id: uid(), t: 'item', ref: v };
+  var v = (document.getElementById('rbd-item-picker') || {}).value, a = ativoPorId(v);
+  if (!a) { alert('Cadastre ativos na hierarquia estrutural e escolha um na lista.'); return null; }
+  return { id: uid(), t: 'item', ref: a.item, aid: a.id };
 }
 
 // mode: 'depois' | 'antes' (série)  |  'paralelo'  |  'ramo' (novo ramo no grupo paralelo)
@@ -4102,9 +4145,9 @@ function rbdTrocar() {
   if (bloqueado()) return;
   var sel = rbdSelecao();
   if (!sel || sel.multi || sel.node.t !== 'item') { alert('Selecione um bloco para trocar o ativo.'); return; }
-  var v = document.getElementById('rbd-item-picker').value;
-  if (!v) return;
-  sel.node.ref = v;
+  var a = ativoPorId(document.getElementById('rbd-item-picker').value);
+  if (!a) return;
+  sel.node.ref = a.item; sel.node.aid = a.id;
   delete sel.node.mtbf;
   rbdCommit();
 }
@@ -4178,15 +4221,10 @@ function rbdTodos(fechar) {
 // Agrupa blocos consecutivos da linha principal pelo subsistema cadastrado na estrutura
 function rbdAgruparPorSubsistema() {
   if (bloqueado()) return;
-  var root = rbdTree(), subsDe = {}, usados = {};
-  (S.sistemas || []).forEach(function(s) { if (s && s.item && s.sub) (subsDe[s.item] = subsDe[s.item] || []).push(s.sub); });
-  var novo = [], atual = null, criados = 0;
+  var root = rbdTree(), novo = [], atual = null, criados = 0;
   root.c.forEach(function(ch) {
-    var lista = ch.t === 'item' ? (subsDe[ch.ref] || []) : [];
-    // nome repetido em vários subsistemas: continua o grupo atual se couber; senão usa o próximo ainda não usado
-    var k = ch.ref + '|' + (usados[ch.ref] || 0);
-    var sub = (atual && lista.indexOf(atual.nome) >= 0) ? atual.nome : (lista[usados[ch.ref] || 0] || lista[0] || '');
-    if (ch.t === 'item') usados[ch.ref] = (usados[ch.ref] || 0) + 1;
+    var a = ch.t === 'item' ? (ativoPorId(ch.aid) || S.sistemas.filter(function(s) { return s.item === ch.ref; })[0]) : null;
+    var sub = a ? a.sub || '' : '';
     if (sub && atual && atual.nome === sub) { atual.c.push(ch); return; }
     if (sub) { atual = { id: uid(), t: 'serie', nome: sub, fechado: true, c: [ch] }; novo.push(atual); criados++; return; }
     atual = null; novo.push(ch);
@@ -4379,7 +4417,7 @@ function rbdDrawFechado(n, x, y, o, ctx) {
 function rbdDrawItem(n, x, y, o, ctx) {
   var p = ctx.pm[n.id], r = weibR(p, ctx.t), sel = !!ctx.sel[n.id];
   var tag = p.src === 'manual' ? ' (manual)' : p.src === 'padrao' ? ' (padrão)' : '';
-  var dup = ctx.dup[n.ref] > 1;
+  var dup = ctx.dup[n.aid || n.ref] > 1;
   o.push('<g class="rbd-node" onclick="rbdClick(event,\'' + n.id + '\')">');
   o.push('<rect x="' + x + '" y="' + y + '" width="' + RB.bw + '" height="' + RB.bh + '" rx="8" class="rbd-box' +
     (sel ? ' sel' : '') + (p.src === 'padrao' ? ' nodata' : '') + '" style="stroke:' + (sel ? 'var(--accent)' : rbdCor(r)) + '"/>');
@@ -4416,7 +4454,7 @@ function rbdSyncControls() {
 
   var hint = document.getElementById('rbd-hint');
   if (hint) {
-    var novo = (document.getElementById('rbd-item-picker') || {}).value || 'o ativo escolhido';
+    var novo = nomeAtivo((document.getElementById('rbd-item-picker') || {}).value) || 'o ativo escolhido';
     if (vazio) hint.innerHTML = 'Escolha um ativo e clique <b>Em série</b> para colocar o primeiro bloco entre a ENTRADA e a SAÍDA.';
     else if (temSel && sel.multi) hint.innerHTML = 'Trecho selecionado: <b>' + sel.nodes.length + ' elementos em série</b>. <b>Em paralelo</b> cria um caminho alternativo a esse trecho inteiro com <b>' + esc(novo) + '</b>.';
     else if (!temSel) hint.innerHTML = 'Nada selecionado: <b>Em série</b> coloca <b>' + esc(novo) + '</b> no fim da linha. Clique num bloco ou na moldura de um grupo para inserir ao lado dele; <b>Shift+clique</b> num segundo bloco da mesma linha seleciona o trecho entre eles.';
@@ -4441,7 +4479,7 @@ function renderRbd() {
   var ctx = { t: getRbdTempo(), pm: rbdParamsMap(), dup: {}, sel: {} };
   var selAtual = rbdSelecao();
   if (selAtual) selAtual.nodes.forEach(function(nd) { ctx.sel[nd.id] = true; });
-  rbdLeaves(root).forEach(function(L) { ctx.dup[L.ref] = (ctx.dup[L.ref] || 0) + 1; });
+  rbdLeaves(root).forEach(function(L) { var k = L.aid || L.ref; ctx.dup[k] = (ctx.dup[k] || 0) + 1; });
   rbdLayout(root, true, ctx);
 
   // Quebra a linha principal em várias linhas quando não cabe na largura da área
@@ -4582,8 +4620,7 @@ function renderRbdKpi(ctx) {
   var bir = rbdBirnbaum(t, pm).sort(function(a, b) { return b.ib - a.ib; });
   var semDados = rbdLeaves(rbdTree()).filter(function(L) { return pm[L.id].src === 'padrao'; });
   var dups = Object.keys(ctx.dup).filter(function(k) { return ctx.dup[k] > 1; });
-  var nomes = {}; (S.sistemas || []).forEach(function(s) { if (s && s.item) nomes[s.item] = true; });
-  var orfaos = Object.keys(ctx.dup).filter(function(k) { return !nomes[k]; });
+  var orfaos = Object.keys(ctx.dup).filter(function(k) { return !ativoPorId(k) && !(S.sistemas || []).some(function(s) { return s.item === k; }); });
 
   var html = '<div class="mtbf-grid">';
   html += '<div class="mtbf-cell"><label>R sistema (' + t + 'h)</label><div class="val" style="color:' + rbdCor(rSis) + '">' + rbdPct(rSis, 2) + '</div></div>';
@@ -4595,10 +4632,10 @@ function renderRbdKpi(ctx) {
   if (semDados.length || dups.length || orfaos.length) {
     html += '<div class="rbd-warn">';
     if (orfaos.length) html += 'Bloco(s) com ativo que não existe mais na Estrutura de Ativos (excluído ou renomeado): ' +
-      orfaos.map(function(k) { return '<b>' + esc(k) + '</b>'; }).join(', ') + '. Use Trocar ativo ou Remover.<br>';
+      orfaos.map(function(k) { return '<b>' + esc(nomeAtivo(k)) + '</b>'; }).join(', ') + '. Use Trocar ativo ou Remover.<br>';
     if (semDados.length) html += semDados.length + ' bloco(s) sem histórico suficiente (menos de 2 falhas) estão usando o MTBF padrão de ' +
       rbdNum(getCfg().mtbfPadrao) + ' h: ' + semDados.map(function(L) { return '<b>' + esc(L.ref) + '</b>'; }).join(', ') + '. Informe um MTBF manual (catálogo/fabricante) para melhorar o cálculo.<br>';
-    if (dups.length) html += 'Ativo(s) repetido(s) no diagrama: ' + dups.map(function(k) { return '<b>' + esc(k) + '</b>'; }).join(', ') +
+    if (dups.length) html += 'Ativo(s) repetido(s) no diagrama: ' + dups.map(function(k) { return '<b>' + esc(nomeAtivo(k)) + '</b>'; }).join(', ') +
       '. O cálculo trata cada bloco como independente; se for o mesmo equipamento físico, o resultado fica otimista.';
     html += '</div>';
   }
@@ -4657,11 +4694,11 @@ function getSimCfg() {
 function estrategiasAtivo(nome) {
   var lista = [];
   (S.fmea || []).forEach(function(f) {
-    if (!f || f.item !== nome) return;
+    if (!doAtivo(f, nome)) return;
     (Array.isArray(f.tarefa) ? f.tarefa : (f.tarefa ? [f.tarefa] : [])).forEach(function(t) { if (lista.indexOf(t) < 0) lista.push(t); });
   });
   (S.dd_results || []).forEach(function(r) {
-    if (r && r.item === nome && r.tipo && lista.indexOf(r.tipo) < 0) lista.push(r.tipo);
+    if (r && doAtivo(r, nome) && r.tipo && lista.indexOf(r.tipo) < 0) lista.push(r.tipo);
   });
   function tem(arr) { return lista.some(function(t) { return arr.indexOf(t) >= 0; }); }
   return { lista: lista, tempo: tem(ESTRAT_TEMPO), detec: tem(ESTRAT_DETEC), redes: tem(ESTRAT_REDES) };
@@ -4754,7 +4791,7 @@ function confCenario(escopo) {
   function montaAtivo(nome, manual) {
     var p = paramsAtivo(nome, manual), est = estrategiasAtivo(nome);
     var s = simAtivo(p, est, cfgSim, custoRef);
-    var a = { nome: nome, p: p, est: est, sim: s, reg: regimeTexto(p) };
+    var a = { nome: nomeAtivo(nome), chave: nome, p: p, est: est, sim: s, reg: regimeTexto(p) };
     if (est.tempo && !s.io) a.avisoTempo = a.reg.cls !== 'des'
       ? 'Há tarefa por tempo definida, mas os dados não mostram desgaste: nenhum ganho atribuído a ela.'
       : 'Há tarefa por tempo, mas com o custo de preventiva informado ela não compensa frente a rodar até falhar.';
@@ -4782,7 +4819,7 @@ function confCenario(escopo) {
   } else {
     var seen = {}, folhas = [];
     (S.sistemas || []).forEach(function(s) {
-      if (s && s.item && !seen[s.item] && modeloAtivo(s.item).ok) { seen[s.item] = true; folhas.push({ id: 'tmp' + folhas.length, t: 'item', ref: s.item }); }
+      if (s && s.id && !seen[s.id] && modeloAtivo(s.id).ok) { seen[s.id] = true; folhas.push({ id: 'tmp' + folhas.length, t: 'item', ref: s.item, aid: s.id }); }
     });
     root = { id: 'tmproot', t: 'serie', c: folhas };
     if (folhas.length) cen.notas.push('Sem diagrama RBD: o sistema foi considerado como todos os ativos com histórico em SÉRIE. Monte o RBD para refletir redundâncias.');
@@ -4791,8 +4828,8 @@ function confCenario(escopo) {
   if (!lv.length) { cen.vazio = true; return cen; }
   var porNome = {};
   lv.forEach(function(L) {
-    var key = L.ref + '|' + (L.mtbf || '');
-    porId[L.id] = porNome[key] || (porNome[key] = montaAtivo(L.ref, L.mtbf));
+    var key = (L.aid || L.ref) + '|' + (L.mtbf || '');
+    porId[L.id] = porNome[key] || (porNome[key] = montaAtivo(L.aid || L.ref, L.mtbf));
   });
   cen.ativos = Object.keys(porNome).map(function(k) { return porNome[k]; });
   cen.Ra = function(t) { return rbdEval(root, function(n) { return weibR(porId[n.id].p, t); }); };
@@ -4809,7 +4846,7 @@ function confCenario(escopo) {
   lv.forEach(function(L) { var a = porId[L.id]; cen.custoA += a.sim.custoAtual; cen.custoS += a.sim.custoSim; if (a.sim.temCusto) cen.temCusto = true; });
   var nd = cen.ativos.filter(function(a) { return a.p.src === 'padrao'; });
   if (getCfg().censura) cen.ativos.forEach(function(a) {
-    var ult = (S.historico || []).filter(function(h) { return h && h.item === a.nome; }).map(function(h) { return new Date(h.dt).getTime(); }).filter(function(t) { return !isNaN(t); });
+    var ult = (S.historico || []).filter(function(h) { return doAtivo(h, a.chave); }).map(function(h) { return new Date(h.dt).getTime(); }).filter(function(t) { return !isNaN(t); });
     if (ult.length && a.p.src === 'historico' && (Date.now() - Math.max.apply(null, ult)) / 3600000 > 3 * a.p.mtbf)
       cen.notas.push(esc(a.nome) + ': a última falha registrada foi há mais de 3 MTBFs. Se o histórico não está sendo lançado, o tempo sem registro é tratado como tempo sem falha e infla o MTBF.');
   });
@@ -5068,18 +5105,13 @@ document.addEventListener('blur', function(e) {
 
 
 function updateConfiabSelect() {
-  var items = [];
-  var seen = {};
-  S.sistemas.forEach(function(s) {
-    if (!seen[s.item]) { seen[s.item] = true; items.push(s.item); }
-  });
   var p = document.getElementById('conf-item-sel');
   if (!p) return;
-  var opts = '<option value="GLOBAL">GLOBAL (SISTEMA via RBD)</option>';
-  items.forEach(function(i) {
-    opts += '<option value="' + esc(i) + '">' + esc(i) + '</option>';
-  });
+  var atual = p.value;
+  var opts = '<option value="GLOBAL">GLOBAL (sistema via RBD)</option>';
+  (S.sistemas || []).forEach(function(s) { if (s && s.id) opts += '<option value="' + escA(s.id) + '">' + esc(rotuloAtivo(s)) + '</option>'; });
   p.innerHTML = opts;
+  if (atual && [].some.call(p.options, function(o) { return o.value === atual; })) p.value = atual;
 }
 
 
@@ -5137,7 +5169,8 @@ function openHistoricoModal(idx) {
 
 function histOpcoesFmea(item, sel) {
   var o = '<option value="">— não informado —</option>';
-  S.fmea.filter(function(f) { return item && f.item === item; }).forEach(function(f) {
+  var cs = (document.getElementById('h-sub') || {}).value, aid = item ? resolverAtivo(item, cs) : '';
+  S.fmea.filter(function(f) { return aid && doAtivo(f, aid); }).forEach(function(f) {
     o += '<option value="' + escA(f.id) + '"' + (f.id === sel ? ' selected' : '') + '>' + esc(f.modo) + (f.dd ? ' [' + esc(f.dd) + ']' : '') + '</option>';
   });
   return o;
@@ -5213,6 +5246,7 @@ function saveHistorico(idx) {
     sistema: sisRef ? sisRef.sistema : '',
     sub: subRef ? subRef.sub : '',
     item: item,
+    ativo_id: resolverAtivo(item, codSub),
     dt: dt,
     ttr: +document.getElementById('h-ttr').value || 0,
     custo: +document.getElementById('h-custo').value || 0,
@@ -5379,6 +5413,7 @@ function saveSpare(idx) {
     sistema: sisRef ? sisRef.sistema : '',
     sub: subRef ? subRef.sub : '',
     item: item,
+    ativo_id: resolverAtivo(item, codSub),
     peca: peca,
     qtd: qtd,
     valor: valor,
@@ -5436,7 +5471,7 @@ function renderSpare() {
     if (fItem && sp.item !== fItem) return;
     if (soPend && !spPendente(sp)) return;
     if (busca && normTxt([sp.peca, sp.item, sp.obs].join(' ')).indexOf(busca) < 0) return;
-    var k = (sp.sistema || '') + '\u0001' + (sp.sub || '') + '\u0001' + (sp.item || '');
+    var k = (sp.sistema || '') + '\u0001' + (sp.sub || '') + '\u0001' + (sp.item || '') + '\u0001' + (sp.ativo_id || '');
     if (!grupos[k]) { grupos[k] = { sp: sp, linhas: [], total: 0 }; ordem.push(k); }
     grupos[k].linhas.push({ sp: sp, i: i, total: total });
     grupos[k].total += total; nVis++;
@@ -5538,7 +5573,7 @@ function generatePDF() {
   var pdfSteps = 60;
   var pdfCen = confCenario('GLOBAL');
   var pdfAtivos = [], pdfSeen = {};
-  S.sistemas.forEach(function(s) { if (!pdfSeen[s.item]) { pdfSeen[s.item] = true; pdfAtivos.push(s.item); } });
+  S.sistemas.forEach(function(s) { if (s && s.id && !pdfSeen[s.id]) { pdfSeen[s.id] = true; pdfAtivos.push(s.id); } });
   if (pdfCen.vazio) { pdfCen.Ra = pdfCen.Rs = function() { return 1; }; pdfCen.mtbf = pdfCen.mtbfSim = 0; pdfCen.dispA = pdfCen.dispS = 1; }
   var pdfMtbf = pdfCen.mtbf, pdfMtbfSim = pdfCen.mtbfSim;
   var pdfPointsAtual = [];
@@ -5770,9 +5805,9 @@ function generatePDF() {
     if (mo.ok) {
       var pa = paramsAtivo(a);
       var r = (weibR(pa, pdfTmax) * 100).toFixed(1);
-      html += '<tr><td>' + esc(a) + '</td><td>' + (pa.tipo === 'weibull' ? 'Weibull β=' + pa.beta.toFixed(2) + ', η=' + pa.eta.toFixed(0) + 'h' : 'Exponencial') + '</td><td>' + pa.mtbf.toFixed(0) + '</td><td>' + r + '%</td><td>' + regimeTexto(pa).txt + '</td></tr>';
+      html += '<tr><td>' + esc(nomeAtivo(a)) + '</td><td>' + (pa.tipo === 'weibull' ? 'Weibull β=' + pa.beta.toFixed(2) + ', η=' + pa.eta.toFixed(0) + 'h' : 'Exponencial') + '</td><td>' + pa.mtbf.toFixed(0) + '</td><td>' + r + '%</td><td>' + regimeTexto(pa).txt + '</td></tr>';
     } else {
-      html += '<tr><td>' + esc(a) + '</td><td colspan="4" style="color:#aaa;">Historico insuficiente</td></tr>';
+      html += '<tr><td>' + esc(nomeAtivo(a)) + '</td><td colspan="4" style="color:#aaa;">Historico insuficiente</td></tr>';
     }
   });
   html += '</tbody></table>';
