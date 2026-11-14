@@ -337,7 +337,7 @@ textarea { overflow-y: hidden; resize: vertical; line-height: 1.45; }
     <div class="form-grid" style="grid-template-columns:1fr;">
       <div class="form-group"><label>Nome da analise / linha</label><input id="ns-nome" placeholder="Ex: Linha 3 - Empacotadora Bosch"></div>
       <div class="form-group"><label>Responsavel principal</label><input id="ns-resp" placeholder="Ex: Lucas W. Branco"></div>
-      <div class="form-group"><label>Fabrica</label><input id="ns-planta" placeholder="Ex: Mondelez Curitiba"></div>
+      <div class="form-group"><label>Fabrica</label><input id="ns-planta" placeholder="Ex: Planta Industrial 01"></div>
       <div class="form-group"><label>PIN de protecao (4+ caracteres)</label><input id="ns-pin" type="password" placeholder="Deixe em branco para sem protecao"></div>
     </div>
     <div class="modal-btns">
@@ -832,10 +832,10 @@ if (!localStorage.getItem('rcm_aceite')) {
     '<div style="text-align:center;font-family:Arial,sans-serif;max-width:500px;padding:30px;">' +
     '<h1 style="font-size:20px;color:#7c6aff;">RCM-APP</h1>' +
     '<p style="color:#9ba3bc;font-size:12px;margin:16px 0;text-align:left;line-height:1.8;">' +
-    'Este software foi desenvolvido por <strong style="color:#fff;">Lucas W. Branco</strong> e e de uso exclusivo interno MDLZ.<br><br>' +
-    'A copia, reproducao, distribuicao ou apresentacao deste sistema como proprio constitui violacao de propriedade intelectual, ' +
-    'sujeita a medidas disciplinares e legais conforme politica corporativa e Lei 9.609/98 (Lei de Software).<br><br>' +
-    'Ao continuar, voce concorda com estes termos.</p>' +
+    'Este software foi desenvolvido por <strong style="color:#fff;">Lucas W. Branco</strong> e é protegido por direitos autorais.<br><br>' +
+    'A cópia, reprodução, distribuição ou apresentação deste sistema como próprio sem autorização do autor constitui violação de direitos autorais, ' +
+    'sujeita às medidas legais previstas na Lei 9.609/98 (Lei de Software) e na Lei 9.610/98 (Direitos Autorais).<br><br>' +
+    'Ao continuar, você concorda com estes termos.</p>' +
     '<button onclick="localStorage.setItem(\'rcm_aceite\',\'1\');location.reload();" style="padding:10px 30px;border-radius:6px;border:none;background:#7c6aff;color:#fff;font-weight:700;cursor:pointer;">Aceito e Concordo</button>' +
     '</div></div>';
   throw new Error('Aceite pendente');
@@ -876,7 +876,7 @@ if (!localStorage.getItem('rcm_aceite')) {
   }
 })();
 
-var _fw = 'LWB-2026-MDLZ-RCM'; // fingerprint oculto
+var _fw = 'LWB-2026-RCM'; // fingerprint oculto
 
 
 
@@ -1222,7 +1222,7 @@ function bootApp() {
     try { fn(); } catch(e) { console.error('[boot]', fn.name, e); }
   });
 }
-var _fw = 'LWB-2026-MDLZ-RCM'; // fingerprint oculto
+var _fw = 'LWB-2026-RCM'; // fingerprint oculto
 
 window.addEventListener('load', bootApp);
 
@@ -2858,7 +2858,7 @@ function editarNivel0() {
     '<div class="form-grid">' +
     '<div class="form-group" style="grid-column:1/-1">' +
     '<label>Nome do Equipamento / TAG</label>' +
-    '<input id="nivel0-input" value="' + esc(nomeAtual) + '" placeholder="Ex: Chiller 8007, Torre de Resfriamento 01...">' +
+    '<input id="nivel0-input" value="' + esc(nomeAtual) + '" placeholder="Ex: Chiller 01, Torre de Resfriamento 01...">' +
     '</div></div>' +
     '<div class="modal-btns">' +
     '<button class="btn" onclick="closeModal(\'modal-item\')">Cancelar</button>' +
