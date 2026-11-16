@@ -1057,7 +1057,7 @@ function renderAcoes() {
     return h;
   }
   // --- Render tabela ---
-  document.getElementById('tbody-acoes').innerHTML = S.acoes.map((a,i)=>`<tr><td style="font-weight:600">${esc(a.resp)}</td><td>${esc(a.acao)}</td><td><span class="badge ${a.status==='Concluído'?'badge-green':a.status==='Em andamento'?'badge-amber':'badge-gray'}">${a.status}</span></td><td>${a.dt}</td><td>${a.dias}</td><td>${colAtraso(a)}</td><td><button class="btn btn-sm" onclick="openAcaoModal(${i})" title="Editar">' + ic('editar') + '</button> <button class="btn btn-sm btn-danger" onclick="delAcao(${i})" title="Apagar">' + ic('excluir') + '</button></td></tr>`).join('') || '<tr><td colspan="7" style="text-align:center;padding:12px">Nenhuma ação cadastrada.</td></tr>';
+  document.getElementById('tbody-acoes').innerHTML = S.acoes.map((a,i)=>`<tr><td style="font-weight:600">${esc(a.resp)}</td><td>${esc(a.acao)}</td><td><span class="badge ${a.status==='Concluído'?'badge-green':a.status==='Em andamento'?'badge-amber':'badge-gray'}">${a.status}</span></td><td style="white-space:nowrap">${a.dt ? dataBR(a.dt) : '—'}</td><td>${esc(a.dias)}</td><td>${colAtraso(a)}</td><td><button class="btn btn-sm" onclick="openAcaoModal(${i})" title="Editar">${ic('editar')}</button> <button class="btn btn-sm btn-danger" onclick="delAcao(${i})" title="Apagar">${ic('excluir')}</button></td></tr>`).join('') || '<tr><td colspan="7" style="text-align:center;padding:12px">Nenhuma ação cadastrada.</td></tr>';
   // --- Badge no menu ---
   var nAtrasadas = S.acoes.filter(function(a){ return calcAtraso(a).s === 'late'; }).length;
   document.querySelectorAll('.nav-item').forEach(function(btn) {
